@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h1>Kittensafe v0.0.1</h1>
+<h3>Encrypt file:</h3>
+Timestamp:<br>
+<input type="text" id="encTime"><br>
+File:<br>
+<input type="file" id="encFile"><br>
+<button id="encRun">Encrypt File</button><br>
+<a id="encDown">Save encrypted file</a>
+
+<h3>Decrypt file:</h3>
+File:<br>
+<input type="file" id="decFile"><br>
+<button id="decRun">Decrypt File</button><br>
+<a id="decDown">Save decrypted file</a>
+<script>
+    const crypto = window.crypto.subtle;
+    document.getElementById('encTime').value = new Date(new Date().getTime() + 60000).toISOString();
+    function readFileAsBuffer(file) {
+        return new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.readAsArrayBuffer(file);
+        });
+    };
+    document.getElementById('encRun').onclick = (e) => {
+        Promise.all([
+            crypto.generateKey({name: 'AES-GCM', length: 256}, true, ['encrypt']), // generate random encryption key
+            readFileAsBuffer(document.getElementById('encFile').files[0]) // read in file asArrayBuffer
+        ]).then((d) => {
+            const [key, data] = d;
+            const iv = window.crypto.getRandomValues(new Uint8Array(16)); // generate random initialisation vector
+            const auth = window.crypto.getRandomValues(new Uint8Array(16)); // generate random authTag
+            console.log('key: ', key, 'data: ', data);
+            return Promise.all([
+                crypto.encrypt({name: 'AES-GCM', iv, additionalData: auth, tagLength: 128}, key, data), // encrypt file using key
+                Array.from(iv).map(b => b.toString(16).padStart(2, "0")).join(''), // convert iv to hex string
+                Array.from(auth).map(b => b.toString(16).padStart(2, "0")).join(''), // convert authTag to hex string
+                crypto.exportKey('jwk', key).then((expKey) => { // export the used kex in hey format
+                    const req = {key: expKey.k, timestamp: document.getElementById("encTime").value};
+                    console.log('expKey: ', expKey, 'req: ', req); // query webservice to encrypt key given timestamp
+                    return fetch('/.netlify/functions/encryptkey', {method: 'POST', body: JSON.stringify(req)});
+                }).then(res => res.json()) // get back the result from the webservice as JSON
+            ]);
+        }).then((d) => {
+            const [data, iv, auth, secret] = d;
+            console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
+            const filename = document.getElementById('encFile').files[0].name; // get original file name
+            const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename}) + '\n'); // encode meta data as ArrayBuffer
+            const href = URL.createObjectURL(new Blob([meta, data], {type: 'application/octet-binary'})); // create File
+            const link = document.getElementById('encDown'); // offer file downloading by clicking on the link
+            link.setAttribute('download', filename + '-' + secret.timestamp + '.ksf');
+            link.setAttribute('href', href);
+        }).catch(err => console.error(err));
+    };
+    document.getElementById('decRun').onclick = (e) => {
+        readFileAsBuffer(document.getElementById('decFile').files[0]).then((d) => {
+            const data = new Uint8Array(d);
+            const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
+            const timediff = new Date(meta.secret.timestamp) - new Date();
+            if (timediff > 0) {
+                alert(`Time is not up yet! Please wait ${timediff}ms until you try again!`);
+                return Promise.reject(new Error('Time not up!'));
+            }
+            console.log('meta: ', meta);
+            return Promise.all([ // query webservice to decrypt key for the used timestamo (if in the past)
+                fetch('/.netlify/functions/decryptkey', {method: 'POST', body: JSON.stringify(meta.secret)}).then(res => res.json()).then((res) => {
+                    console.log('res: ', res); // imports the decryption key recieved from the webservice
+                    return crypto.importKey("jwk", {kty: "oct", k: res.key, alg: "A256GCM", ext: true}, {name: "AES-GCM"}, false, ["decrypt"]);
+                }),
+                data.slice(data.indexOf(10) + 1), // strips off metadata to only get the encrypted file content
+                new Uint8Array(meta.iv.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16))), // convert iv from hex string to ArrayBuffer
+                new Uint8Array(meta.auth.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16))), // convert authTag from hex to ArrayBuffer
+                meta.filename
+            ]);
+        }).then((d) => {
+            const [key, data, iv, auth, filename] = d;
+            console.log('key: ', key, 'data: ', data, 'iv: ', iv, 'auth: ', auth);
+            return Promise.all([
+                crypto.decrypt({name: "AES-GCM", iv, additionalData: auth, tagLength: 128}, key, data),
+                filename
+            ]);
+        }).then((d) => {
+            const [data, filename] = d;
+            console.log('data: ', data, 'filename: ', filename);
+            const href = URL.createObjectURL(new Blob([data], {type: 'application/octet-binary'})); // create File
+            const link = document.getElementById('decDown'); // offer file downloading by clicking on the link
+            link.setAttribute('download', filename);
+            link.setAttribute('href', href);
+        }).catch(err => console.error(err));
+    };
+</script>
+</body>
+</html>
