@@ -67,7 +67,13 @@ File:<br>
             }
             console.log('meta: ', meta);
             return Promise.all([ // query webservice to decrypt key for the used timestamo (if in the past)
-                fetch('/.netlify/functions/decryptkey', {method: 'POST', body: JSON.stringify(meta.secret)}).then(res => res.json()).then((res) => {
+                fetch('/.netlify/functions/decryptkey', {method: 'POST', body: JSON.stringify(meta.secret)}).then(res => {
+                    switch (res.status) {
+                        case 200: return res.json();
+                        case 403: const e1 = "Server rejected decryption: Time is not up yet!"; alert(e1); return Promise.reject(e1);
+                        case 500: const e2 = "Server decryption failed: Invalid authTag! Did you try to mess with the timestamp?"; alert(e2); return Promise.reject(e2);
+                    }
+                }).then((res) => {
                     console.log('res: ', res); // imports the decryption key recieved from the webservice
                     return crypto.importKey("jwk", {kty: "oct", k: res.key, alg: "A256GCM", ext: true}, {name: "AES-GCM"}, false, ["decrypt"]);
                 }),
@@ -80,7 +86,11 @@ File:<br>
             const [key, data, iv, auth, filename] = d;
             console.log('key: ', key, 'data: ', data, 'iv: ', iv, 'auth: ', auth);
             return Promise.all([
-                crypto.decrypt({name: "AES-GCM", iv, additionalData: auth, tagLength: 128}, key, data),
+                crypto.decrypt({name: "AES-GCM", iv, additionalData: auth, tagLength: 128}, key, data).catch((e) => {
+                    const s = 'Decryption failed because of curruped data (authTag invalid)! Did you modified the encryped file?';
+                    alert(s);
+                    return Promise.reject(s);
+                }),
                 filename
             ]);
         }).then((d) => {
