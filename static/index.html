@@ -82,7 +82,7 @@ File:<br>
                 new Uint8Array(meta.iv.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16))), // convert iv from hex string to ArrayBuffer
                 new Uint8Array(meta.auth.match(/[\da-f]{2}/gi).map(h => parseInt(h, 16))), // convert authTag from hex to ArrayBuffer
                 meta.filename,
-                meta.mimeType || 'application/octet-binary'
+                meta.mimeType
             ]);
         }).then((d) => {
             const [key, data, iv, auth, filename, mimeType] = d;
@@ -93,8 +93,8 @@ File:<br>
                     alert(s);
                     return Promise.reject(s);
                 }),
-                filename,
-                mimeType
+                filename || 'encryptedFile',
+                mimeType || 'application/octet-binary'
             ]);
         }).then((d) => {
             const [data, filename, mimeType] = d;
@@ -104,10 +104,10 @@ File:<br>
             link.setAttribute('download', filename);
             link.setAttribute('href', href);
             switch (mimeType.split('/')[0]) {
-                case 'image': const i = document.createElement('img'); i.src = href; return document.getElementById('preview').appendChild(i);
-                case 'text': const t = document.createElement('textarea'); t.value = new TextDecoder().decode(data); return document.getElementById('preview').appendChild(t);
-                case 'video': const v = document.createElement('video'); v.src = href; return document.getElementById('preview').appendChild(v);
-                case 'audio': const a = document.createElement('audio'); a.src = href; return document.getElementById('preview').appendChild(a);
+                case 'image': const i = document.createElement('img'); i.src = href; i.setAttribute('width', '100%'); return document.getElementById('preview').appendChild(i);
+                case 'text': const t = document.createElement('textarea'); t.value = new TextDecoder().decode(data); t.setAttribute('width', '100%'); return document.getElementById('preview').appendChild(t);
+                case 'video': const v = document.createElement('video'); v.src = href; v.setAttribute('width', '100%'); return document.getElementById('preview').appendChild(v);
+                case 'audio': const a = document.createElement('audio'); a.src = href; a.setAttribute('width', '100%'); return document.getElementById('preview').appendChild(a);
             }
         }).catch(err => console.error(err));
     };
