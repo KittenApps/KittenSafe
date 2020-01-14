@@ -50,7 +50,7 @@ File:<br>
         }).then((d) => {
             const [data, iv, auth, secret] = d;
             // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
-            const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type}) + '\n'); // encode meta data as ArrayBuffer
+            const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
             const href = URL.createObjectURL(new Blob([meta, data], {type: 'application/octet-binary'})); // create File
             const link = document.getElementById('encDown'); // offer file downloading by clicking on the link
             link.setAttribute('download', file.name + '-' + secret.timestamp + '.ksf');
@@ -72,7 +72,8 @@ File:<br>
                     switch (res.status) {
                         case 200: return res.json();
                         case 403: const e1 = "Server rejected decryption: Time is not up yet!"; alert(e1); return Promise.reject(e1);
-                        case 500: const e2 = "Server decryption failed: Invalid authTag! Did you try to mess with the timestamp?"; alert(e2); return Promise.reject(e2);
+                        case 500: const e2 = 'Server decryption failed: Invalid authTag! Did you try to mess with the timestamp? Your original timestamp might be ' +
+                                             `${atob(meta.verify || '')} but don't mess with the file again or it will be unrecoverable damaged!`; alert(e2); return Promise.reject(e2);
                     }
                 }).then((res) => {
                     // console.log('res: ', res); // imports the decryption key recieved from the webservice

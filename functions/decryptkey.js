@@ -8,12 +8,13 @@ exports.handler = (event, context, callback) => {
     }
 
     const secret = process.env.APP_SECRET || '42kittens';
-    console.log(`key: ${key} timestamp: ${timestamp} secret: ${secret}`)
+    console.log(`timestamp: ${timestamp}`)
+    // console.log(`key: ${key} timestamp: ${timestamp} secret: ${secret}`)
 
     scrypt(timestamp, secret, 32, (err, k) => {
         if (err) throw err;
-        console.log(`scrypt key: ${k.toString('hex')}`);
-        console.log(`iv: ${iv} auth: ${auth}`);
+        // console.log(`scrypt key: ${k.toString('hex')}`);
+        // console.log(`iv: ${iv} auth: ${auth}`);
 
         const decipher = createDecipheriv('aes-256-gcm', k, Buffer.from(iv, 'hex'));
         decipher.setAuthTag(Buffer.from(auth, 'hex'));
@@ -21,10 +22,10 @@ exports.handler = (event, context, callback) => {
         try {
             let decrypted = decipher.update(key, 'hex', 'utf8');
             decrypted += decipher.final('utf8');
-            console.log(`decrypted key: ${decrypted}`);
+            // console.log(`decrypted key: ${decrypted}`);
             callback(null, {statusCode: 200, body: JSON.stringify({key: decrypted})});
         } catch (e) {
-            console.log(`Error: ${e.message}`);
+            // console.log(`Error: ${e.message}`);
             callback(null, {statusCode: 500, body: "Invalid authTag!"});
         }
     });
