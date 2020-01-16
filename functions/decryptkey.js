@@ -26,7 +26,7 @@ exports.handler = (event, context, callback) => {
             callback(null, {statusCode: 200, body: JSON.stringify({key: decrypted})});
         } catch (e) {
             // console.log(`Error: ${e.message}`);
-            callback(null, {statusCode: 500, body: "Invalid authTag!"});
+            callback(null, {statusCode: 400, body: "Invalid authTag!"});
         }
     });
 }
