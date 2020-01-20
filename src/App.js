@@ -1,25 +1,17 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import EncryptionPanel from './EncryptionPanel';
+import DecryptionPanel from './DecryptionPanel';
+import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import DateFnsUtils from '@date-io/date-fns';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MuiPickersUtilsProvider utils={DateFnsUtils}>
+      <h3>Encrypt:</h3>
+      <EncryptionPanel />
+      <h3>Decrypt:</h3>
+      <DecryptionPanel />
+    </MuiPickersUtilsProvider>
   );
 }
 
