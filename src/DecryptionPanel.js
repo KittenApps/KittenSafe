@@ -5,7 +5,8 @@ import MuiAlert from '@material-ui/lab/Alert';
 import LockOpenTwoToneIcon from '@material-ui/icons/LockOpenTwoTone';
 import FolderOpenTwoToneIcon from '@material-ui/icons/FolderOpenTwoTone';
 import { makeStyles } from '@material-ui/core/styles';
-import { readFileAsBuffer } from './util'
+import { readFileAsBuffer } from './util';
+import FilePreview from './FilePreview';
 const crypto = window.crypto.subtle;
 
 const useStyles = makeStyles(theme => ({
@@ -22,6 +23,7 @@ const useStyles = makeStyles(theme => ({
 function DecryptionPanel() {
   const [file, setFile] = useState({name: 'none'});
   const [warn, setWarn] = useState('');
+  const [preview, setPreview] = useState({});
   const classes = useStyles();
 
   function onChangeFile(e) {
@@ -29,11 +31,7 @@ function DecryptionPanel() {
   }
 
   const handleWarnClose = (event, reason) => {
-    if (reason === 'clickaway') {
-      return;
-    }
-
-    setWarn('');
+    if (reason !== 'clickaway') setWarn('');
   };
 
   function onDecryptFile() {
@@ -80,16 +78,11 @@ function DecryptionPanel() {
         const [data, filename, mimeType] = d;
         // console.log('data: ', data, 'filename: ', filename, 'mimeType: ', mimeType);
         const href = URL.createObjectURL(new Blob([data], {type: mimeType})); // create File
+        setPreview({src: mimeType.split('/')[0] === 'text' ? new TextDecoder().decode(data) : href, mimeType, filename});
         const a = document.createElement('a'); // offer file downloading by clicking on the link
         a.setAttribute('download', filename);
         a.setAttribute('href', href);
         a.click();
-        /*switch (mimeType.split('/')[0]) {
-            case 'image': const i = document.createElement('img'); i.src = href; i.setAttribute('width', '100%'); return document.getElementById('preview').appendChild(i);
-            case 'text': const t = document.createElement('textarea'); t.value = new TextDecoder().decode(data); t.setAttribute('width', '100%'); return document.getElementById('preview').appendChild(t);
-            case 'video': const v = document.createElement('video'); v.src = href; v.setAttribute('width', '100%'); return document.getElementById('preview').appendChild(v);
-            case 'audio': const a = document.createElement('audio'); a.src = href; a.setAttribute('width', '100%'); return document.getElementById('preview').appendChild(a);
-        }*/
     }).catch(err => console.error(err));
   }
 
@@ -111,7 +104,8 @@ function DecryptionPanel() {
       <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoToneIcon />}>
         Decrypt file...
       </Button>
-      <Snackbar open={warn} onClose={handleWarnClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
+      <FilePreview src={preview.src} mimeType={preview.mimeType} filename={preview.filename} />
+      <Snackbar open={warn !== ''} onClose={handleWarnClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <MuiAlert elevation={6} variant="filled" onClose={handleWarnClose} severity="error">
           {warn}
         </MuiAlert>

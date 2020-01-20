@@ -65,7 +65,6 @@ function EncryptionPanel() {
         onChange={setTimestamp}
         onError={console.log}
         disablePast
-        format="yyyy/MM/dd HH:mm"
       />
       <p> {file.name}
         <input
