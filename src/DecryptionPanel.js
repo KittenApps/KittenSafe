@@ -62,8 +62,7 @@ function DecryptionPanel() {
             meta.filename,
             meta.mimeType
         ]);
-    }).then((d) => {
-        const [key, data, iv, auth, filename, mimeType] = d;
+    }).then(([key, data, iv, auth, filename, mimeType]) => {
         // console.log('key: ', key, 'data: ', data, 'iv: ', iv, 'auth: ', auth);
         return Promise.all([
             crypto.decrypt({name: "AES-GCM", iv, additionalData: auth, tagLength: 128}, key, data).catch((e) => {
@@ -74,8 +73,7 @@ function DecryptionPanel() {
             filename || 'encryptedFile',
             mimeType || 'application/octet-binary'
         ]);
-    }).then((d) => {
-        const [data, filename, mimeType] = d;
+    }).then(([data, filename, mimeType]) => {
         // console.log('data: ', data, 'filename: ', filename, 'mimeType: ', mimeType);
         const href = URL.createObjectURL(new Blob([data], {type: mimeType})); // create File
         setPreview({src: mimeType.split('/')[0] === 'text' ? new TextDecoder().decode(data) : href, mimeType, filename});

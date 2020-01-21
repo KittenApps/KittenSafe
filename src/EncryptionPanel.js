@@ -31,24 +31,22 @@ function EncryptionPanel() {
     Promise.all([
         crypto.generateKey({name: 'AES-GCM', length: 256}, true, ['encrypt']), // generate random encryption key
         readFileAsBuffer(file) // read in file asArrayBuffer
-    ]).then((d) => {
-        const [key, data] = d;
+    ]).then(([key, data]) => {
         const iv = window.crypto.getRandomValues(new Uint8Array(16)); // generate random initialisation vector
         const auth = window.crypto.getRandomValues(new Uint8Array(16)); // generate random authTag
-        console.log('key: ', key, 'data: ', data);
+        // console.log('key: ', key, 'data: ', data);
         return Promise.all([
             crypto.encrypt({name: 'AES-GCM', iv, additionalData: auth, tagLength: 128}, key, data), // encrypt file using key
             Array.from(iv).map(b => b.toString(16).padStart(2, "0")).join(''), // convert iv to hex string
             Array.from(auth).map(b => b.toString(16).padStart(2, "0")).join(''), // convert authTag to hex string
             crypto.exportKey('jwk', key).then((expKey) => { // export the used kex in hey format
                 const req = {key: expKey.k, timestamp: timestamp.toISOString()};
-                console.log('expKey: ', expKey, 'req: ', req); // query webservice to encrypt key given timestamp
+                // console.log('expKey: ', expKey, 'req: ', req); // query webservice to encrypt key given timestamp
                 return fetch('/.netlify/functions/encryptkey', {method: 'POST', body: JSON.stringify(req)});
             }).then(res => res.json()) // get back the result from the webservice as JSON
         ]);
-    }).then((d) => {
-        const [data, iv, auth, secret] = d;
-        console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
+    }).then(([data, iv, auth, secret]) => {
+        // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
         const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
         const href = URL.createObjectURL(new Blob([meta, data], {type: 'application/octet-binary'})); // create File
         const a = document.createElement('a');
