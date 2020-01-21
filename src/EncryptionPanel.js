@@ -1,5 +1,5 @@
 import React, { useState }  from 'react';
-import { DesktopDateTimePicker } from "@material-ui/pickers";
+import { DateTimePicker } from "@material-ui/pickers";
 import Button from '@material-ui/core/Button';
 import FolderOpenTwoToneIcon from '@material-ui/icons/FolderOpenTwoTone';
 import LockTwoToneIcon from '@material-ui/icons/LockTwoTone';
@@ -58,7 +58,7 @@ function EncryptionPanel() {
 
   return (
     <div>
-      <DesktopDateTimePicker
+      <DateTimePicker
         value={timestamp}
         onChange={setTimestamp}
         onError={console.log}
