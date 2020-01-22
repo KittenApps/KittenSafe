@@ -23,7 +23,7 @@ function FilePreview(props){
   let element;
 
   switch (props.mimeType.split('/')[0]) {
-      case 'image': element = <img src={props.src} className={classes.media} />; break;
+      case 'image': element = <img src={props.src} className={classes.media} alt=""/>; break;
       case 'text': element = <textarea value={props.src} className={classes.media} />; break;
       case 'video': element = <video src={props.src} className={classes.media} />; break;
       case 'audio': element = <audio src={props.src} className={classes.media} />; break;

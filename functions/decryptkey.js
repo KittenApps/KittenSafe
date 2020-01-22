@@ -3,7 +3,7 @@ const {scrypt, createDecipheriv} = require('crypto');
 exports.handler = (event, context, callback) => {
     const {key, iv, auth, timestamp} = JSON.parse(event.body);
 
-    if (new Date(timestamp) > new Date()) {
+    if (new Date(timestamp) - new Date() > 15000) { // allow 15sec clock drift
         callback(null, {statusCode: 403, body: "Time is not up!"});
     }
 

@@ -51,6 +51,7 @@ function DecryptionPanel() {
                     case 403: const e1 = 'Server rejected decryption: Time is not up yet!'; setWarn(e1); return Promise.reject(e1);
                     case 400: const e2 = 'Server decryption failed: Invalid authTag! Did you try to mess with the timestamp? Your original timestamp might be ' +
                                          `${atob(meta.verify || '')} but don't mess with the file again or it will be unrecoverable damaged!`; setWarn(e2); return Promise.reject(e2);
+                    default: const e3 = 'Unknown Server error!'; setWarn(e3); return Promise.reject(e3);
                 }
             }).then((res) => {
                 // console.log('res: ', res); // imports the decryption key recieved from the webservice
