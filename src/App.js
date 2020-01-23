@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import Hidden from '@material-ui/core/Hidden';
 import Badge from '@material-ui/core/Badge';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
@@ -67,13 +68,13 @@ function App() {
             <Typography variant="h6">
               KittenSafe v0.1
             </Typography>
-            <Box display={{ xs: 'none', md: 'block' }} className={classes.grow}>
-              <Tabs value={tab} onChange={handleChangeTab} centered>
+            <Hidden smDown>
+              <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered >
                 <Tab label="Encryption" icon={<LockTwoToneIcon />} value={1} />
                 <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={2} />
                 <Tab label="Running Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={3} disabled/>
               </Tabs>
-            </Box>
+            </Hidden>
             <Box display={{ xs: 'block', md: 'none' }} className={classes.grow}/>
             <Tooltip title="Change theme colors" arrow>
               <IconButton color="inherit">
@@ -98,13 +99,13 @@ function App() {
         <TabPanel value={tab} index={3}>
           ToDo
         </TabPanel>
-        <Box display={{ xs: 'block', md: 'none' }}>
+         <Hidden mdUp>
           <BottomNavigation value={tab} onChange={handleChangeTab} className={classes.bottomNav} showLabels>
             <BottomNavigationAction label="Encryption" value={1} icon={<LockTwoToneIcon />} />
             <BottomNavigationAction label="Decryption" value={2} icon={<LockOpenTwoToneIcon />} />
             <BottomNavigationAction label="Running Timers" value={3} icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} />
           </BottomNavigation>
-        </Box>
+        </Hidden>
       </MuiPickersUtilsProvider>
     </ThemeProvider>
   );

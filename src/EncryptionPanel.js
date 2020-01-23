@@ -61,8 +61,10 @@ function EncryptionPanel() {
       <DateTimePicker
         value={timestamp}
         onChange={setTimestamp}
-        onError={console.log}
+        showTodayButton
+        todayLabel="NOW"
         disablePast
+        title="SELECT TIMESTAMP"
         format="yyyy/MM/dd HH:mm:ss.SSS"
       />
       <p> {file.name}
