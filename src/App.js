@@ -64,7 +64,7 @@ function App() {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6">
-              KittenSafe v0.1
+              <span role="img">😺</span> KittenSafe v0.1
             </Typography>
             <Hidden smDown>
               <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered >

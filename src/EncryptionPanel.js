@@ -76,6 +76,7 @@ function EncryptionPanel() {
   const [encBlob, setEncBlob] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [fakeProgress, setFakeProgress] = useState(0);
+  const [disabledReset, setDisabledReset] = useState(true);
   const intervalRef = useRef();
   if (fakeProgress > 5) clearInterval(intervalRef.current);
 
@@ -87,6 +88,7 @@ function EncryptionPanel() {
     setEncBlob(null);
     setActiveStep(0);
     setFakeProgress(0);
+    setDisabledReset(true);
   };
 
   const onChangeFile = (e) => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
@@ -126,6 +128,7 @@ function EncryptionPanel() {
     a.setAttribute('download', file.name + '-' + timestamp.toISOString() + '.ksf');
     a.setAttribute('href', href);
     a.click();
+    setDisabledReset(false);
   };
 
   const catimation = [
@@ -177,6 +180,11 @@ function EncryptionPanel() {
       <Step key="downloadEncrypted">
         <StepLabel>Encrypting and Saving the file</StepLabel>
         <StepContent>
+          <Container maxWidth="sm">
+            <Grid container spacing={3}>
+              {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} style={{fontSize: 32}}>{catimation[fakeProgress][i]}</Grid>)}
+            </Grid>
+          </Container>
           <List dense>
             {['reading file',
               'generating random key',
@@ -193,13 +201,8 @@ function EncryptionPanel() {
               </ListItem>
             ))}
           </List>
-          <Container maxWidth="sm">
-            <Grid container spacing={3}>
-              {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} style={{fontSize: 32}}>{catimation[fakeProgress][i]}</Grid>)}
-            </Grid>
-          </Container>
           <Button variant="contained" color="primary" onClick={handleSave} disabled={!encBlob}>Save Encrypted File...</Button>
-          <Button onClick={handleReset}>Reset</Button>
+          <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>
         </StepContent>
       </Step>
     </Stepper>
