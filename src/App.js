@@ -52,9 +52,7 @@ function App() {
   const [tab, setTab] = React.useState(1);
   const classes = useStyles();
 
-  const handleChangeTab = (e, newTab) => {
-    setTab(newTab);
-  };
+  const handleChangeTab = (e, newTab) => setTab(newTab);
 
   return (
     <ThemeProvider theme={theme}>

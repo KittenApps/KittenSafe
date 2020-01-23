@@ -26,15 +26,13 @@ function DecryptionPanel() {
   const [preview, setPreview] = useState({});
   const classes = useStyles();
 
-  function onChangeFile(e) {
-    setFile(e.target.files[0]);
-  }
+  const onChangeFile = (e) => setFile(e.target.files[0]);
 
   const handleWarnClose = (event, reason) => {
     if (reason !== 'clickaway') setWarn('');
   };
 
-  function onDecryptFile() {
+  const onDecryptFile = () => {
     readFileAsBuffer(file).then((d) => {
         const data = new Uint8Array(d);
         const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
@@ -83,7 +81,7 @@ function DecryptionPanel() {
         a.setAttribute('href', href);
         a.click();
     }).catch(err => console.error(err));
-  }
+  };
 
   return (
     <div>
