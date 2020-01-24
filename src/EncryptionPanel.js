@@ -94,10 +94,12 @@ function EncryptionPanel() {
   const onChangeFile = (e) => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
   const onEncryptFile = () => {
     setActiveStep(2);
-    const iid = window.setInterval(() => {
-      setFakeProgress((f) => f += 1);
-    }, 300);
-    intervalRef.current = iid;
+    setTimeout(() => {
+      const iid = window.setInterval(() => {
+        setFakeProgress((f) => f += 1);
+      }, 300);
+      intervalRef.current = iid;
+    }, 500);
     Promise.all([
         crypto.generateKey({name: 'AES-GCM', length: 256}, true, ['encrypt']), // generate random encryption key
         readFileAsBuffer(file) // read in file asArrayBuffer
