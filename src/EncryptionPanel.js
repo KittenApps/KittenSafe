@@ -47,8 +47,6 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function FilenamePanel(props) {
-  if (!props.file) return (null);
-
   let icon;
   switch (props.file.type.split('/')[0]) {
       case 'image': icon = <ImageTwoToneIcon />; break;
@@ -66,7 +64,6 @@ function FilenamePanel(props) {
       </Tooltip>
     </p>
   );
-
 }
 
 function EncryptionPanel() {
@@ -101,26 +98,26 @@ function EncryptionPanel() {
       intervalRef.current = iid;
     }, 500);
     Promise.all([
-        crypto.generateKey({name: 'AES-GCM', length: 256}, true, ['encrypt']), // generate random encryption key
-        readFileAsBuffer(file) // read in file asArrayBuffer
+      crypto.generateKey({name: 'AES-GCM', length: 256}, true, ['encrypt']), // generate random encryption key
+      readFileAsBuffer(file) // read in file asArrayBuffer
     ]).then(([key, data]) => {
-        const iv = window.crypto.getRandomValues(new Uint8Array(16)); // generate random initialisation vector
-        const auth = window.crypto.getRandomValues(new Uint8Array(16)); // generate random authTag
-        // console.log('key: ', key, 'data: ', data);
-        return Promise.all([
-            crypto.encrypt({name: 'AES-GCM', iv, additionalData: auth, tagLength: 128}, key, data), // encrypt file using key
-            crypto.exportKey('jwk', key).then((expKey) => { // export the used kex in hey format
-                const req = {key: expKey.k, timestamp: timestamp.toISOString()};
-                // console.log('expKey: ', expKey, 'req: ', req); // query webservice to encrypt key given timestamp
-                return fetch('/.netlify/functions/encryptkey', {method: 'POST', body: JSON.stringify(req)});
-            }).then(res => res.json()), // get back the result from the webservice as JSON
-            Array.from(iv).map(b => b.toString(16).padStart(2, "0")).join(''), // convert iv to hex string
-            Array.from(auth).map(b => b.toString(16).padStart(2, "0")).join('') // convert authTag to hex string
-        ]);
+      const iv = window.crypto.getRandomValues(new Uint8Array(16)); // generate random initialisation vector
+      const auth = window.crypto.getRandomValues(new Uint8Array(16)); // generate random authTag
+      // console.log('key: ', key, 'data: ', data);
+      return Promise.all([
+        crypto.encrypt({name: 'AES-GCM', iv, additionalData: auth, tagLength: 128}, key, data), // encrypt file using key
+        crypto.exportKey('jwk', key).then((expKey) => { // export the used kex in hey format
+          const req = {key: expKey.k, timestamp: timestamp.toISOString()};
+          // console.log('expKey: ', expKey, 'req: ', req); // query webservice to encrypt key given timestamp
+          return fetch('/.netlify/functions/encryptkey', {method: 'POST', body: JSON.stringify(req)});
+        }).then(res => res.json()), // get back the result from the webservice as JSON
+        Array.from(iv).map(b => b.toString(16).padStart(2, "0")).join(''), // convert iv to hex string
+        Array.from(auth).map(b => b.toString(16).padStart(2, "0")).join('') // convert authTag to hex string
+      ]);
     }).then(([data, secret, iv, auth]) => {
-        // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
-        const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
-        setEncBlob(new Blob([meta, data]));
+      // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
+      const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
+      setEncBlob(new Blob([meta, data]));
     }).catch(err => console.error(err));
   };
 
@@ -144,7 +141,6 @@ function EncryptionPanel() {
   ]
 
   return (
-    <div>
     <Stepper activeStep={activeStep} orientation="vertical">
       <Step key="fileSelect">
         <StepLabel>Select the file to encrypt</StepLabel>
@@ -184,7 +180,7 @@ function EncryptionPanel() {
         <StepContent>
           <Container maxWidth="sm">
             <Grid container spacing={3}>
-              {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} style={{fontSize: 32}}>{catimation[fakeProgress][i]}</Grid>)}
+              {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{catimation[fakeProgress][i]}</Grid>)}
             </Grid>
           </Container>
           <List dense>
@@ -208,7 +204,6 @@ function EncryptionPanel() {
         </StepContent>
       </Step>
     </Stepper>
-    </div>
   );
 }
 
