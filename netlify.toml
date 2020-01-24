@@ -1,6 +1,7 @@
 [build]
     functions = "functions"
     publish = "static"
+    command = "echo 42"
 
 [[redirects]]
     from = "/*"
