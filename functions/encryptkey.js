@@ -2,6 +2,11 @@ const {scrypt, createCipheriv, randomBytes} = require('crypto');
 
 exports.handler = (event, context, callback) => {
     const {key, timestamp} = JSON.parse(event.body);
+
+    if (key.length > 250 || timestamp.length !== 24){
+      return callback(null, {statusCode: 413, body: "Invalid parameter length!"});
+    }
+
     const secret = process.env.APP_SECRET || '42kittens';
     console.log(`timestamp: ${timestamp}`)
     // console.log(`key: ${key} timestamp: ${timestamp} secret: ${secret}`)
