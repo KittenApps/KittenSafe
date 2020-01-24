@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import EncryptionPanel from './EncryptionPanel';
 import DecryptionPanel from './DecryptionPanel';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -14,6 +14,13 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 import Hidden from '@material-ui/core/Hidden';
 import Badge from '@material-ui/core/Badge';
+import Grid from '@material-ui/core/Grid';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Button from '@material-ui/core/Button';
+import TextField from '@material-ui/core/TextField';
 import BottomNavigation from '@material-ui/core/BottomNavigation';
 import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import LockOpenTwoToneIcon from '@material-ui/icons/LockOpenTwoTone';
@@ -36,7 +43,7 @@ const useStyles = makeStyles({
   }
 });
 
-const theme = createMuiTheme({});
+const themeColors = (localStorage.getItem('customThemeColors') || '#006302|#00a820').split('|');
 
 function TabPanel(props) {
   const { children, value, index } = props;
@@ -49,10 +56,31 @@ function TabPanel(props) {
 }
 
 function App() {
-  const [tab, setTab] = React.useState(1);
+  const [tab, setTab] = useState(1);
+  const [customThemeOpen, setCustomThemeOpen] = useState(false);
+  const [customThemePrim, setCustomThemePrim] = useState(themeColors[0]);
+  const [customThemeSec, setCustomThemeSec] = useState(themeColors[1]);
+  const [theme, setThema] = useState(createMuiTheme({palette: {primary: {main: customThemePrim}, secondary: {main: customThemeSec}}}));
   const classes = useStyles();
 
   const handleChangeTab = (e, newTab) => setTab(newTab);
+  const handleCustomThemeOpen = () => setCustomThemeOpen(true);
+  const handleCustomThemeClose = () => setCustomThemeOpen(false);
+  const handleThemePrimColorChange = (e) => setCustomThemePrim(e.target.value);
+  const handleThemeSecColorChange = (e) => setCustomThemeSec(e.target.value);
+  const handleCustomThemeApply = () => {
+    localStorage.setItem('customThemeColors', `${customThemePrim}|${customThemeSec}`);
+    console.log(localStorage.getItem('customThemeColors'));
+    setThema(createMuiTheme({palette: {primary: {main: customThemePrim}, secondary: {main: customThemeSec}}}));
+    setCustomThemeOpen(false);
+  };
+  const handleCustomThemeReset = () => {
+    setCustomThemePrim('#006302');
+    setCustomThemeSec('#00a820');
+    localStorage.removeItem('customThemeColors');
+    setThema(createMuiTheme({palette: {primary: {main: '#006302'}, secondary: {main: '#00a820'}}}));
+    setCustomThemeOpen(false);
+  };
 
   return (
     <ThemeProvider theme={theme}>
@@ -74,8 +102,8 @@ function App() {
               </Tabs>
             </Hidden>
             <Box display={{ xs: 'block', md: 'none' }} className={classes.grow}/>
-            <Tooltip title="Change theme colors" arrow>
-              <IconButton color="inherit">
+            <Tooltip title="Customize theme colors" arrow>
+              <IconButton color="inherit" onClick={handleCustomThemeOpen}>
                 <InvertColorsTwoToneIcon />
               </IconButton>
             </Tooltip>
@@ -104,6 +132,23 @@ function App() {
             <BottomNavigationAction label="Running Timers" value={3} icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} />
           </BottomNavigation>
         </Hidden>
+        <Dialog open={customThemeOpen} onClose={handleCustomThemeClose}>
+          <DialogTitle>Customize theme colors</DialogTitle>
+          <DialogContent>
+            <Grid container spacing={3}>
+              <Grid item xs={6} key="primaryColor"><TextField label="primary color" type="color" value={customThemePrim} onChange={handleThemePrimColorChange} fullWidth/></Grid>
+              <Grid item xs={6} key="secondaryColor"><TextField label="secondary color" type="color" value={customThemeSec} onChange={handleThemeSecColorChange} fullWidth/></Grid>
+            </Grid>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCustomThemeReset} color="secondary">
+              Reset to default theme
+            </Button>
+            <Button onClick={handleCustomThemeApply} color="primary">
+              Apply theme colors
+            </Button>
+          </DialogActions>
+        </Dialog>
       </MuiPickersUtilsProvider>
     </ThemeProvider>
   );
