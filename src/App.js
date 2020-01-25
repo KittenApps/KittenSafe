@@ -21,8 +21,6 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
-import BottomNavigation from '@material-ui/core/BottomNavigation';
-import BottomNavigationAction from '@material-ui/core/BottomNavigationAction';
 import LockOpenTwoToneIcon from '@material-ui/icons/LockOpenTwoTone';
 import LockTwoToneIcon from '@material-ui/icons/LockTwoTone';
 import TimerTwoToneIcon from '@material-ui/icons/TimerTwoTone';
@@ -34,16 +32,10 @@ import { createMuiTheme, makeStyles, ThemeProvider  } from '@material-ui/core/st
 const useStyles = makeStyles({
   grow: {
     flexGrow: 1
-  },
-  bottomNav: {
-    position: 'fixed',
-    bottom: 0,
-    right: 0,
-    left: 0
   }
 });
 
-const themeColors = (localStorage.getItem('customThemeColors') || '#006302|#00a820').split('|');
+const themeColors = (localStorage.getItem('customThemeColors') || '#006302|#00ba23').split('|');
 
 function TabPanel(props) {
   const { children, value, index } = props;
@@ -76,9 +68,9 @@ function App() {
   };
   const handleCustomThemeReset = () => {
     setCustomThemePrim('#006302');
-    setCustomThemeSec('#00a820');
+    setCustomThemeSec('#00ba23');
     localStorage.removeItem('customThemeColors');
-    setThema(createMuiTheme({palette: {primary: {main: '#006302'}, secondary: {main: '#00a820'}}}));
+    setThema(createMuiTheme({palette: {primary: {main: '#006302'}, secondary: {main: '#00ba23'}}}));
     setCustomThemeOpen(false);
   };
 
@@ -88,17 +80,17 @@ function App() {
         <CssBaseline />
         <AppBar position="static">
           <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu">
+            <IconButton edge="start" color="inherit" aria-label="menu" disabled>
               <MenuIcon />
             </IconButton>
             <Typography variant="h6">
-              <span role="img">😺</span> KittenSafe v0.1
+              <span role="img">😺</span> KittenSafe
             </Typography>
             <Hidden smDown>
               <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered >
                 <Tab label="Encryption" icon={<LockTwoToneIcon />} value={1} />
                 <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={2} />
-                <Tab label="Running Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={3} disabled/>
+                <Tab label="Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={3} disabled/>
               </Tabs>
             </Hidden>
             <Box display={{ xs: 'block', md: 'none' }} className={classes.grow}/>
@@ -109,12 +101,21 @@ function App() {
             </Tooltip>
             <Tooltip title="Info / Help / Release Notes" arrow>
               <IconButton color="inherit">
-                <Badge badgeContent={2} color="secondary">
+                <Badge badgeContent="v0.1" color="secondary">
                   <InfoTwoToneIcon />
                 </Badge>
               </IconButton>
             </Tooltip>
           </Toolbar>
+          <Hidden mdUp>
+            <Toolbar >
+              <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered >
+                <Tab label="Encryption" icon={<LockTwoToneIcon />} value={1} />
+                <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={2} />
+                <Tab label="Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={3} disabled/>
+              </Tabs>
+            </Toolbar>
+          </Hidden>
         </AppBar>
         <TabPanel value={tab} index={1}>
           <EncryptionPanel />
@@ -125,13 +126,6 @@ function App() {
         <TabPanel value={tab} index={3}>
           ToDo
         </TabPanel>
-         <Hidden mdUp>
-          <BottomNavigation value={tab} onChange={handleChangeTab} className={classes.bottomNav} showLabels>
-            <BottomNavigationAction label="Encryption" value={1} icon={<LockTwoToneIcon />} />
-            <BottomNavigationAction label="Decryption" value={2} icon={<LockOpenTwoToneIcon />} />
-            <BottomNavigationAction label="Running Timers" value={3} icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} />
-          </BottomNavigation>
-        </Hidden>
         <Dialog open={customThemeOpen} onClose={handleCustomThemeClose}>
           <DialogTitle>Customize theme colors</DialogTitle>
           <DialogContent>
