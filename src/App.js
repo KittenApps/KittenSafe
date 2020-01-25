@@ -60,7 +60,7 @@ function App() {
   const [customThemeOpen, setCustomThemeOpen] = useState(false);
   const [customThemePrim, setCustomThemePrim] = useState(themeColors[0]);
   const [customThemeSec, setCustomThemeSec] = useState(themeColors[1]);
-  const [theme, setThema] = useState(createMuiTheme({palette: {primary: {main: customThemePrim}, secondary: {main: customThemeSec}}}));
+  const [theme, setThema] = useState(() => createMuiTheme({palette: {primary: {main: customThemePrim}, secondary: {main: customThemeSec}}}));
   const classes = useStyles();
 
   const handleChangeTab = (e, newTab) => setTab(newTab);

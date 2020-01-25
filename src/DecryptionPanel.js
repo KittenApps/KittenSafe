@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef }  from 'react';
+import React, { useState, useRef }  from 'react';
 import Button from '@material-ui/core/Button';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -37,28 +37,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function FilePanel(props) {
-  const [timeDiff, setTimeDiff] = useState(-1);
-
-  const calculateTimeDiff = () => {
-    if (!props.file.meta) return -1;
-    const td = new Date(props.file.meta.secret.timestamp) - new Date();
-    if (td > 0) {
-      return {
-        d: Math.floor(td / (1000 * 60 * 60 * 24)),
-        h: Math.floor((td / (1000 * 60 * 60)) % 24),
-        m: Math.floor((td / 1000 / 60) % 60),
-        s: Math.floor((td / 1000) % 60)
-      };
-    }
-    props.setTimeReady(true);
-    return 0;
-  };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setTimeDiff(calculateTimeDiff());
-    }, 1000);
-  });
+  const [timerRedraw, setTimerRedraw] = useState(true);
 
   if (!props.file.meta) {
     switch (props.file.name) {
@@ -67,18 +46,32 @@ function FilePanel(props) {
       default: return <Card variant="outlined"><CardHeader title="Unknown File error" /></Card>;
     }
   }
-  const m = props.file.name.match(/-\d{4}-\d{2}-\d{2}T\d{2}_\d{2}_\d{2}\.\d{3}Z\.ksf/);
-  const name = props.file.name.substring(0, m ? m.index : props.file.name.length);
 
   let content;
-  switch (timeDiff){
-    case -1: content = <p>validating KittenSafe file...</p>; break;
-    case 0: content = <p>Success: KittenSafe file ready for decryption</p>; break;
-    default: content = <div><p>Error: KittenSafe file not ready for decryption:</p><p><b>{timeDiff.d}</b>days <b>{timeDiff.h}</b>hours <b>{timeDiff.m}</b>mins <b>{timeDiff.s}</b>secs left</p></div>; break;
+  const td = new Date(props.file.meta.secret.timestamp) - new Date();
+  if (td > 0) {
+    content = (
+      <div>
+        <p>Error: KittenSafe file not ready for decryption:</p>
+        <p>
+          <b>{Math.floor(td / (1000 * 60 * 60 * 24))}</b>
+          days <b>{Math.floor((td / (1000 * 60 * 60)) % 24)}</b>
+          hours <b>{Math.floor((td / 1000 / 60) % 60)}</b>
+          mins <b>{Math.floor((td / 1000) % 60)}</b>secs left
+        </p>
+      </div>
+    );
+    setTimeout(() => {
+      setTimerRedraw(!timerRedraw);
+    }, 1000);
+  } else {
+    props.setTimeReady(true);
+    content = <p>Success: KittenSafe file ready for decryption</p>;
   }
+
   return (
     <Card variant="outlined">
-      <CardHeader title={name} subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`} />
+      <CardHeader title={props.file.meta.filename} subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`} />
       <CardContent>
         {content}
       </CardContent>
@@ -113,7 +106,7 @@ function DecryptionPanel() {
   const onChangeFile = (e) => {
     let f = e.target.files[0];
     if (!f) {setTimeReady(false); return setFile({name: 'none'});}
-    setFile(f);
+    setFile({...f});
     readFileAsBuffer(f).then((d) => {
       const data = new Uint8Array(d);
       const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
