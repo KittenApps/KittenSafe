@@ -31,6 +31,9 @@ import Tooltip from '@material-ui/core/Tooltip';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { createMuiTheme, makeStyles, ThemeProvider, useTheme } from '@material-ui/core/styles';
 
+const KSversion = 'v0.2'
+const lastVersion = localStorage.getItem('lastVersion');
+
 const useStyles = makeStyles({
   grow: {
     flexGrow: 1
@@ -51,7 +54,7 @@ function TabPanel(props) {
 
 function App() {
   const [tab, setTab] = useState(0);
-  const [infoDialogOpen, setInfoDialogOpen] = useState(false);
+  const [infoDialogOpen, setInfoDialogOpen] = useState(KSversion !== lastVersion);
   const [infoTab, setInfoTab] = useState(0);
   const [customThemeOpen, setCustomThemeOpen] = useState(false);
   const [customThemePrim, setCustomThemePrim] = useState(themeColors[0]);
@@ -61,7 +64,10 @@ function App() {
 
   const handleChangeTab = (e, newTab) => setTab(newTab);
   const handleInfoDialogOpen = () => setInfoDialogOpen(true);
-  const handleInfoDialogClose = () => setInfoDialogOpen(false);
+  const handleInfoDialogClose = () => {
+    localStorage.setItem('lastVersion', KSversion);
+    setInfoDialogOpen(false);
+  };
   const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
 
@@ -110,7 +116,7 @@ function App() {
             </Tooltip>
             <Tooltip title="Info / Help / Release Notes" arrow>
               <IconButton color="inherit" onClick={handleInfoDialogOpen}>
-                <Badge badgeContent="v0.1" color="secondary">
+                <Badge badgeContent={KSversion} color="secondary">
                   <InfoTwoToneIcon />
                 </Badge>
               </IconButton>
@@ -152,30 +158,60 @@ function App() {
             </Button>
           </DialogActions>
         </Dialog>
-        <Dialog open={infoDialogOpen} onClose={handleInfoDialogClose} fullScreen={fullScreen}>
+        <Dialog open={infoDialogOpen} onClose={handleInfoDialogClose} fullScreen={fullScreen} maxWidth="xl">
           <Paper square>
             <Tabs value={infoTab} indicatorColor="primary" textColor="primary" variant="fullWidth" onChange={handleInfoTabChange}>
-              <Tab label="Info" value={0} />
-              <Tab label="Help" value={1} />
+              <Tab label="Welcome" value={0} />
+              <Tab label="Info" value={1} />
               <Tab label="Release Notes" value={2} />
+              <Tab label="Roadmap" value={3} />
             </Tabs>
           </Paper>
           <DialogContent>
             <TabPanel value={infoTab} index={0}>
-              <h3>Welcome to KittenSafe v0.1 <span role="img" aria-label="grinning cat face">😺</span></h3>
-              <i>
-                A secure WebApp to encrypt your files for delayed access until a preselected Timetsamp.
-                It's 100% privacy friendly too, because your files never leave your device (as encrypting them is done locally using the WebCrypto API).
-                Also no personal data is stored on our stateless servers (no DB used), because it uses some fancy crypto methods to derive the encryption key based on the given timestamp.
-              </i>
+              <Box textAlign="center" component="h2">Welcome to KittenSafe {KSversion} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Box>
+              <Box textAlign="center" fontStyle="italic">A secure WebApp to encrypt your files for delayed access until a preselected timestamp.</Box>
+              <Box textAlign="center" fontStyle="italic">It's 100% privacy friendly too, because your files never leave your device (as encrypting them is done locally using the WebCrypto API).</Box>
+              <Box textAlign="center" fontStyle="italic">Also no personal data is stored on our stateless servers (no DB used), because it uses some fancy crypto methods to derive the encryption key based on the given timestamp.</Box>
+              <Box textAlign="center" fontStyle="italic">For more information about how KittenSafe works, check out the Info tab at the top of this dialog box.</Box>
+              <Box textAlign="center" fontStyle="italic">Note: You can reopen this dialog whenever you want by clicking the question mark in the top right corner (of the appbar).</Box>
             </TabPanel>
             <TabPanel value={infoTab} index={1}>
-              <i>ToDo: Explain everything in more detail here</i>
+              <ul>
+                <li>After selecting the input file and a timestamp, until the file should be encrypted and inaccessable for the users, a random 256 bit AES key is generated locally.</li>
+                <li>This key is than used to encrypt the file locally in the webclient using AES-256-GCM (your personal files are never send to out servers).</li>
+                <li>A webrequest is made to the encryption endpoint of our stateless Netlify functions aka AWS lambda webservice with the exported key (used to encrypt the file locally) and the timestamp (until decryption should be impossible):</li>
+                <ul>
+                  <li>The webservice derives a secret server key based on the timestamp and a server secret using scrypt.</li>
+                  <li>Than it decrypts the client side key using AES-256-GCM too and sends the result (encrypted key, timestamp, initializing vector, authentication tag) back to the user.</li>
+                  <li>Note: The timestamp is actually part of the secret and trying to cheat by changing it won't work, because the decryption would just derive a completly different key than the one used for encryption and fail during decryption.</li>
+                </ul>
+                <li>Then the ecrypted data is written to the KittenSafe output file (.ksf) together with some metadata containing all values necesarry for decryption and some file specific metadata. You are free to send the encrypted file to another person too, because they will get everythink necesarry to decrypt the file later (after the given timestamp is up) on their own.</li>
+                <li>After that we forget the plain text encryption key and you are encourage to delete the plain text input file too (unless you decrypted it for someone else to retrieve later).</li>
+                <li>Later when trying to decryp the KittenSafe file we read in a meta data to dertermine if the file is ready for decryption or if we still have to show you a decryption countdown.</li>
+                <li>When the time is up we make a webrequest to the decryption endpoint of our webservice containing the result we got previously during encryption (encrypted key, timestamp, iv, autheTag) from it.</li>
+                <ul>
+                  <li>The webservice first validates if the used timestamp is now really in the past and would throw an error otherwise</li>
+                  <li>Than again the same key (as the one used for encryption) is derived using scrypt from the timestamp and the server secret.</li>
+                  <li>Finally we decrypt the client side key using AES-256-GCM again and returing the decryped client key back to the user.</li>
+                  <li>Note: Faking the timestamp here would result in a diferent key being direved using scrypt and the AES-256-GCM decryption would fail (we can detect that using the authTag) and we would return an error to the user.</li>
+                </ul>
+                <li>After getting the decryped client key back from the server we can use it (together with other data stored with the file) to finally decrypt the file locally and restore it's original state.</li>
+              </ul>
             </TabPanel>
             <TabPanel value={infoTab} index={2}>
-              <b>KittenSafe v0.1</b>
+              <b>KittenSafe v0.2</b>
               <ul>
                 <li>new fancy React Material UI</li>
+              </ul>
+            </TabPanel>
+            <TabPanel value={infoTab} index={3}>
+              <b>Roadmap:</b>
+              <ul>
+                <li>add basic Timer support</li>
+                <li>code cleanup and polishing (iterate and improve nearly every component)</li>
+                <li>better file-previews and input editing / text input (markdown support)</li>
+                <li>Timers 2.0</li>
               </ul>
             </TabPanel>
           </DialogContent>
