@@ -7,7 +7,6 @@ import DateFnsUtils from '@date-io/date-fns';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
-import MenuIcon from '@material-ui/icons/Menu';
 import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
@@ -95,11 +94,8 @@ function App() {
         <CssBaseline />
         <AppBar position="static">
           <Toolbar>
-            <IconButton edge="start" color="inherit" aria-label="menu" disabled>
-              <MenuIcon />
-            </IconButton>
             <Typography variant="h6">
-              <span role="img" aria-label="grinning cat face">😺</span> KittenSafe
+              <span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe
             </Typography>
             <Hidden smDown>
               <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered >
@@ -213,6 +209,7 @@ function App() {
                 <li>better file-previews and input editing / text input (markdown support)</li>
                 <li>Timers 2.0</li>
               </ul>
+              <i>You could also check out the more up to date and maybe slightly less stable <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta version of KittenSafe here</a>.</i>
             </TabPanel>
           </DialogContent>
           <DialogActions>
