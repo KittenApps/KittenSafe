@@ -12,6 +12,7 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 import Hidden from '@material-ui/core/Hidden';
 import Badge from '@material-ui/core/Badge';
 import Grid from '@material-ui/core/Grid';
@@ -27,7 +28,8 @@ import TimerTwoToneIcon from '@material-ui/icons/TimerTwoTone';
 import InfoTwoToneIcon from '@material-ui/icons/InfoTwoTone';
 import InvertColorsTwoToneIcon from '@material-ui/icons/InvertColorsTwoTone';
 import Tooltip from '@material-ui/core/Tooltip';
-import { createMuiTheme, makeStyles, ThemeProvider  } from '@material-ui/core/styles';
+import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { createMuiTheme, makeStyles, ThemeProvider, useTheme } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
   grow: {
@@ -48,7 +50,9 @@ function TabPanel(props) {
 }
 
 function App() {
-  const [tab, setTab] = useState(1);
+  const [tab, setTab] = useState(0);
+  const [infoDialogOpen, setInfoDialogOpen] = useState(false);
+  const [infoTab, setInfoTab] = useState(0);
   const [customThemeOpen, setCustomThemeOpen] = useState(false);
   const [customThemePrim, setCustomThemePrim] = useState(themeColors[0]);
   const [customThemeSec, setCustomThemeSec] = useState(themeColors[1]);
@@ -56,6 +60,11 @@ function App() {
   const classes = useStyles();
 
   const handleChangeTab = (e, newTab) => setTab(newTab);
+  const handleInfoDialogOpen = () => setInfoDialogOpen(true);
+  const handleInfoDialogClose = () => setInfoDialogOpen(false);
+  const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
+  const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
+
   const handleCustomThemeOpen = () => setCustomThemeOpen(true);
   const handleCustomThemeClose = () => setCustomThemeOpen(false);
   const handleThemePrimColorChange = (e) => setCustomThemePrim(e.target.value);
@@ -84,13 +93,13 @@ function App() {
               <MenuIcon />
             </IconButton>
             <Typography variant="h6">
-              <span role="img">😺</span> KittenSafe
+              <span role="img" aria-label="grinning cat face">😺</span> KittenSafe
             </Typography>
             <Hidden smDown>
               <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered >
-                <Tab label="Encryption" icon={<LockTwoToneIcon />} value={1} />
-                <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={2} />
-                <Tab label="Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={3} disabled/>
+                <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
+                <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
+                <Tab label="Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={2} disabled/>
               </Tabs>
             </Hidden>
             <Box display={{ xs: 'block', md: 'none' }} className={classes.grow}/>
@@ -100,7 +109,7 @@ function App() {
               </IconButton>
             </Tooltip>
             <Tooltip title="Info / Help / Release Notes" arrow>
-              <IconButton color="inherit">
+              <IconButton color="inherit" onClick={handleInfoDialogOpen}>
                 <Badge badgeContent="v0.1" color="secondary">
                   <InfoTwoToneIcon />
                 </Badge>
@@ -110,20 +119,20 @@ function App() {
           <Hidden mdUp>
             <Toolbar >
               <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered >
-                <Tab label="Encryption" icon={<LockTwoToneIcon />} value={1} />
-                <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={2} />
+                <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
+                <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
                 <Tab label="Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={3} disabled/>
               </Tabs>
             </Toolbar>
           </Hidden>
         </AppBar>
-        <TabPanel value={tab} index={1}>
+        <TabPanel value={tab} index={0}>
           <EncryptionPanel />
         </TabPanel>
-        <TabPanel value={tab} index={2}>
+        <TabPanel value={tab} index={1}>
           <DecryptionPanel />
         </TabPanel>
-        <TabPanel value={tab} index={3}>
+        <TabPanel value={tab} index={2}>
           ToDo
         </TabPanel>
         <Dialog open={customThemeOpen} onClose={handleCustomThemeClose}>
@@ -140,6 +149,39 @@ function App() {
             </Button>
             <Button onClick={handleCustomThemeApply} color="primary">
               Apply theme colors
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Dialog open={infoDialogOpen} onClose={handleInfoDialogClose} fullScreen={fullScreen}>
+          <Paper square>
+            <Tabs value={infoTab} indicatorColor="primary" textColor="primary" variant="fullWidth" onChange={handleInfoTabChange}>
+              <Tab label="Info" value={0} />
+              <Tab label="Help" value={1} />
+              <Tab label="Release Notes" value={2} />
+            </Tabs>
+          </Paper>
+          <DialogContent>
+            <TabPanel value={infoTab} index={0}>
+              <h3>Welcome to KittenSafe v0.1 <span role="img" aria-label="grinning cat face">😺</span></h3>
+              <i>
+                A secure WebApp to encrypt your files for delayed access until a preselected Timetsamp.
+                It's 100% privacy friendly too, because your files never leave your device (as encrypting them is done locally using the WebCrypto API).
+                Also no personal data is stored on our stateless servers (no DB used), because it uses some fancy crypto methods to derive the encryption key based on the given timestamp.
+              </i>
+            </TabPanel>
+            <TabPanel value={infoTab} index={1}>
+              <i>ToDo: Explain everything in more detail here</i>
+            </TabPanel>
+            <TabPanel value={infoTab} index={2}>
+              <b>KittenSafe v0.1</b>
+              <ul>
+                <li>new fancy React Material UI</li>
+              </ul>
+            </TabPanel>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleInfoDialogClose} color="primary">
+              Close
             </Button>
           </DialogActions>
         </Dialog>
