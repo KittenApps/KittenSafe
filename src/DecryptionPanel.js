@@ -19,6 +19,7 @@ import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import LockOpenTwoToneIcon from '@material-ui/icons/LockOpenTwoTone';
 import FolderOpenTwoToneIcon from '@material-ui/icons/FolderOpenTwoTone';
+import TimerTwoToneIcon from '@material-ui/icons/TimerTwoTone';
 import { makeStyles } from '@material-ui/core/styles';
 import { readFileAsBuffer } from './util';
 import { green } from '@material-ui/core/colors';
@@ -47,18 +48,20 @@ function FilePanel(props) {
     }
   }
 
+  const handleAddTimer = () => props.addTimers({id: props.file.meta.secret.auth, timestamp: props.file.meta.secret.timestamp, filename: props.file.name});
+
   let content;
   const td = new Date(props.file.meta.secret.timestamp) - new Date();
+  const d = Math.floor(td / (1000 * 60 * 60 * 24));
+  const h = Math.floor((td / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((td / 1000 / 60) % 60);
+  const s = Math.floor((td / 1000) % 60);
   if (td > 0) {
     content = (
       <div>
         <p>Error: KittenSafe file not ready for decryption:</p>
-        <p>
-          <b>{Math.floor(td / (1000 * 60 * 60 * 24))}</b>
-          days <b>{Math.floor((td / (1000 * 60 * 60)) % 24)}</b>
-          hours <b>{Math.floor((td / 1000 / 60) % 60)}</b>
-          mins <b>{Math.floor((td / 1000) % 60)}</b>secs left
-        </p>
+        <p><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>
+        {!props.timers.includes(props.file.meta.secret.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoToneIcon />}>Add to Timers</Button></p>}
       </div>
     );
     setTimeout(() => {
@@ -79,7 +82,7 @@ function FilePanel(props) {
   );
 }
 
-function DecryptionPanel() {
+function DecryptionPanel(props) {
   const [file, setFile] = useState({name: 'none'});
   const [warn, setWarn] = useState('');
   const [activeStep, setActiveStep] = useState(0);
@@ -209,7 +212,7 @@ function DecryptionPanel() {
                 Choose file ...
               </Button>
             </label>
-            <FilePanel file={file} setTimeReady={setTimeReady} />
+            <FilePanel file={file} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={props.timers} />
             <Button disabled={true}>Back</Button>
             <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoToneIcon />} disabled={!timeReady}>Decrypt file ...</Button>
           </StepContent>

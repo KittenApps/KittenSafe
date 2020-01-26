@@ -97,8 +97,9 @@ function App() {
   const classes = useStyles();
 
   const addTimers = (t) => {
-    setTimers(timers.concat([t]).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)));
-    localStorage.setItem('timers', JSON.stringify(timers));
+    const sorted = timers.concat([t]).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    setTimers(sorted);
+    localStorage.setItem('timers', JSON.stringify(sorted));
   };
 
   const handleChangeTab = (e, newTab) => {
@@ -176,7 +177,7 @@ function App() {
           <EncryptionPanel addTimers={addTimers}/>
         </TabPanel>
         <TabPanel value={tab} index={1}>
-          <DecryptionPanel />
+          <DecryptionPanel addTimers={addTimers} timers={timers.map(t => t.id)}/>
         </TabPanel>
         <Dialog open={customThemeOpen} onClose={handleCustomThemeClose}>
           <DialogTitle>Customize theme colors</DialogTitle>
