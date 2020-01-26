@@ -11,6 +11,7 @@ import Typography from '@material-ui/core/Typography';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
+import Chip from '@material-ui/core/Chip';
 import Paper from '@material-ui/core/Paper';
 import Hidden from '@material-ui/core/Hidden';
 import Badge from '@material-ui/core/Badge';
@@ -51,7 +52,41 @@ function TabPanel(props) {
   );
 }
 
+function TimerTab(props){
+  const [timerRedraw, setTimerRedraw] = useState(true);
+  let label = "Timers";
+  const count = props.timers.length;
+  if (count > 0){
+    const now = new Date();
+    // ToDo: calculate current index only once while loading/adding/deleting timers and when timer runs out => next
+    let currentIndex = -1;
+    for (let i = 0; i < props.timers.length; i++){
+      if (new Date(props.timers[i].timestamp) > now){
+        currentIndex = i;
+        break;
+      }
+    }
+    if (currentIndex > -1){
+      const td = new Date(props.timers[currentIndex].timestamp) - now;
+      const d = Math.floor(td / (1000 * 60 * 60 * 24));
+      const h = Math.floor((td / (1000 * 60 * 60)) % 24);
+      const m = Math.floor((td / 1000 / 60) % 60);
+      const s = Math.floor((td / 1000) % 60);
+      label = `${d}d ${h}:${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+      label = <Chip size="small" label={label} color="secondary" />;
+      setTimeout(() => {
+        setTimerRedraw(!timerRedraw);
+      }, 1000);
+    }
+  }
+
+  return (
+    <Tab label={label} icon={<Badge badgeContent={count} color="secondary"><TimerTwoToneIcon /></Badge>} value={2} disabled={!count}/>
+  );
+}
+
 function App() {
+  const [timers, setTimers] = useState(() => JSON.parse(localStorage.getItem('timers')) || []);
   const [tab, setTab] = useState(0);
   const [infoDialogOpen, setInfoDialogOpen] = useState(KSversion !== lastVersion);
   const [infoTab, setInfoTab] = useState(0);
@@ -61,7 +96,17 @@ function App() {
   const [theme, setThema] = useState(() => createMuiTheme({palette: {primary: {main: customThemePrim}, secondary: {main: customThemeSec}}}));
   const classes = useStyles();
 
-  const handleChangeTab = (e, newTab) => setTab(newTab);
+  const addTimers = (t) => {
+    setTimers(timers.concat([t]).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp)));
+    localStorage.setItem('timers', JSON.stringify(timers));
+  };
+
+  const handleChangeTab = (e, newTab) => {
+    if (newTab === 2){
+      return;
+    }
+    setTab(newTab);
+  };
   const handleInfoDialogOpen = () => setInfoDialogOpen(true);
   const handleInfoDialogClose = () => {
     localStorage.setItem('lastVersion', KSversion);
@@ -76,7 +121,6 @@ function App() {
   const handleThemeSecColorChange = (e) => setCustomThemeSec(e.target.value);
   const handleCustomThemeApply = () => {
     localStorage.setItem('customThemeColors', `${customThemePrim}|${customThemeSec}`);
-    console.log(localStorage.getItem('customThemeColors'));
     setThema(createMuiTheme({palette: {primary: {main: customThemePrim}, secondary: {main: customThemeSec}}}));
     setCustomThemeOpen(false);
   };
@@ -101,7 +145,7 @@ function App() {
               <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered >
                 <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
                 <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
-                <Tab label="Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={2} disabled/>
+                <TimerTab timers={timers} />
               </Tabs>
             </Hidden>
             <Box display={{ xs: 'block', md: 'none' }} className={classes.grow}/>
@@ -123,19 +167,16 @@ function App() {
               <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered >
                 <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
                 <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
-                <Tab label="Timers" icon={<Badge badgeContent={2} color="secondary"><TimerTwoToneIcon /></Badge>} value={3} disabled/>
+                <TimerTab timers={timers} />
               </Tabs>
             </Toolbar>
           </Hidden>
         </AppBar>
         <TabPanel value={tab} index={0}>
-          <EncryptionPanel />
+          <EncryptionPanel addTimers={addTimers}/>
         </TabPanel>
         <TabPanel value={tab} index={1}>
           <DecryptionPanel />
-        </TabPanel>
-        <TabPanel value={tab} index={2}>
-          ToDo
         </TabPanel>
         <Dialog open={customThemeOpen} onClose={handleCustomThemeClose}>
           <DialogTitle>Customize theme colors</DialogTitle>

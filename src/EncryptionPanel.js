@@ -8,6 +8,7 @@ import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
 import Checkbox from '@material-ui/core/Checkbox';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -67,9 +68,10 @@ function FilenamePanel(props) {
   );
 }
 
-function EncryptionPanel() {
+function EncryptionPanel(props) {
   const classes = useStyles();
   const [file, setFile] = useState({name: 'none', type: 'none/none'});
+  const [addTimers, setAddTimers] = useState(true);
   const [timestamp, setTimestamp] = useState(new Date(new Date().getTime() + 60000));
   const [encBlob, setEncBlob] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -89,6 +91,7 @@ function EncryptionPanel() {
     setDisabledReset(true);
   };
 
+  const handleAddTimers = e => setAddTimers(e.target.checked);
   const onChangeFile = (e) => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
   const onEncryptFile = () => {
     setActiveStep(2);
@@ -119,6 +122,9 @@ function EncryptionPanel() {
       // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
       const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
       setEncBlob(new Blob([meta, data]));
+      if (addTimers){
+        props.addTimers({id: auth, timestamp: secret.timestamp, filename: file.name});
+      }
     }).catch(err => console.error(err));
   };
 
@@ -170,6 +176,7 @@ function EncryptionPanel() {
             title="SELECT TIMESTAMP"
             format="yyyy/MM/dd HH:mm:ss.SSS"
           />
+          <p><FormControlLabel control={<Checkbox checked={addTimers} onChange={handleAddTimers}/>} label="add to local Timers"/></p>
           <p>
             <Button onClick={handleBack}>Back</Button>
             <Button variant="contained" color="primary" startIcon={<LockTwoToneIcon />} onClick={onEncryptFile}>Encrypt file ...</Button>
