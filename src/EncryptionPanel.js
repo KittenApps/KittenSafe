@@ -7,6 +7,7 @@ import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Grid from '@material-ui/core/Grid';
 import Container from '@material-ui/core/Container';
+import Checkbox from '@material-ui/core/Checkbox';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -22,8 +23,8 @@ import AudiotrackTwoToneIcon from '@material-ui/icons/AudiotrackTwoTone';
 import InsertDriveFileTwoToneIcon from '@material-ui/icons/InsertDriveFileTwoTone';
 import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
 import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
+import VisibilityOffTwoToneIcon from '@material-ui/icons/VisibilityOffTwoTone';
 import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import { readFileAsBuffer } from './util'
@@ -60,7 +61,7 @@ function FilenamePanel(props) {
     <p>
       {icon} {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
       <Tooltip title="Toggle file preview" arrow>
-        <IconButton color="primary"><VisibilityTwoToneIcon /></IconButton>
+        <Checkbox icon={<VisibilityOffTwoToneIcon />} checkedIcon={<VisibilityTwoToneIcon />} value={false} disabled/>
       </Tooltip>
     </p>
   );
