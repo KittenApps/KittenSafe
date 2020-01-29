@@ -7,7 +7,7 @@ exports.handler = (event, context, callback) => {
       return callback(null, {statusCode: 413, body: "Invalid parameter length!"});
     }
 
-    if (new Date(timestamp) - new Date() > 15000) { // allow 15sec clock drift
+    if (new Date(timestamp) - new Date() > 15000){ // allow 15sec clock drift
         return callback(null, {statusCode: 403, body: "Time is not up!"});
     }
 
@@ -28,7 +28,7 @@ exports.handler = (event, context, callback) => {
             decrypted += decipher.final('utf8');
             // console.log(`decrypted key: ${decrypted}`);
             callback(null, {statusCode: 200, body: JSON.stringify({key: decrypted})});
-        } catch (e) {
+        } catch (e){
             // console.log(`Error: ${e.message}`);
             callback(null, {statusCode: 400, body: "Invalid authTag!"});
         }

@@ -48,9 +48,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function FilenamePanel(props) {
+function FilenamePanel(props){
   let icon;
-  switch (props.file.type.split('/')[0]) {
+  switch (props.file.type.split('/')[0]){
       case 'image': icon = <ImageTwoToneIcon />; break;
       case 'text': icon = <DescriptionTwoToneIcon />; break;
       case 'video': icon = <OndemandVideoTwoToneIcon />; break;
@@ -68,7 +68,7 @@ function FilenamePanel(props) {
   );
 }
 
-function EncryptionPanel(props) {
+export default function EncryptionPanel(props){
   const classes = useStyles();
   const [file, setFile] = useState({name: 'none', type: 'none/none'});
   const [addTimers, setAddTimers] = useState(true);
@@ -214,5 +214,3 @@ function EncryptionPanel(props) {
     </Stepper>
   );
 }
-
-export default EncryptionPanel;

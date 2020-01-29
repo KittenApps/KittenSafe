@@ -13,16 +13,16 @@ const useStyles = makeStyles({
   },
 });
 
-function FilePreview(props){
+export default function FilePreview(props){
   const classes = useStyles();
 
-  if (!props.mimeType) {
+  if (!props.mimeType){
     return (null);
   }
 
   let element;
 
-  switch (props.mimeType.split('/')[0]) {
+  switch (props.mimeType.split('/')[0]){
       case 'image': element = <img src={props.src} className={classes.media} alt=""/>; break;
       case 'text': element = <textarea value={props.src} className={classes.media} />; break;
       case 'video': element = <video src={props.src} className={classes.media} />; break;
@@ -37,5 +37,3 @@ function FilePreview(props){
     </Card>
   );
 }
-
-export default FilePreview;

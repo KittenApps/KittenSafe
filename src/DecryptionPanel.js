@@ -37,11 +37,11 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function FilePanel(props) {
+function FilePanel(props){
   const [timerRedraw, setTimerRedraw] = useState(true);
 
-  if (!props.file.meta) {
-    switch (props.file.name) {
+  if (!props.file.meta){
+    switch (props.file.name){
       case 'none': return <Card variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!" /></Card>;
       case 'invalid': return <Card variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!" /></Card>;
       default: return <Card variant="outlined"><CardHeader title="Unknown File error" /></Card>;
@@ -56,7 +56,7 @@ function FilePanel(props) {
   const h = Math.floor((td / (1000 * 60 * 60)) % 24);
   const m = Math.floor((td / 1000 / 60) % 60);
   const s = Math.floor((td / 1000) % 60);
-  if (td > 0) {
+  if (td > 0){
     content = (
       <div>
         <p>Error: KittenSafe file not ready for decryption:</p>
@@ -82,7 +82,7 @@ function FilePanel(props) {
   );
 }
 
-function DecryptionPanel(props) {
+export default function DecryptionPanel(props){
   const [file, setFile] = useState({name: 'none'});
   const [warn, setWarn] = useState('');
   const [activeStep, setActiveStep] = useState(0);
@@ -108,7 +108,7 @@ function DecryptionPanel(props) {
 
   const onChangeFile = (e) => {
     let f = e.target.files[0];
-    if (!f) {setTimeReady(false); return setFile({name: 'none'});}
+    if (!f){setTimeReady(false); return setFile({name: 'none'});}
     setFile({...f});
     readFileAsBuffer(f).then((d) => {
       const data = new Uint8Array(d);
@@ -135,7 +135,7 @@ function DecryptionPanel(props) {
 
   const onDecryptFile = () => {
     const timediff = new Date(file.meta.secret.timestamp) - new Date();
-    if (timediff > 0) {
+    if (timediff > 0){
       setWarn(`Time is not up yet! Please wait ${timediff}ms until you try again!`);
       return console.error(new Error('Time not up!'));
     }
@@ -148,7 +148,7 @@ function DecryptionPanel(props) {
     }, 500);
     Promise.all([ // query webservice to decrypt key for the used timestamo (if in the past)
       fetch('/.netlify/functions/decryptkey', {method: 'POST', body: JSON.stringify(file.meta.secret)}).then(res => {
-        switch (res.status) {
+        switch (res.status){
           case 200: return res.json();
           case 403: const e1 = 'Server rejected decryption: Time is not up yet!'; setWarn(e1); return Promise.reject(e1);
           case 400: const e2 = 'Server decryption failed: Invalid authTag! Did you try to mess with the timestamp? Your original timestamp might be ' +
@@ -261,5 +261,3 @@ function DecryptionPanel(props) {
     </div>
   );
 }
-// <FilePreview src={preview.src} mimeType={preview.mimeType} filename={preview.filename} />
-export default DecryptionPanel;
