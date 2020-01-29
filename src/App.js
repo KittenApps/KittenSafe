@@ -1,9 +1,7 @@
-import React, {useState} from 'react';
+import React, {useState, createContext, useContext } from 'react';
 import EncryptionPanel from './EncryptionPanel';
 import DecryptionPanel from './DecryptionPanel';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import DateFnsUtils from '@date-io/date-fns';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import IconButton from '@material-ui/core/IconButton';
@@ -20,20 +18,19 @@ import TimerTwoToneIcon from '@material-ui/icons/TimerTwoTone';
 import InfoTwoToneIcon from '@material-ui/icons/InfoTwoTone';
 import InvertColorsTwoToneIcon from '@material-ui/icons/InvertColorsTwoTone';
 import Tooltip from '@material-ui/core/Tooltip';
-import { createMuiTheme, makeStyles, ThemeProvider } from '@material-ui/core/styles';
+import { makeStyles } from '@material-ui/core/styles';
 import InfoDialog from './InfoDialog'
 import CustomThemeDialog from './CustomThemeDialog'
 
 const KSversion = 'v0.2'
 const lastVersion = localStorage.getItem('lastVersion');
+export const TimerContext = createContext(new Date());
 
 const useStyles = makeStyles({
   grow: {
     flexGrow: 1
   }
 });
-
-const themeColors = (localStorage.getItem('customThemeColors') || '#006302|#00ba23').split('|');
 
 function TabPanel(props){
   const { children, value, index } = props;
@@ -46,11 +43,10 @@ function TabPanel(props){
 }
 
 function TimerTab(props){
-  const [timerRedraw, setTimerRedraw] = useState(true);
+  const now = useContext(TimerContext);
   let label = "Timers";
   const count = props.timers.length;
   if (count > 0){
-    const now = new Date();
     // ToDo: calculate current index only once while loading/adding/deleting timers and when timer runs out => next
     let currentIndex = -1;
     for (let i = 0; i < props.timers.length; i++){
@@ -67,9 +63,6 @@ function TimerTab(props){
       const s = Math.floor((td / 1000) % 60);
       label = `${d}d ${h}:${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
       label = <Chip size="small" label={label} color="secondary" />;
-      setTimeout(() => {
-        setTimerRedraw(!timerRedraw);
-      }, 1000);
     }
   }
 
@@ -78,12 +71,11 @@ function TimerTab(props){
   );
 }
 
-export default function App(){
+export default function App(props){
   const [timers, setTimers] = useState(() => JSON.parse(localStorage.getItem('timers')) || []);
   const [tab, setTab] = useState(0);
   const [infoDialogOpen, setInfoDialogOpen] = useState(KSversion !== lastVersion);
   const [customThemeOpen, setCustomThemeOpen] = useState(false);
-  const [theme, setTheme] = useState(() => createMuiTheme({palette: {primary: {main: themeColors[0]}, secondary: {main: themeColors[1]}}}));
   const classes = useStyles();
 
   const addTimers = (t) => {
@@ -107,54 +99,52 @@ export default function App(){
   const handleCustomThemeOpen = () => setCustomThemeOpen(true);
 
   return (
-    <ThemeProvider theme={theme}>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <CssBaseline />
-        <AppBar position="static">
-          <Toolbar>
-            <Typography variant="h6">
-              <span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe
-            </Typography>
-            <Hidden smDown>
-              <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered>
-                <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
-                <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
-                <TimerTab timers={timers} />
-              </Tabs>
-            </Hidden>
-            <Box display={{ xs: 'block', md: 'none' }} className={classes.grow}/>
-            <Tooltip title="Customize theme colors" arrow>
-              <IconButton color="inherit" onClick={handleCustomThemeOpen}>
-                <InvertColorsTwoToneIcon />
-              </IconButton>
-            </Tooltip>
-            <Tooltip title="Info / Help / Release Notes" arrow>
-              <IconButton color="inherit" onClick={handleInfoDialogOpen}>
-                <Badge badgeContent={KSversion} color="secondary">
-                  <InfoTwoToneIcon />
-                </Badge>
-              </IconButton>
-            </Tooltip>
-          </Toolbar>
-          <Hidden mdUp>
-            <Toolbar >
-              <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered>
-                <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
-                <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
-                <TimerTab timers={timers} />
-              </Tabs>
-            </Toolbar>
+    <React.Fragment>
+      <CssBaseline />
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6">
+            <span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe
+          </Typography>
+          <Hidden smDown>
+            <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered>
+              <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
+              <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
+              <TimerTab timers={timers} />
+            </Tabs>
           </Hidden>
-        </AppBar>
-        <TabPanel value={tab} index={0}>
-          <EncryptionPanel addTimers={addTimers} />
-        </TabPanel>
-        <TabPanel value={tab} index={1}>
-          <DecryptionPanel addTimers={addTimers} timers={timers.map(t => t.id)} />
-        </TabPanel>
-        <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={setTheme} />
-        <InfoDialog open={infoDialogOpen} handleClose={handleInfoDialogClose} version={KSversion} />
-      </MuiPickersUtilsProvider>
-    </ThemeProvider>
+          <Box display={{ xs: 'block', md: 'none' }} className={classes.grow}/>
+          <Tooltip title="Customize theme colors" arrow>
+            <IconButton color="inherit" onClick={handleCustomThemeOpen}>
+              <InvertColorsTwoToneIcon />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Info / Help / Release Notes" arrow>
+            <IconButton color="inherit" onClick={handleInfoDialogOpen}>
+              <Badge badgeContent={KSversion} color="secondary">
+                <InfoTwoToneIcon />
+              </Badge>
+            </IconButton>
+          </Tooltip>
+        </Toolbar>
+        <Hidden mdUp>
+          <Toolbar >
+            <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered>
+              <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
+              <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
+              <TimerTab timers={timers} />
+            </Tabs>
+          </Toolbar>
+        </Hidden>
+      </AppBar>
+      <TabPanel value={tab} index={0}>
+        <EncryptionPanel addTimers={addTimers} />
+      </TabPanel>
+      <TabPanel value={tab} index={1}>
+        <DecryptionPanel addTimers={addTimers} timers={timers.map(t => t.id)} />
+      </TabPanel>
+      <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={props.setTheme} />
+      <InfoDialog open={infoDialogOpen} handleClose={handleInfoDialogClose} version={KSversion} />
+    </React.Fragment>
   );
 }

@@ -1,4 +1,4 @@
-import React, { useState, useRef }  from 'react';
+import React, { useState, useContext, useRef }  from 'react';
 import Button from '@material-ui/core/Button';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -24,6 +24,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { readFileAsBuffer } from './util';
 import { green } from '@material-ui/core/colors';
 import FilePreview from './FilePreview';
+import { TimerContext } from './App';
 const crypto = window.crypto.subtle;
 
 const useStyles = makeStyles(theme => ({
@@ -38,7 +39,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 function FilePanel(props){
-  const [timerRedraw, setTimerRedraw] = useState(true);
+  const now = useContext(TimerContext);
 
   if (!props.file.meta){
     switch (props.file.name){
@@ -51,11 +52,12 @@ function FilePanel(props){
   const handleAddTimer = () => props.addTimers({id: props.file.meta.secret.auth, timestamp: props.file.meta.secret.timestamp, filename: props.file.name});
 
   let content;
-  const td = new Date(props.file.meta.secret.timestamp) - new Date();
+  const td = new Date(props.file.meta.secret.timestamp) - now;
   const d = Math.floor(td / (1000 * 60 * 60 * 24));
   const h = Math.floor((td / (1000 * 60 * 60)) % 24);
   const m = Math.floor((td / 1000 / 60) % 60);
   const s = Math.floor((td / 1000) % 60);
+
   if (td > 0){
     content = (
       <div>
@@ -64,9 +66,6 @@ function FilePanel(props){
         {!props.timers.includes(props.file.meta.secret.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoToneIcon />}>Add to Timers</Button></p>}
       </div>
     );
-    setTimeout(() => {
-      setTimerRedraw(!timerRedraw);
-    }, 1000);
   } else {
     props.setTimeReady(true);
     content = <p>Success: KittenSafe file ready for decryption</p>;
