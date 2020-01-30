@@ -48,7 +48,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function FilenamePanel(props){
+const FilenamePanel = React.memo((props) => {
+  // console.log("render EncryptionPanel FilenamePanel");
   let icon;
   switch (props.file.type.split('/')[0]){
       case 'image': icon = <ImageTwoToneIcon />; break;
@@ -66,9 +67,10 @@ function FilenamePanel(props){
       </Tooltip>
     </p>
   );
-}
+});
 
-export default function EncryptionPanel(props){
+function EncryptionPanel(props){
+  // console.log("render EncryptionPanel");
   const classes = useStyles();
   const [file, setFile] = useState({name: 'none', type: 'none/none'});
   const [addTimers, setAddTimers] = useState(true);
@@ -214,3 +216,5 @@ export default function EncryptionPanel(props){
     </Stepper>
   );
 }
+
+export default React.memo(EncryptionPanel);

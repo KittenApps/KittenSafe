@@ -12,7 +12,8 @@ const defaultPrim = '#006302';
 const defaultSec = '#00ba23';
 const themeColors = (localStorage.getItem('customThemeColors') || `${defaultPrim}|${defaultSec}`).split('|');
 
-export default function CustomThemeDialog(props){
+function CustomThemeDialog(props){
+  // console.log("render CustomThemeDialog");
   const [primColor, setPrimColor] = useState(themeColors[0]);
   const [secColor, setSecColor] = useState(themeColors[1]);
 
@@ -52,3 +53,5 @@ export default function CustomThemeDialog(props){
     </Dialog>
   );
 }
+
+export default React.memo(CustomThemeDialog);

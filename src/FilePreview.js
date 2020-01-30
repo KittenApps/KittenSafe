@@ -13,7 +13,8 @@ const useStyles = makeStyles({
   },
 });
 
-export default function FilePreview(props){
+function FilePreview(props){
+  // console.log("render FilePreview");
   const classes = useStyles();
 
   if (!props.mimeType){
@@ -37,3 +38,5 @@ export default function FilePreview(props){
     </Card>
   );
 }
+
+export default React.memo(FilePreview);

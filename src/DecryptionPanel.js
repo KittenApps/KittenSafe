@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef }  from 'react';
+import React, { useState, useContext, useRef, useMemo }  from 'react';
 import Button from '@material-ui/core/Button';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -38,8 +38,20 @@ const useStyles = makeStyles(theme => ({
   },
 }));
 
-function FilePanel(props){
+const FilePanelTimer = React.memo((props) => {
+  // console.log("render DecryptionPanel FilePanel Timer");
   const now = useContext(TimerContext);
+  const td = new Date(props.timestamp) - now;
+  const d = Math.floor(td / (1000 * 60 * 60 * 24));
+  const h = Math.floor((td / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((td / 1000 / 60) % 60);
+  const s = Math.floor((td / 1000) % 60);
+
+  return <p><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>
+});
+
+const FilePanel = React.memo((props) => {
+  // console.log("render DecryptionPanel FilePanel");
 
   if (!props.file.meta){
     switch (props.file.name){
@@ -52,17 +64,12 @@ function FilePanel(props){
   const handleAddTimer = () => props.addTimers({id: props.file.meta.auth, timestamp: props.file.meta.secret.timestamp, filename: props.file.name});
 
   let content;
-  const td = new Date(props.file.meta.secret.timestamp) - now;
-  const d = Math.floor(td / (1000 * 60 * 60 * 24));
-  const h = Math.floor((td / (1000 * 60 * 60)) % 24);
-  const m = Math.floor((td / 1000 / 60) % 60);
-  const s = Math.floor((td / 1000) % 60);
 
-  if (td > 0){
+  if (new Date(props.file.meta.secret.timestamp) > new Date()){
     content = (
       <div>
         <p>Error: KittenSafe file not ready for decryption:</p>
-        <p><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>
+        <FilePanelTimer timestamp={props.file.meta.secret.timestamp} />
         {!props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoToneIcon />}>Add to Timers</Button></p>}
       </div>
     );
@@ -79,9 +86,10 @@ function FilePanel(props){
       </CardContent>
     </Card>
   );
-}
+});
 
-export default function DecryptionPanel(props){
+function DecryptionPanel(props){
+  // console.log("render DecryptionPanel");
   const [file, setFile] = useState({name: 'none'});
   const [warn, setWarn] = useState('');
   const [activeStep, setActiveStep] = useState(0);
@@ -93,6 +101,8 @@ export default function DecryptionPanel(props){
   const intervalRef = useRef();
   if (fakeProgress > 3) clearInterval(intervalRef.current);
   const classes = useStyles();
+
+  const timers = useMemo(() => props.timers.map(t => t.id), [props.timers]);
 
   const handleReset = () => {
     setFile({name: 'none'});
@@ -211,7 +221,7 @@ export default function DecryptionPanel(props){
                 Choose file ...
               </Button>
             </label>
-            <FilePanel file={file} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={props.timers} />
+            <FilePanel file={file} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={timers} />
             <Button disabled={true}>Back</Button>
             <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoToneIcon />} disabled={!timeReady}>Decrypt file ...</Button>
           </StepContent>
@@ -260,3 +270,5 @@ export default function DecryptionPanel(props){
     </div>
   );
 }
+
+export default React.memo(DecryptionPanel);

@@ -11,23 +11,32 @@ import Button from '@material-ui/core/Button';
 import useMediaQuery from '@material-ui/core/useMediaQuery';
 import { useTheme } from '@material-ui/core/styles';
 
-function TabPanel(props){
+const TabPanel = React.memo((props) => {
   const { children, value, index } = props;
+  // console.log("render InfoDialog TabPanel: ", value, index);
 
   return (
     <Typography component="div" role="tabpanel" hidden={value !== index}>
       {value === index && <Box p={3}>{children}</Box>}
     </Typography>
   );
-}
+}, (prev, next) => {
+  return prev.value !== prev.index && next.value !== next.index;
+});
 
-export default function InfoDialog(props){
+function InfoDialog(props){
+  // console.log("render InfoDialog");
   const [infoTab, setInfoTab] = useState(0);
   const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
 
+  const handleClose = () => {
+    localStorage.setItem('lastVersion', props.version);
+    props.setOpen(false);
+  };
+
   return (
-    <Dialog open={props.open} onClose={props.handleClose} fullScreen={fullScreen} maxWidth="xl">
+    <Dialog open={props.open} onClose={handleClose} fullScreen={fullScreen} maxWidth="xl">
       <Paper square>
         <Tabs value={infoTab} indicatorColor="primary" textColor="primary" variant="fullWidth" onChange={handleInfoTabChange}>
           <Tab label="Welcome" value={0} />
@@ -87,10 +96,12 @@ export default function InfoDialog(props){
         </TabPanel>
       </DialogContent>
       <DialogActions>
-        <Button onClick={props.handleClose} color="primary">
+        <Button onClick={handleClose} color="primary">
           Close
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
+
+export default React.memo(InfoDialog);

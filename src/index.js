@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import App, { TimerContext } from './App';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
@@ -16,17 +16,14 @@ function Main(){
     setTimeout(() => setNow(new Date()), 1000);
   }, [now]);
 
-  const mainApp = useMemo(() => (
-    <ThemeProvider theme={theme}>
-      <MuiPickersUtilsProvider utils={DateFnsUtils}>
-        <App setTheme={setTheme}/>
-      </MuiPickersUtilsProvider>
-    </ThemeProvider>
-  ), [theme]);
 
   return (
     <TimerContext.Provider value={now}>
-      {mainApp}
+      <ThemeProvider theme={theme}>
+        <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <App setTheme={setTheme}/>
+        </MuiPickersUtilsProvider>
+      </ThemeProvider>
     </TimerContext.Provider>
   );
 }

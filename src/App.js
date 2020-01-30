@@ -1,4 +1,4 @@
-import React, {useState, createContext, useContext } from 'react';
+import React, {useState, createContext, useContext, useCallback } from 'react';
 import EncryptionPanel from './EncryptionPanel';
 import DecryptionPanel from './DecryptionPanel';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -34,6 +34,7 @@ const useStyles = makeStyles({
 
 function TabPanel(props){
   const { children, value, index } = props;
+  // console.log("render App TabPanel: ", value, index);
 
   return (
     <Typography component="div" role="tabpanel" hidden={value !== index}>
@@ -42,10 +43,24 @@ function TabPanel(props){
   );
 }
 
-function TimerTab(props){
+const TimerTabLabelTimer = React.memo((props) => {
+  // console.log("render App TimerTab LabelTimer");
   const now = useContext(TimerContext);
+
+  const td = new Date(props.timestamp) - now;
+  const d = Math.floor(td / (1000 * 60 * 60 * 24));
+  const h = Math.floor((td / (1000 * 60 * 60)) % 24);
+  const m = Math.floor((td / 1000 / 60) % 60);
+  const s = Math.floor((td / 1000) % 60);
+  const label = `${d}d ${h}:${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
+  return <Chip size="small" label={label} color="secondary" />;
+});
+
+const TimerTab = React.memo((props) => {
+  // console.log("render App TimerTab");
   let label = "Timers";
   const count = props.timers.length;
+  const now = new Date();
   if (count > 0){
     // ToDo: calculate current index only once while loading/adding/deleting timers and when timer runs out => next
     let currentIndex = -1;
@@ -56,33 +71,28 @@ function TimerTab(props){
       }
     }
     if (currentIndex > -1){
-      const td = new Date(props.timers[currentIndex].timestamp) - now;
-      const d = Math.floor(td / (1000 * 60 * 60 * 24));
-      const h = Math.floor((td / (1000 * 60 * 60)) % 24);
-      const m = Math.floor((td / 1000 / 60) % 60);
-      const s = Math.floor((td / 1000) % 60);
-      label = `${d}d ${h}:${m < 10 ? '0' + m : m}:${s < 10 ? '0' + s : s}`;
-      label = <Chip size="small" label={label} color="secondary" />;
+      label = <TimerTabLabelTimer timestamp={props.timers[currentIndex].timestamp} />;
     }
   }
 
   return (
     <Tab label={label} icon={<Badge badgeContent={count} color="secondary"><TimerTwoToneIcon /></Badge>} value={2} disabled={!count}/>
   );
-}
+});
 
-export default function App(props){
+function App(props){
+  // console.log("render App");
   const [timers, setTimers] = useState(() => JSON.parse(localStorage.getItem('timers')) || []);
   const [tab, setTab] = useState(0);
   const [infoDialogOpen, setInfoDialogOpen] = useState(KSversion !== lastVersion);
   const [customThemeOpen, setCustomThemeOpen] = useState(false);
   const classes = useStyles();
 
-  const addTimers = (t) => {
+  const addTimers = useCallback((t) => {
     const sorted = timers.concat([t]).sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
     setTimers(sorted);
     localStorage.setItem('timers', JSON.stringify(sorted));
-  };
+  }, [timers]);
 
   const handleChangeTab = (e, newTab) => {
     if (newTab === 2){
@@ -91,10 +101,6 @@ export default function App(props){
     setTab(newTab);
   };
   const handleInfoDialogOpen = () => setInfoDialogOpen(true);
-  const handleInfoDialogClose = () => {
-    localStorage.setItem('lastVersion', KSversion);
-    setInfoDialogOpen(false);
-  };
 
   const handleCustomThemeOpen = () => setCustomThemeOpen(true);
 
@@ -141,10 +147,12 @@ export default function App(props){
         <EncryptionPanel addTimers={addTimers} />
       </TabPanel>
       <TabPanel value={tab} index={1}>
-        <DecryptionPanel addTimers={addTimers} timers={timers.map(t => t.id)} />
+        <DecryptionPanel addTimers={addTimers} timers={timers} />
       </TabPanel>
       <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={props.setTheme} />
-      <InfoDialog open={infoDialogOpen} handleClose={handleInfoDialogClose} version={KSversion} />
+      <InfoDialog open={infoDialogOpen} setOpen={setInfoDialogOpen} version={KSversion} />
     </React.Fragment>
   );
 }
+
+export default React.memo(App);
