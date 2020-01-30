@@ -49,7 +49,7 @@ function FilePanel(props){
     }
   }
 
-  const handleAddTimer = () => props.addTimers({id: props.file.meta.secret.auth, timestamp: props.file.meta.secret.timestamp, filename: props.file.name});
+  const handleAddTimer = () => props.addTimers({id: props.file.meta.auth, timestamp: props.file.meta.secret.timestamp, filename: props.file.name});
 
   let content;
   const td = new Date(props.file.meta.secret.timestamp) - now;
@@ -63,7 +63,7 @@ function FilePanel(props){
       <div>
         <p>Error: KittenSafe file not ready for decryption:</p>
         <p><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>
-        {!props.timers.includes(props.file.meta.secret.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoToneIcon />}>Add to Timers</Button></p>}
+        {!props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoToneIcon />}>Add to Timers</Button></p>}
       </div>
     );
   } else {
