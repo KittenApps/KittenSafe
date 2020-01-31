@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useMemo }  from 'react';
+import React, { useState, useContext, useRef, useMemo } from 'react';
 import Button from '@material-ui/core/Button';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
@@ -29,12 +29,12 @@ const crypto = window.crypto.subtle;
 const useStyles = makeStyles(theme => ({
   root: {
     '& > *': {
-      margin: theme.spacing(1),
-    },
+      margin: theme.spacing(1)
+    }
   },
   input: {
-    display: 'none',
-  },
+    display: 'none'
+  }
 }));
 
 const FilePanelTimer = React.memo((props) => {
@@ -206,7 +206,7 @@ function DecryptionPanel(props){
     ['', '🐈', '🔓', '', ''],
     ['🐈', '', '🔓', '', ''],
     ['😺', '', '🔓', '', '😺']
-  ]
+  ];
 
   return (
     <React.Fragment>
@@ -214,7 +214,7 @@ function DecryptionPanel(props){
         <Step key="fileSelect">
           <StepLabel>Select the encrypted file for decryption</StepLabel>
           <StepContent>
-            <input className={classes.input} id="decFileButton" type="file" onChange={onChangeFile}/>
+            <input className={classes.input} id="decFileButton" type="file" onChange={onChangeFile} />
             <label htmlFor="decFileButton">
               <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoToneIcon />}>
                 Choose file ...
@@ -237,7 +237,7 @@ function DecryptionPanel(props){
               {['reading encrypted file',
                 'request decryped key',
                 'importing decrypted key',
-                'decrypting KittenSafe file',
+                'decrypting KittenSafe file'
               ].map((v, i) => (
                 <ListItem key={i} dense>
                   <ListItemIcon>

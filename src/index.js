@@ -17,12 +17,11 @@ function Main(){
     setTimeout(() => setNow(new Date()), 1000);
   }, [now]);
 
-
   return (
     <TimerContext.Provider value={now}>
       <ThemeProvider theme={theme}>
         <MuiPickersUtilsProvider utils={DateFnsUtils}>
-          <App setTheme={setTheme}/>
+          <App setTheme={setTheme} />
         </MuiPickersUtilsProvider>
       </ThemeProvider>
     </TimerContext.Provider>

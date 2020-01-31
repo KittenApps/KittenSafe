@@ -1,4 +1,4 @@
-import React, {useState, useContext, useCallback } from 'react';
+import React, { useState, useContext, useCallback } from 'react';
 import EncryptionPanel from './EncryptionPanel';
 import DecryptionPanel from './DecryptionPanel';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -19,11 +19,11 @@ import InfoTwoToneIcon from '@material-ui/icons/InfoTwoTone';
 import InvertColorsTwoToneIcon from '@material-ui/icons/InvertColorsTwoTone';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
-import InfoDialog from './InfoDialog'
-import CustomThemeDialog from './CustomThemeDialog'
+import InfoDialog from './InfoDialog';
+import CustomThemeDialog from './CustomThemeDialog';
 import { TimerContext } from './util';
 
-const KSversion = 'v0.2'
+const KSversion = 'v0.2';
 const lastVersion = localStorage.getItem('lastVersion');
 
 const useStyles = makeStyles({
@@ -58,7 +58,7 @@ const TimerTabLabelTimer = React.memo((props) => {
 
 const TimerTab = React.memo((props) => {
   // console.log("render App TimerTab");
-  let label = "Timers";
+  let label = 'Timers';
   const count = props.timers.length;
   const now = new Date();
   if (count > 0){
@@ -119,7 +119,7 @@ function App(props){
               <TimerTab timers={timers} />
             </Tabs>
           </Hidden>
-          <Box display={{ xs: 'block', md: 'none' }} className={classes.grow}/>
+          <Box display={{ xs: 'block', md: 'none' }} className={classes.grow} />
           <Tooltip title="Customize theme colors" arrow>
             <IconButton color="inherit" onClick={handleCustomThemeOpen}>
               <InvertColorsTwoToneIcon />
@@ -134,7 +134,7 @@ function App(props){
           </Tooltip>
         </Toolbar>
         <Hidden mdUp>
-          <Toolbar >
+          <Toolbar>
             <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered>
               <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
               <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />

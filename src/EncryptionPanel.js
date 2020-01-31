@@ -1,5 +1,5 @@
-import React, { useState, useRef }  from 'react';
-import { DateTimePicker } from "@material-ui/pickers";
+import React, { useState, useRef } from 'react';
+import { DateTimePicker } from '@material-ui/pickers';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -28,14 +28,14 @@ import VisibilityOffTwoToneIcon from '@material-ui/icons/VisibilityOffTwoTone';
 import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
-import { readFileAsBuffer } from './util'
+import { readFileAsBuffer } from './util';
 const crypto = window.crypto.subtle;
 
 const useStyles = makeStyles(theme => ({
   root: {
     '& > *': {
-      margin: theme.spacing(1),
-    },
+      margin: theme.spacing(1)
+    }
   },
   input: {
     display: 'none'
@@ -94,7 +94,7 @@ function EncryptionPanel(props){
   };
 
   const handleAddTimers = e => setAddTimers(e.target.checked);
-  const onChangeFile = (e) => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
+  const onChangeFile = e => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
   const onEncryptFile = () => {
     setActiveStep(2);
     setTimeout(() => {
@@ -147,20 +147,20 @@ function EncryptionPanel(props){
     ['🔑', '🐈', '🔒', '', ''],
     ['🐈', '', '🔒', '', ''],
     ['😺', '', '🔒', '', '😺']
-  ]
+  ];
 
   return (
     <Stepper activeStep={activeStep} orientation="vertical">
       <Step key="fileSelect">
         <StepLabel>Select the file to encrypt</StepLabel>
         <StepContent>
-          <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile}/>
+          <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
           <label htmlFor="encFileButton">
             <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoToneIcon />}>
               Choose file ...
             </Button>
           </label>
-          <FilenamePanel file={file}/>
+          <FilenamePanel file={file} />
           <Button disabled={true}>Back</Button>
           <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size}>Select Timestamp</Button>
         </StepContent>

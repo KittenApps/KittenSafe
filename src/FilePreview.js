@@ -5,12 +5,12 @@ import CardHeader from '@material-ui/core/CardHeader';
 
 const useStyles = makeStyles({
   card: {
-    width: '98%',
+    width: '98%'
   },
   media: {
     width: '100%',
     minHeight: 200
-  },
+  }
 });
 
 function FilePreview(props){

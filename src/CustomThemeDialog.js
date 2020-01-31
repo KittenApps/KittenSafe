@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
@@ -18,8 +18,8 @@ function CustomThemeDialog(props){
   const [secColor, setSecColor] = useState(themeColors[1]);
 
   const handleClose = () => props.setOpen(false);
-  const handlePrimColorChange = (e) => setPrimColor(e.target.value);
-  const handleSecColorChange = (e) => setSecColor(e.target.value);
+  const handlePrimColorChange = e => setPrimColor(e.target.value);
+  const handleSecColorChange = e => setSecColor(e.target.value);
   const handleApply = () => {
     localStorage.setItem('customThemeColors', `${primColor}|${secColor}`);
     props.setTheme(createMuiTheme({palette: {primary: {main: primColor}, secondary: {main: secColor}}}));
