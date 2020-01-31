@@ -66,11 +66,11 @@ const FilePanel = React.memo((props) => {
 
   if (new Date(props.file.meta.secret.timestamp) > new Date()){
     content = (
-      <div>
+      <React.Fragment>
         <p>Error: KittenSafe file not ready for decryption:</p>
         <FilePanelTimer timestamp={props.file.meta.secret.timestamp} />
         {!props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoToneIcon />}>Add to Timers</Button></p>}
-      </div>
+      </React.Fragment>
     );
   } else {
     props.setTimeReady(true);
@@ -209,7 +209,7 @@ function DecryptionPanel(props){
   ]
 
   return (
-    <div>
+    <React.Fragment>
       <Stepper activeStep={activeStep} orientation="vertical">
         <Step key="fileSelect">
           <StepLabel>Select the encrypted file for decryption</StepLabel>
@@ -266,7 +266,7 @@ function DecryptionPanel(props){
           {warn}
         </MuiAlert>
       </Snackbar>
-    </div>
+    </React.Fragment>
   );
 }
 
