@@ -21,10 +21,9 @@ import LockOpenTwoToneIcon from '@material-ui/icons/LockOpenTwoTone';
 import FolderOpenTwoToneIcon from '@material-ui/icons/FolderOpenTwoTone';
 import TimerTwoToneIcon from '@material-ui/icons/TimerTwoTone';
 import { makeStyles } from '@material-ui/core/styles';
-import { readFileAsBuffer } from './util';
+import { readFileAsBuffer, TimerContext } from './util';
 import { green } from '@material-ui/core/colors';
 import FilePreview from './FilePreview';
-import { TimerContext } from './App';
 const crypto = window.crypto.subtle;
 
 const useStyles = makeStyles(theme => ({

@@ -1,4 +1,4 @@
-import React, {useState, createContext, useContext, useCallback } from 'react';
+import React, {useState, useContext, useCallback } from 'react';
 import EncryptionPanel from './EncryptionPanel';
 import DecryptionPanel from './DecryptionPanel';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -21,10 +21,10 @@ import Tooltip from '@material-ui/core/Tooltip';
 import { makeStyles } from '@material-ui/core/styles';
 import InfoDialog from './InfoDialog'
 import CustomThemeDialog from './CustomThemeDialog'
+import { TimerContext } from './util';
 
 const KSversion = 'v0.2'
 const lastVersion = localStorage.getItem('lastVersion');
-export const TimerContext = createContext(new Date());
 
 const useStyles = makeStyles({
   grow: {

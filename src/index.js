@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import App, { TimerContext } from './App';
+import App from './App';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
+import { TimerContext } from './util';
 
 function Main(){
   const [now, setNow] = useState(new Date());

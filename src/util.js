@@ -1,3 +1,5 @@
+import { createContext } from 'react';
+
 export function readFileAsBuffer(file){
     return new Promise((resolve, reject) => {
         const reader = new FileReader();
@@ -5,3 +7,5 @@ export function readFileAsBuffer(file){
         reader.readAsArrayBuffer(file);
     });
 };
+
+export const TimerContext = createContext(new Date());
