@@ -1,29 +1,14 @@
 import React, { useState, useContext, useCallback } from 'react';
+import { AppBar, Badge, Box, Chip, CssBaseline, Hidden, IconButton, Tabs, Tab, Toolbar, Tooltip, Typography } from '@material-ui/core';
+import { LockOpenTwoTone, LockTwoTone, TimerTwoTone, InfoTwoTone, InvertColorsTwoTone } from '@material-ui/icons';
+import { makeStyles } from '@material-ui/core/styles';
 import EncryptionPanel from './EncryptionPanel';
 import DecryptionPanel from './DecryptionPanel';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import IconButton from '@material-ui/core/IconButton';
-import Typography from '@material-ui/core/Typography';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Box from '@material-ui/core/Box';
-import Chip from '@material-ui/core/Chip';
-import Hidden from '@material-ui/core/Hidden';
-import Badge from '@material-ui/core/Badge';
-import LockOpenTwoToneIcon from '@material-ui/icons/LockOpenTwoTone';
-import LockTwoToneIcon from '@material-ui/icons/LockTwoTone';
-import TimerTwoToneIcon from '@material-ui/icons/TimerTwoTone';
-import InfoTwoToneIcon from '@material-ui/icons/InfoTwoTone';
-import InvertColorsTwoToneIcon from '@material-ui/icons/InvertColorsTwoTone';
-import Tooltip from '@material-ui/core/Tooltip';
-import { makeStyles } from '@material-ui/core/styles';
 import InfoDialog from './InfoDialog';
 import CustomThemeDialog from './CustomThemeDialog';
 import { TimerContext } from './util';
 
-const KSversion = 'v0.2';
+const KSversion = 'v0.3';
 const lastVersion = localStorage.getItem('lastVersion');
 
 const useStyles = makeStyles({
@@ -81,7 +66,7 @@ const TimerTab = React.memo((props) => {
   }
 
   return (
-    <Tab label={label} icon={<Badge badgeContent={count} color="secondary"><TimerTwoToneIcon /></Badge>} value={2} disabled={!count}/>
+    <Tab label={label} icon={<Badge badgeContent={count} color="secondary"><TimerTwoTone /></Badge>} value={2} disabled={!count}/>
   );
 });
 
@@ -119,21 +104,21 @@ function App(props){
           </Typography>
           <Hidden smDown>
             <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered>
-              <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
-              <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
+              <Tab label="Encryption" icon={<LockTwoTone />} value={0} />
+              <Tab label="Decryption" icon={<LockOpenTwoTone />} value={1} />
               <TimerTab timers={timers} />
             </Tabs>
           </Hidden>
           <Box display={{ xs: 'block', md: 'none' }} className={classes.grow} />
           <Tooltip title="Customize theme colors" arrow>
             <IconButton color="inherit" onClick={handleCustomThemeOpen}>
-              <InvertColorsTwoToneIcon />
+              <InvertColorsTwoTone />
             </IconButton>
           </Tooltip>
           <Tooltip title="Info / Help / Release Notes" arrow>
             <IconButton color="inherit" onClick={handleInfoDialogOpen}>
               <Badge badgeContent={KSversion} color="secondary">
-                <InfoTwoToneIcon />
+                <InfoTwoTone />
               </Badge>
             </IconButton>
           </Tooltip>
@@ -141,8 +126,8 @@ function App(props){
         <Hidden mdUp>
           <Toolbar>
             <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered>
-              <Tab label="Encryption" icon={<LockTwoToneIcon />} value={0} />
-              <Tab label="Decryption" icon={<LockOpenTwoToneIcon />} value={1} />
+              <Tab label="Encryption" icon={<LockTwoTone />} value={0} />
+              <Tab label="Decryption" icon={<LockOpenTwoTone />} value={1} />
               <TimerTab timers={timers} />
             </Tabs>
           </Toolbar>

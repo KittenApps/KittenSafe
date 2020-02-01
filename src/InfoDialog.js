@@ -1,14 +1,5 @@
 import React, { useState } from 'react';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
-import Paper from '@material-ui/core/Paper';
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import Box from '@material-ui/core/Box';
-import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
-import useMediaQuery from '@material-ui/core/useMediaQuery';
+import { Box, Button, Dialog, DialogActions, DialogContent, Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 
 const TabPanel = React.memo((props) => {
@@ -79,10 +70,14 @@ function InfoDialog(props){
           </ul>
         </TabPanel>
         <TabPanel value={infoTab} index={2}>
+          <b>KittenSafe v0.3 (beta)</b>
+          <ul>
+            <li>basic Timmer support (WIP)</li>
+            <li>performance optimization (avoid unnecessary rerendering, unified timers ...)</li>
+          </ul>
           <b>KittenSafe v0.2</b>
           <ul>
             <li>new fancy React Material UI</li>
-            <li>basic Timmer support (WIP)</li>
           </ul>
         </TabPanel>
         <TabPanel value={infoTab} index={3}>

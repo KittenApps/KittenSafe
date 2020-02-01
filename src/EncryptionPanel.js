@@ -1,34 +1,15 @@
 import React, { useState, useRef } from 'react';
+import { Button, Checkbox, Container, FormControlLabel, Grid, List, ListItem, ListItemIcon, ListItemText,
+        Stepper, Step, StepLabel, StepContent, Tooltip } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import Button from '@material-ui/core/Button';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import Checkbox from '@material-ui/core/Checkbox';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxTwoToneIcon from '@material-ui/icons/CheckBoxTwoTone';
-import FolderOpenTwoToneIcon from '@material-ui/icons/FolderOpenTwoTone';
-import LockTwoToneIcon from '@material-ui/icons/LockTwoTone';
-import ImageTwoToneIcon from '@material-ui/icons/ImageTwoTone';
-import DescriptionTwoToneIcon from '@material-ui/icons/DescriptionTwoTone';
-import OndemandVideoTwoToneIcon from '@material-ui/icons/OndemandVideoTwoTone';
-import AudiotrackTwoToneIcon from '@material-ui/icons/AudiotrackTwoTone';
-import InsertDriveFileTwoToneIcon from '@material-ui/icons/InsertDriveFileTwoTone';
-import BlockTwoToneIcon from '@material-ui/icons/BlockTwoTone';
-import VisibilityTwoToneIcon from '@material-ui/icons/VisibilityTwoTone';
-import VisibilityOffTwoToneIcon from '@material-ui/icons/VisibilityOffTwoTone';
-import Tooltip from '@material-ui/core/Tooltip';
+import { ImageTwoTone as ImageIcon, DescriptionTwoTone as TextIcon, OndemandVideoTwoTone as VideoIcon,
+         AudiotrackTwoTone as AudioIcon, BlockTwoTone as NoneIcon, InsertDriveFileTwoTone as FileIcon,
+         CheckBoxOutlineBlank, CheckBoxTwoTone, FolderOpenTwoTone, LockTwoTone,
+         VisibilityTwoTone, VisibilityOffTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import { readFileAsBuffer } from './util';
+
 const crypto = window.crypto.subtle;
 
 const useStyles = makeStyles(theme => ({
@@ -52,18 +33,18 @@ const FilenamePanel = React.memo((props) => {
   // console.log("render EncryptionPanel FilenamePanel");
   let icon;
   switch (props.file.type.split('/')[0]){
-      case 'image': icon = <ImageTwoToneIcon />; break;
-      case 'text': icon = <DescriptionTwoToneIcon />; break;
-      case 'video': icon = <OndemandVideoTwoToneIcon />; break;
-      case 'audio': icon = <AudiotrackTwoToneIcon />; break;
-      case 'none': icon = <BlockTwoToneIcon />; break;
-      default: icon = <InsertDriveFileTwoToneIcon />; break
+      case 'image': icon = <ImageIcon />; break;
+      case 'text': icon = <TextIcon />; break;
+      case 'video': icon = <VideoIcon />; break;
+      case 'audio': icon = <AudioIcon />; break;
+      case 'none': icon = <NoneIcon />; break;
+      default: icon = <FileIcon />; break
   }
   return (
     <p>
       {icon} {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
       <Tooltip title="Toggle file preview" arrow>
-        <Checkbox icon={<VisibilityOffTwoToneIcon />} checkedIcon={<VisibilityTwoToneIcon />} value={false} disabled/>
+        <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={false} disabled/>
       </Tooltip>
     </p>
   );
@@ -156,7 +137,7 @@ function EncryptionPanel(props){
         <StepContent>
           <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
           <label htmlFor="encFileButton">
-            <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoToneIcon />}>
+            <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone />}>
               Choose file ...
             </Button>
           </label>
@@ -181,7 +162,7 @@ function EncryptionPanel(props){
           <p><FormControlLabel control={<Checkbox checked={addTimers} onChange={handleAddTimers}/>} label="add to local Timers"/></p>
           <p>
             <Button onClick={handleBack}>Back</Button>
-            <Button variant="contained" color="primary" startIcon={<LockTwoToneIcon />} onClick={onEncryptFile}>Encrypt file ...</Button>
+            <Button variant="contained" color="primary" startIcon={<LockTwoTone />} onClick={onEncryptFile}>Encrypt file ...</Button>
           </p>
         </StepContent>
       </Step>
@@ -203,7 +184,7 @@ function EncryptionPanel(props){
             ].map((v, i) => (
               <ListItem key={i} dense>
                 <ListItemIcon>
-                  {i < fakeProgress ? <CheckBoxTwoToneIcon style={{ color: green[800] }} /> : <CheckBoxOutlineBlankIcon /> }
+                  {i < fakeProgress ? <CheckBoxTwoTone style={{ color: green[800] }} /> : <CheckBoxOutlineBlank /> }
                 </ListItemIcon>
                 <ListItemText primary={v} />
               </ListItem>

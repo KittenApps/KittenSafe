@@ -1,29 +1,13 @@
 import React, { useState, useContext, useRef, useMemo } from 'react';
-import Button from '@material-ui/core/Button';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import Card from '@material-ui/core/Card';
-import CardHeader from '@material-ui/core/CardHeader';
-import CardContent from '@material-ui/core/CardContent';
-import Grid from '@material-ui/core/Grid';
-import Container from '@material-ui/core/Container';
-import List from '@material-ui/core/List';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
-import CheckBoxTwoToneIcon from '@material-ui/icons/CheckBoxTwoTone';
-import Snackbar from '@material-ui/core/Snackbar';
+import { Button, Card, CardHeader, CardContent, Container, Grid, List, ListItem, ListItemIcon, ListItemText,
+         Snackbar, Stepper, Step, StepLabel, StepContent } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
-import LockOpenTwoToneIcon from '@material-ui/icons/LockOpenTwoTone';
-import FolderOpenTwoToneIcon from '@material-ui/icons/FolderOpenTwoTone';
-import TimerTwoToneIcon from '@material-ui/icons/TimerTwoTone';
+import { CheckBoxOutlineBlank, CheckBoxTwoTone, LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
-import { readFileAsBuffer, TimerContext } from './util';
 import { green } from '@material-ui/core/colors';
+import { readFileAsBuffer, TimerContext } from './util';
 import FilePreview from './FilePreview';
+
 const crypto = window.crypto.subtle;
 
 const useStyles = makeStyles(theme => ({
@@ -74,7 +58,7 @@ const FilePanel = React.memo((props) => {
       <React.Fragment>
         <p>Error: KittenSafe file not ready for decryption:</p>
         <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={setReady} />
-        {!props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoToneIcon />}>Add to Timers</Button></p>}
+        {!props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button></p>}
       </React.Fragment>
     );
   } else {
@@ -221,13 +205,13 @@ function DecryptionPanel(props){
           <StepContent>
             <input className={classes.input} id="decFileButton" type="file" onChange={onChangeFile} />
             <label htmlFor="decFileButton">
-              <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoToneIcon />}>
+              <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone />}>
                 Choose file ...
               </Button>
             </label>
             <FilePanel file={file} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={timers} />
             <Button disabled={true}>Back</Button>
-            <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoToneIcon />} disabled={!timeReady}>Decrypt file ...</Button>
+            <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoTone />} disabled={!timeReady}>Decrypt file ...</Button>
           </StepContent>
         </Step>
         <Step key="Decryption">
@@ -246,7 +230,7 @@ function DecryptionPanel(props){
               ].map((v, i) => (
                 <ListItem key={i} dense>
                   <ListItemIcon>
-                    {i < fakeProgress ? <CheckBoxTwoToneIcon style={{ color: green[800] }} /> : <CheckBoxOutlineBlankIcon /> }
+                    {i < fakeProgress ? <CheckBoxTwoTone style={{ color: green[800] }} /> : <CheckBoxOutlineBlank /> }
                   </ListItemIcon>
                   <ListItemText primary={v} />
                 </ListItem>
