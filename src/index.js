@@ -5,6 +5,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { TimerContext } from './util';
+import 'typeface-roboto';
 
 function Main(){
   const [now, setNow] = useState(new Date());
