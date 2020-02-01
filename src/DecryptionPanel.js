@@ -41,15 +41,20 @@ const FilePanelTimer = React.memo((props) => {
   // console.log("render DecryptionPanel FilePanel Timer");
   const now = useContext(TimerContext);
   const td = new Date(props.timestamp) - now;
+  if (td <= 0){
+    props.setReady(r => !r);
+    return <p><b>0</b>days <b>0</b>hours <b>00</b>mins <b>00</b>secs left</p>;
+  }
   const d = Math.floor(td / (1000 * 60 * 60 * 24));
   const h = Math.floor((td / (1000 * 60 * 60)) % 24);
   const m = Math.floor((td / 1000 / 60) % 60);
   const s = Math.floor((td / 1000) % 60);
 
-  return <p><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>
+  return <p><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>;
 });
 
 const FilePanel = React.memo((props) => {
+  const [, setReady] = useState(false);
   // console.log("render DecryptionPanel FilePanel");
 
   if (!props.file.meta){
@@ -68,7 +73,7 @@ const FilePanel = React.memo((props) => {
     content = (
       <React.Fragment>
         <p>Error: KittenSafe file not ready for decryption:</p>
-        <FilePanelTimer timestamp={props.file.meta.secret.timestamp} />
+        <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={setReady} />
         {!props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoToneIcon />}>Add to Timers</Button></p>}
       </React.Fragment>
     );

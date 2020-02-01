@@ -48,6 +48,10 @@ const TimerTabLabelTimer = React.memo((props) => {
   const now = useContext(TimerContext);
 
   const td = new Date(props.timestamp) - now;
+  if (td <= 0){
+    props.setReady(r => !r);
+    return <Chip size="small" label="0d 0:00:00" color="secondary" />;
+  }
   const d = Math.floor(td / (1000 * 60 * 60 * 24));
   const h = Math.floor((td / (1000 * 60 * 60)) % 24);
   const m = Math.floor((td / 1000 / 60) % 60);
@@ -57,6 +61,7 @@ const TimerTabLabelTimer = React.memo((props) => {
 });
 
 const TimerTab = React.memo((props) => {
+  const [, setReady] = useState(false);
   // console.log("render App TimerTab");
   let label = 'Timers';
   const count = props.timers.length;
@@ -71,7 +76,7 @@ const TimerTab = React.memo((props) => {
       }
     }
     if (currentIndex > -1){
-      label = <TimerTabLabelTimer timestamp={props.timers[currentIndex].timestamp} />;
+      label = <TimerTabLabelTimer timestamp={props.timers[currentIndex].timestamp} setReady={setReady}/>;
     }
   }
 
