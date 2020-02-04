@@ -1,5 +1,5 @@
 import React from 'react';
-import { Card, CardHeader } from '@material-ui/core';
+import { Card, CardHeader, Container } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 
 const useStyles = makeStyles({
@@ -31,10 +31,12 @@ function FilePreview(props){
   }
 
   return (
-    <Card variant="outlined" className={classes.card}>
-      <CardHeader title={`Preview of ${props.filename}`} subheader={props.mimeType} />
-      {element}
-    </Card>
+    <Container maxWidth="md" disableGutters>
+      <Card variant="outlined" className={classes.card}>
+        <CardHeader title={`Preview of ${props.filename}`} subheader={props.mimeType} />
+        {element}
+      </Card>
+    </Container>
   );
 }
 
