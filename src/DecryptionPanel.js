@@ -49,7 +49,7 @@ const FilePanel = React.memo((props) => {
     }
   }
 
-  const handleAddTimer = () => props.addTimers({id: props.file.meta.auth, timestamp: props.file.meta.secret.timestamp, filename: props.file.name});
+  const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename});
 
   let content;
 
@@ -90,7 +90,7 @@ function DecryptionPanel(props){
   if (fakeProgress > 3) clearInterval(intervalRef.current);
   const classes = useStyles();
 
-  const timers = useMemo(() => props.timers.map(t => t.id), [props.timers]);
+  const timers = useMemo(() => Object.keys(props.timers), [props.timers]);
 
   const handleReset = () => {
     setFile({name: 'none'});

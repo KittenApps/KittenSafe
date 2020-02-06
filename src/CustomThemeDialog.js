@@ -32,8 +32,8 @@ function CustomThemeDialog(props){
       <DialogTitle>Customize theme colors</DialogTitle>
       <DialogContent>
         <Grid container spacing={3} style={{marginBottom: 0}}>
-          <Grid item xs={6} key="primaryColor"><TextField label="primary color" type="color" value={primColor} onChange={handlePrimColorChange} fullWidth/></Grid>
-          <Grid item xs={6} key="secondaryColor"><TextField label="secondary color" type="color" value={secColor} onChange={handleSecColorChange} fullWidth/></Grid>
+          <Grid item xs={6} key="primaryColor"><TextField variant="outlined" size="small" label="primary color" type="color" value={primColor} onChange={handlePrimColorChange} fullWidth/></Grid>
+          <Grid item xs={6} key="secondaryColor"><TextField variant="outlined" size="small" label="secondary color" type="color" value={secColor} onChange={handleSecColorChange} fullWidth/></Grid>
         </Grid>
       </DialogContent>
       <DialogActions>

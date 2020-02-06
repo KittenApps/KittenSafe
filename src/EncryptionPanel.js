@@ -106,7 +106,8 @@ function EncryptionPanel(props){
       const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
       setEncBlob(new Blob([meta, data]));
       if (addTimers){
-        props.addTimers({id: auth, timestamp: secret.timestamp, filename: file.name});
+        props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name});
+        props.setPinnedTimer(auth); // ToDo: make this conditional
       }
     }).catch(err => console.error(err));
   };
