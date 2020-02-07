@@ -2,13 +2,12 @@ import React, { useState, useRef } from 'react';
 import { Button, Checkbox, Container, FormControlLabel, Grid, List, ListItem, ListItemIcon, ListItemText,
         Stepper, Step, StepLabel, StepContent, Tooltip } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
-import { ImageTwoTone as ImageIcon, DescriptionTwoTone as TextIcon, OndemandVideoTwoTone as VideoIcon,
-         AudiotrackTwoTone as AudioIcon, BlockTwoTone as NoneIcon, InsertDriveFileTwoTone as FileIcon,
-         CheckBoxOutlineBlank, CheckBoxTwoTone, FolderOpenTwoTone, LockTwoTone,
+import { CheckBoxOutlineBlank, CheckBoxTwoTone, FolderOpenTwoTone, LockTwoTone,
          VisibilityTwoTone, VisibilityOffTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import { readFileAsBuffer } from './util';
+import { FileIcon } from './Timers';
 
 const crypto = window.crypto.subtle;
 
@@ -31,18 +30,9 @@ const useStyles = makeStyles(theme => ({
 
 const FilenamePanel = React.memo((props) => {
   // console.log("render EncryptionPanel FilenamePanel");
-  let icon;
-  switch (props.file.type.split('/')[0]){
-      case 'image': icon = <ImageIcon />; break;
-      case 'text': icon = <TextIcon />; break;
-      case 'video': icon = <VideoIcon />; break;
-      case 'audio': icon = <AudioIcon />; break;
-      case 'none': icon = <NoneIcon />; break;
-      default: icon = <FileIcon />; break
-  }
   return (
     <p>
-      {icon} {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
+      <FileIcon mimeType={props.file.type} /> {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
       <Tooltip title="Toggle file preview" arrow>
         <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={false} disabled/>
       </Tooltip>

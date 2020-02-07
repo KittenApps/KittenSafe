@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
       }),
-      marginRight: -240
+      marginRight: -320
     }
   },
   contentShift: {
@@ -100,9 +100,10 @@ function App(props){
   }, [timers]);
 
   const deleteTimer = useCallback((id) => {
-    // ToDo: Implement this
+    console.log('delete: ', id);
     let ts = {...timers};
-    delete ts.id;
+    delete ts[id];
+    // ToDo: Handle deleting pinned timer
     setTimers(ts);
     localStorage.setItem('timers', JSON.stringify(ts));
   }, [timers]);
