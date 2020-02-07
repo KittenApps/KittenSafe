@@ -49,7 +49,7 @@ const FilePanel = React.memo((props) => {
     }
   }
 
-  const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename});
+  const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename, mimeType: props.file.meta.mimeType});
 
   let content;
 
@@ -64,6 +64,7 @@ const FilePanel = React.memo((props) => {
   } else {
     props.setTimeReady(true);
     content = <p>Success: KittenSafe file ready for decryption</p>;
+    // ToDo: Offer to remove expired timer here.
   }
 
   return (

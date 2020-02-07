@@ -1,7 +1,25 @@
 import React, { useContext } from 'react';
-import { Badge, Chip, Tab} from '@material-ui/core';
-import { TimerTwoTone} from '@material-ui/icons';
+import { Badge, Chip, Divider, Drawer, SwipeableDrawer, IconButton, Tab, useMediaQuery } from '@material-ui/core';
+import { TimerTwoTone, CloseTwoTone } from '@material-ui/icons';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { TimerContext } from './util';
+
+const useStyles = makeStyles(theme => ({
+  drawer: {
+    width: 240,
+    flexShrink: 0
+  },
+  drawerPaper: {
+    width: 240
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    marginTop: 72,
+    justifyContent: 'flex-end',
+  }
+}));
 
 const TimerTabLabelTimer = React.memo((props) => {
   // console.log("render App TimerTab LabelTimer");
@@ -27,14 +45,35 @@ export const TimerTab = React.memo((props) => {
   }
 
   return (
-    <Tab label={label} icon={<Badge badgeContent={Object.keys(props.timers).length} color="secondary"><TimerTwoTone /></Badge>} disabled={!Object.keys(props.timers).length}/>
+    <Tab label={label} onClick={props.toggleDrawer} icon={<Badge badgeContent={Object.keys(props.timers).length} color="secondary"><TimerTwoTone /></Badge>} disabled={!Object.keys(props.timers).length}/>
   );
 });
 
-function TimerPanel(props){
+function TimerDrawer(props){
+  const isDesktop = useMediaQuery(useTheme().breakpoints.up('md'), {noSsr: true});
+  const classes = useStyles();
+
+  const handleOpen = () => props.setOpen(true);
+  const handleClose = () => props.setOpen(false);
+
+  const timerList = (
+    <p>Hello World!</p>
+  );
+
+  if (isDesktop){
+    return (
+      <Drawer variant="persistent" anchor="right" open={props.open} className={classes.drawer} classes={{paper: classes.drawerPaper}} >
+        <div className={classes.drawerHeader}><IconButton onClick={handleClose}><CloseTwoTone/></IconButton></div>
+        <Divider />
+        {timerList}
+      </Drawer>
+    );
+  }
   return (
-    <span>Hello World!</span>
+    <SwipeableDrawer anchor="right" open={props.open} onClose={handleClose} onOpen={handleOpen} >
+      {timerList}
+    </SwipeableDrawer>
   );
 }
 
-export default React.memo(TimerPanel);
+export default React.memo(TimerDrawer);
