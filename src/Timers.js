@@ -21,7 +21,13 @@ const useStyles = makeStyles(theme => ({
     alignItems: 'center',
     padding: theme.spacing(0, 1),
     marginTop: 72,
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
+  },
+  drawerMobileHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    justifyContent: 'flex-start',
   },
   checked: {
     color: theme.palette.getContrastText(pink[500]),
@@ -109,6 +115,8 @@ function TimerDrawer(props){
   }
   return (
     <SwipeableDrawer anchor="right" open={props.open} onClose={handleClose} onOpen={handleOpen} >
+      <div className={classes.drawerMobileHeader}><IconButton edge="end" onClick={handleClose}><CloseTwoTone/></IconButton></div>
+      <Divider />
       <TimerList timers={props.timers} pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer} deleteTimer={props.deleteTimer} />
     </SwipeableDrawer>
   );

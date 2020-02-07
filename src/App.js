@@ -103,10 +103,23 @@ function App(props){
     console.log('delete: ', id);
     let ts = {...timers};
     delete ts[id];
-    // ToDo: Handle deleting pinned timer
+    if (id === pinnedTimer){
+      const now = new Date();
+      let index = null;
+      let timediff = Infinity;
+      for (let t in ts){
+        const td = new Date(ts[t].timestamp) - now;
+        if (td > 0 && td < timediff){
+          timediff = td;
+          index = t;
+        }
+      }
+      console.log(id, index);
+      setPinnedTimer(index);
+    }
     setTimers(ts);
     localStorage.setItem('timers', JSON.stringify(ts));
-  }, [timers]);
+  }, [timers, pinnedTimer]);
 
   const toggleTimerDrawer = useCallback(() => setTimerDrawerOpen(!timerDrawerOpen), [timerDrawerOpen]);
 
@@ -162,7 +175,7 @@ function App(props){
             <EncryptionPanel addTimers={addTimer} setPinnedTimer={setPinnedTimer} />
           </TabPanel>
           <TabPanel value={tab} index={1}>
-            <DecryptionPanel addTimers={addTimer} timers={timers} />
+            <DecryptionPanel addTimers={addTimer} timers={timers} deleteTimer={deleteTimer} />
           </TabPanel>
         </div>
         <TimerDrawer open={timerDrawerOpen} setOpen={setTimerDrawerOpen} timers={timers} pinnedTimer={pinnedTimer} setPinnedTimer={setPinnedTimer} deleteTimer={deleteTimer}/>

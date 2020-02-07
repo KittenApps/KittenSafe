@@ -1,6 +1,6 @@
 import React, { useState, useContext, useRef, useMemo } from 'react';
 import { Button, Card, CardHeader, CardContent, Container, Grid, List, ListItem, ListItemIcon, ListItemText,
-         Snackbar, Stepper, Step, StepLabel, StepContent } from '@material-ui/core';
+         Checkbox, FormControlLabel, Snackbar, Stepper, Step, StepLabel, StepContent } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import { CheckBoxOutlineBlank, CheckBoxTwoTone, LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
@@ -50,6 +50,7 @@ const FilePanel = React.memo((props) => {
   }
 
   const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename, mimeType: props.file.meta.mimeType});
+  const handleRmExpTimer = e => props.setRmExpTimer(e.target.checked);
 
   let content;
 
@@ -63,8 +64,12 @@ const FilePanel = React.memo((props) => {
     );
   } else {
     props.setTimeReady(true);
-    content = <p>Success: KittenSafe file ready for decryption</p>;
-    // ToDo: Offer to remove expired timer here.
+    content = (
+      <React.Fragment>
+        <p>Success: KittenSafe file ready for decryption</p>
+        {props.timers.includes(props.file.meta.auth) && <p><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers"/></p>}
+      </React.Fragment>
+    );
   }
 
   return (
@@ -87,6 +92,7 @@ function DecryptionPanel(props){
   const [decFile, setDecFile] = useState(null);
   const [disabledReset, setDisabledReset] = useState(true);
   const [fakeProgress, setFakeProgress] = useState(0);
+  const [rmExpTimer, setRmExpTimer] = useState(true);
   const intervalRef = useRef();
   if (fakeProgress > 3) clearInterval(intervalRef.current);
   const classes = useStyles();
@@ -178,6 +184,9 @@ function DecryptionPanel(props){
       const b = new Blob([data]);
       setPreview({src: mimeType.split('/')[0] === 'text' ? new TextDecoder().decode(data) : URL.createObjectURL(b, {type: mimeType}), mimeType, filename});
       setDecFile({b, mimeType, filename});
+      if (timers.includes(file.meta.auth) && rmExpTimer){
+        props.deleteTimer(file.meta.auth);
+      }
     }).catch(err => console.error(err));
   };
 
@@ -210,7 +219,7 @@ function DecryptionPanel(props){
                 Choose file ...
               </Button>
             </label>
-            <FilePanel file={file} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={timers} />
+            <FilePanel file={file} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer} />
             <Button disabled={true}>Back</Button>
             <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoTone />} disabled={!timeReady}>Decrypt file ...</Button>
           </StepContent>
