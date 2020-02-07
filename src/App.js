@@ -96,8 +96,11 @@ function App(props){
   const addTimer = useCallback((id, t) => {
     const ts = {[id]: t, ...timers};
     setTimers(ts);
+    if (!pinnedTimer && new Date(t.timestamp) > new Date()){
+      setPinnedTimer(id);
+    }
     localStorage.setItem('timers', JSON.stringify(ts));
-  }, [timers]);
+  }, [timers, pinnedTimer]);
 
   const deleteTimer = useCallback((id) => {
     console.log('delete: ', id);
@@ -114,7 +117,6 @@ function App(props){
           index = t;
         }
       }
-      console.log(id, index);
       setPinnedTimer(index);
     }
     setTimers(ts);
