@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef, useMemo, useCallback } from 'react';
+import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import { Button, Card, CardHeader, CardContent, Container, Grid, List, ListItem, ListItemIcon, ListItemText,
          Checkbox, FormControlLabel, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box  } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
@@ -7,7 +7,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
 import { readFileAsBuffer, TimerContext } from './util';
-import FilePreview from './FilePreview';
+import FilePreview, {isSupportedMimeType} from './FilePreview';
 
 const crypto = window.crypto.subtle;
 
@@ -92,7 +92,7 @@ function DecryptionPanel(props){
   const [timeReady, setTimeReady] = useState(false);
   const [decFile, setDecFile] = useState(null);
   const [disabledReset, setDisabledReset] = useState(true);
-  const [fakeProgress, setFakeProgress] = useState(0);
+  const [fakeProgress, setFakeProgress] = useState(-1);
   const [rmExpTimer, setRmExpTimer] = useState(true);
 
   const onDrop = useCallback(acceptedFiles => {
@@ -100,8 +100,14 @@ function DecryptionPanel(props){
   }, [])
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
 
-  const intervalRef = useRef();
-  if (fakeProgress > 3) clearInterval(intervalRef.current);
+  useEffect(() => {
+    if (fakeProgress > 3 || fakeProgress < 0) return;
+    const timeout = setTimeout(() => {
+      setFakeProgress(fakeProgress + 1);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [fakeProgress]);
+
   const classes = useStyles();
 
   const timers = useMemo(() => Object.keys(props.timers), [props.timers]);
@@ -114,7 +120,7 @@ function DecryptionPanel(props){
     setTimeReady(false);
     setDecFile(null);
     setDisabledReset(true);
-    setFakeProgress(0);
+    setFakeProgress(-1);
   };
 
   const onChangeFile = (e) => {
@@ -152,12 +158,7 @@ function DecryptionPanel(props){
       return console.error(new Error('Time not up!'));
     }
     setActiveStep(1);
-    setTimeout(() => {
-      const iid = window.setInterval(() => {
-        setFakeProgress((f) => f += 1);
-      }, 300);
-      intervalRef.current = iid;
-    }, 500);
+    setTimeout(() => setFakeProgress(0), 500);
     Promise.all([ // query webservice to decrypt key for the used timestamo (if in the past)
       fetch('/.netlify/functions/decryptkey', {method: 'POST', body: JSON.stringify(file.meta.secret)}).then(res => {
         switch (res.status){
@@ -243,7 +244,7 @@ function DecryptionPanel(props){
           <StepContent>
             <Container maxWidth="sm">
               <Grid container spacing={3}>
-                {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{catimation[fakeProgress][i]}</Grid>)}
+                {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{fakeProgress >= 0 ? catimation[fakeProgress][i] : ''}</Grid>)}
               </Grid>
             </Container>
             <List dense>
@@ -261,7 +262,7 @@ function DecryptionPanel(props){
               ))}
             </List>
             <Button variant="contained" color="primary" onClick={handleSave} disabled={!decFile}>Save original file...</Button>
-            <Button variant="contained" color="secondary" onClick={handlePrev} disabled={!decFile}>Preview original file...</Button>
+            <Button variant="contained" color="secondary" onClick={handlePrev} disabled={!decFile || !isSupportedMimeType(decFile.mimeType)}>Preview original file...</Button>
             <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>
           </StepContent>
         </Step>

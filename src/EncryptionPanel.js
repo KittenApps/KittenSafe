@@ -1,4 +1,4 @@
-import React, { useState, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Button, Checkbox, Container, FormControlLabel, Grid, List, ListItem, ListItemIcon, ListItemText,
         Stepper, Step, StepLabel, StepContent, Tooltip, Backdrop, Box } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
@@ -49,7 +49,7 @@ function EncryptionPanel(props){
   const [timestamp, setTimestamp] = useState(new Date(new Date().getTime() + 60000));
   const [encBlob, setEncBlob] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
-  const [fakeProgress, setFakeProgress] = useState(0);
+  const [fakeProgress, setFakeProgress] = useState(-1);
   const [disabledReset, setDisabledReset] = useState(true);
 
   const onDrop = useCallback(acceptedFiles => {
@@ -57,8 +57,13 @@ function EncryptionPanel(props){
   }, [])
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
 
-  const intervalRef = useRef();
-  if (fakeProgress > 5) clearInterval(intervalRef.current);
+  useEffect(() => {
+    if (fakeProgress > 5 || fakeProgress < 0) return;
+    const timeout = setTimeout(() => {
+      setFakeProgress(fakeProgress + 1);
+    }, 300);
+    return () => clearTimeout(timeout);
+  }, [fakeProgress]);
 
   const handleNext = () => setActiveStep(1);
   const handleBack = () => setActiveStep(0);
@@ -67,7 +72,7 @@ function EncryptionPanel(props){
     setTimestamp(new Date(new Date().getTime() + 60000));
     setEncBlob(null);
     setActiveStep(0);
-    setFakeProgress(0);
+    setFakeProgress(-1);
     setDisabledReset(true);
   };
 
@@ -75,12 +80,7 @@ function EncryptionPanel(props){
   const onChangeFile = e => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
   const onEncryptFile = () => {
     setActiveStep(2);
-    setTimeout(() => {
-      const iid = window.setInterval(() => {
-        setFakeProgress((f) => f += 1);
-      }, 300);
-      intervalRef.current = iid;
-    }, 500);
+    setTimeout(() => setFakeProgress(0), 500);
     Promise.all([
       crypto.generateKey({name: 'AES-GCM', length: 256}, true, ['encrypt']), // generate random encryption key
       readFileAsBuffer(file) // read in file asArrayBuffer
@@ -178,7 +178,7 @@ function EncryptionPanel(props){
           <StepContent>
             <Container maxWidth="sm">
               <Grid container spacing={3}>
-                {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{catimation[fakeProgress][i]}</Grid>)}
+                {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{fakeProgress >= 0 ? catimation[fakeProgress][i] : ''}</Grid>)}
               </Grid>
             </Container>
             <List dense>

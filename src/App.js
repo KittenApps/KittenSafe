@@ -94,7 +94,6 @@ function App(props){
   }, [timers, pinnedTimer]);
 
   const deleteTimer = useCallback((id) => {
-    console.log('delete: ', id);
     let ts = {...timers};
     delete ts[id];
     if (id === pinnedTimer){
@@ -109,6 +108,9 @@ function App(props){
         }
       }
       setPinnedTimer(index);
+    }
+    if (Object.keys(ts).length === 0){
+      setTimerDrawerOpen(false);
     }
     setTimers(ts);
     localStorage.setItem('timers', JSON.stringify(ts));
