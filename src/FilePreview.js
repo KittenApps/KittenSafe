@@ -13,6 +13,7 @@ const useStyles = makeStyles({
 });
 
 export const isSupportedMimeType = (mt) => ['image', 'text', 'video', 'audio'].includes(mt.split('/')[0]);
+export const isSupportedMimeType2 = (mt) => ['image', 'video', 'audio'].includes(mt.split('/')[0]);
 
 function FilePreview(props){
   // console.log("render FilePreview");

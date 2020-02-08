@@ -9,6 +9,7 @@ import { green } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
 import { readFileAsBuffer } from './util';
 import { FileIcon } from './Timers';
+import FilePreview, {isSupportedMimeType2} from './FilePreview';
 
 const crypto = window.crypto.subtle;
 
@@ -31,14 +32,28 @@ const useStyles = makeStyles(theme => ({
 
 const FilenamePanel = React.memo((props) => {
   // console.log("render EncryptionPanel FilenamePanel");
-  return (
+  const [showPreview, setPreview] = useState(false);
+  const handlePreview = (e) => setPreview(e.target.checked);
+
+  const metaInfo = (
     <p>
       <FileIcon mimeType={props.file.type} /> {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
       <Tooltip title="Toggle file preview" arrow>
-        <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={false} disabled/>
+        <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={showPreview} onChange={handlePreview} disabled={!isSupportedMimeType2(props.file.type)}/>
       </Tooltip>
     </p>
   );
+
+  if (showPreview){
+    return (
+      <React.Fragment>
+        {metaInfo}
+        <FilePreview src={URL.createObjectURL(props.file)} mimeType={props.file.type} filename={props.file.name} />
+      </React.Fragment>
+    );
+  }
+
+  return metaInfo;
 });
 
 function EncryptionPanel(props){
