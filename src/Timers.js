@@ -85,8 +85,8 @@ const TimerList = React.memo((props) => {
   return (
     <List>
       {Object.entries(props.timers).sort((a, b) => new Date(a[1].timestamp) - new Date(b[1].timestamp)).map(([id, t]) => (
-        <React.Fragment>
-          <ListItem key={id}>
+        <React.Fragment key={id}>
+          <ListItem>
             <ListItemAvatar>
               <Radio checked={props.pinnedTimer === id} onChange={handlePinnedChange} value={id} name="pinnedTimer"
                      icon={<Avatar variant="rounded"><FileIcon mimeType={t.mimeType}/></Avatar>} checkedIcon={<Avatar variant="rounded" className={classes.checked}><FileIcon mimeType={t.mimeType}/></Avatar>} />
@@ -96,7 +96,7 @@ const TimerList = React.memo((props) => {
               <IconButton edge="end" onClick={() => props.deleteTimer(id)}><DeleteTwoTone/></IconButton>
             </ListItemSecondaryAction>
           </ListItem>
-          <Divider variant="middle" component="li" key={'div-' + id}/>
+          <Divider variant="middle" component="li"/>
         </React.Fragment>
       ))}
     </List>

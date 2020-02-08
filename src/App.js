@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import clsx from 'clsx';
-import { AppBar, Badge, Box, CssBaseline, Hidden, IconButton, Tabs, Tab, Toolbar, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
+import { AppBar, Badge, Box, CssBaseline, IconButton, Tabs, Tab, Toolbar, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
 import { LockOpenTwoTone, LockTwoTone, InfoTwoTone, InvertColorsTwoTone } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import EncryptionPanel from './EncryptionPanel';
@@ -131,13 +131,13 @@ function App(props){
           <Typography variant="h6">
             <span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe
           </Typography>
-          <Hidden smDown>
+          {isDesktop &&
             <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered>
               <Tab label="Encryption" icon={<LockTwoTone />} value={0} />
               <Tab label="Decryption" icon={<LockOpenTwoTone />} value={1} />
               <TimerTab timers={timers} pinnedTimer={pinnedTimer} toggleDrawer={toggleTimerDrawer} />
             </Tabs>
-          </Hidden>
+          }
           <Box display={{ xs: 'block', md: 'none' }} className={classes.grow} />
           <Tooltip title="Customize theme colors" arrow>
             <IconButton color="inherit" onClick={handleCustomThemeOpen}>
@@ -152,7 +152,7 @@ function App(props){
             </IconButton>
           </Tooltip>
         </Toolbar>
-        <Hidden mdUp>
+        {!isDesktop &&
           <Toolbar>
             <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered>
               <Tab label="Encryption" icon={<LockTwoTone />} value={0} />
@@ -160,7 +160,7 @@ function App(props){
               <TimerTab timers={timers} pinnedTimer={pinnedTimer} toggleDrawer={toggleTimerDrawer} />
             </Tabs>
           </Toolbar>
-        </Hidden>
+        }
       </AppBar>
       <main className={classes.root} >
         <div className={clsx(classes.content, {[classes.contentShift]: timerDrawerOpen})} >
