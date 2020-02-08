@@ -70,9 +70,9 @@ function InfoDialog(props){
           </ul>
         </TabPanel>
         <TabPanel value={infoTab} index={2}>
-          <b>KittenSafe v0.3 (beta)</b>
+          <b>KittenSafe v0.3</b>
           <ul>
-            <li>basic Timmer support (WIP)</li>
+            <li>basic Timmer support</li>
             <li>performance optimization (avoid unnecessary rerendering, unified timers ...)</li>
           </ul>
           <b>KittenSafe v0.2</b>

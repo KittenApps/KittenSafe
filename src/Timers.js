@@ -23,6 +23,9 @@ const useStyles = makeStyles(theme => ({
     marginTop: 72,
     justifyContent: 'flex-start',
   },
+  drawerMobile: {
+    maxWidth: '90%'
+  },
   drawerMobileHeader: {
     display: 'flex',
     alignItems: 'center',
@@ -82,16 +85,19 @@ const TimerList = React.memo((props) => {
   return (
     <List>
       {Object.entries(props.timers).sort((a, b) => new Date(a[1].timestamp) - new Date(b[1].timestamp)).map(([id, t]) => (
-        <ListItem key={id}>
-          <ListItemAvatar>
-            <Radio checked={props.pinnedTimer === id} onChange={handlePinnedChange} value={id} name="pinnedTimer"
-                   icon={<Avatar variant="rounded"><FileIcon mimeType={t.mimeType}/></Avatar>} checkedIcon={<Avatar variant="rounded" className={classes.checked}><FileIcon mimeType={t.mimeType}/></Avatar>} />
-          </ListItemAvatar>
-          <ListItemText primary={t.filename} secondary={<TimerChip timestamp={t.timestamp} full/>} />
-          <ListItemSecondaryAction>
-            <IconButton edge="end" onClick={() => props.deleteTimer(id)}><DeleteTwoTone/></IconButton>
-          </ListItemSecondaryAction>
-        </ListItem>
+        <React.Fragment>
+          <ListItem key={id}>
+            <ListItemAvatar>
+              <Radio checked={props.pinnedTimer === id} onChange={handlePinnedChange} value={id} name="pinnedTimer"
+                     icon={<Avatar variant="rounded"><FileIcon mimeType={t.mimeType}/></Avatar>} checkedIcon={<Avatar variant="rounded" className={classes.checked}><FileIcon mimeType={t.mimeType}/></Avatar>} />
+            </ListItemAvatar>
+            <ListItemText primary={t.filename} secondary={<TimerChip timestamp={t.timestamp} full/>} />
+            <ListItemSecondaryAction>
+              <IconButton edge="end" onClick={() => props.deleteTimer(id)}><DeleteTwoTone/></IconButton>
+            </ListItemSecondaryAction>
+          </ListItem>
+          <Divider variant="middle" component="li" key={'div-' + id}/>
+        </React.Fragment>
       ))}
     </List>
   );
@@ -108,15 +114,15 @@ function TimerDrawer(props){
     return (
       <Drawer variant="persistent" anchor="right" open={props.open} className={classes.drawer} classes={{paper: classes.drawerPaper}} >
         <div className={classes.drawerHeader}><IconButton onClick={handleClose}><CloseTwoTone/></IconButton></div>
-        <Divider />
+        <Divider/>
         <TimerList timers={props.timers} pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer} deleteTimer={props.deleteTimer} />
       </Drawer>
     );
   }
   return (
-    <SwipeableDrawer anchor="right" open={props.open} onClose={handleClose} onOpen={handleOpen} >
+    <SwipeableDrawer anchor="right" open={props.open} onClose={handleClose} onOpen={handleOpen} className={classes.drawerMobile} classes={{paper: classes.drawerMobile}} >
       <div className={classes.drawerMobileHeader}><IconButton edge="end" onClick={handleClose}><CloseTwoTone/></IconButton></div>
-      <Divider />
+      <Divider/>
       <TimerList timers={props.timers} pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer} deleteTimer={props.deleteTimer} />
     </SwipeableDrawer>
   );

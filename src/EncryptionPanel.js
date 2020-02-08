@@ -23,7 +23,7 @@ const useStyles = makeStyles(theme => ({
   timePicker: {
     width: '100%',
     [theme.breakpoints.up('sm')]: {
-      width: 250
+      width: 270
     }
   }
 }));
@@ -141,6 +141,8 @@ function EncryptionPanel(props){
         <StepLabel>Select the timestamp until the file should be encrypted</StepLabel>
         <StepContent>
           <DateTimePicker
+            variant="outlined"
+            label="file encrypted until:"
             className={classes.timePicker}
             value={timestamp}
             onChange={setTimestamp}
