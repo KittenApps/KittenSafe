@@ -47,17 +47,6 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function TabPanel(props){
-  const { children, value, index } = props;
-  // console.log("render App TabPanel: ", value, index);
-
-  return (
-    <Typography component="div" role="tabpanel" hidden={value !== index}>
-      {value === index && <Box p={3}>{children}</Box>}
-    </Typography>
-  );
-}
-
 function App(props){
   // console.log("render App");
   const [timers, setTimers] = useState(() => {
@@ -87,6 +76,8 @@ function App(props){
     if (Object.keys(timers).length === 0) return false;
     return isDesktop;
   });
+
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('xs'), {noSsr: true});
 
   const [tab, setTab] = useState(0);
   const [infoDialogOpen, setInfoDialogOpen] = useState(KSversion !== lastVersion);
@@ -173,12 +164,16 @@ function App(props){
       </AppBar>
       <main className={classes.root} >
         <div className={clsx(classes.content, {[classes.contentShift]: timerDrawerOpen})} >
-          <TabPanel value={tab} index={0} >
-            <EncryptionPanel addTimers={addTimer} setPinnedTimer={setPinnedTimer} />
-          </TabPanel>
-          <TabPanel value={tab} index={1}>
-            <DecryptionPanel addTimers={addTimer} timers={timers} deleteTimer={deleteTimer} />
-          </TabPanel>
+          <Typography component="div" role="tabpanel" hidden={tab !== 0}>
+            <Box p={isMobile ? 0 : 3}>
+              <EncryptionPanel addTimers={addTimer} setPinnedTimer={setPinnedTimer} />
+            </Box>
+          </Typography>
+          <Typography component="div" role="tabpanel" hidden={tab !== 1}>
+            <Box p={isMobile ? 0 : 3}>
+              <DecryptionPanel addTimers={addTimer} timers={timers} deleteTimer={deleteTimer} />
+            </Box>
+          </Typography>
         </div>
         <TimerDrawer open={timerDrawerOpen} setOpen={setTimerDrawerOpen} timers={timers} pinnedTimer={pinnedTimer} setPinnedTimer={setPinnedTimer} deleteTimer={deleteTimer}/>
       </main>
