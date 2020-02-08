@@ -1,10 +1,11 @@
-import React, { useState, useContext, useRef, useMemo } from 'react';
+import React, { useState, useContext, useRef, useMemo, useCallback } from 'react';
 import { Button, Card, CardHeader, CardContent, Container, Grid, List, ListItem, ListItemIcon, ListItemText,
-         Checkbox, FormControlLabel, Snackbar, Stepper, Step, StepLabel, StepContent } from '@material-ui/core';
+         Checkbox, FormControlLabel, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box  } from '@material-ui/core';
 import MuiAlert from '@material-ui/lab/Alert';
 import { CheckBoxOutlineBlank, CheckBoxTwoTone, LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
+import { useDropzone } from 'react-dropzone'
 import { readFileAsBuffer, TimerContext } from './util';
 import FilePreview from './FilePreview';
 
@@ -93,6 +94,12 @@ function DecryptionPanel(props){
   const [disabledReset, setDisabledReset] = useState(true);
   const [fakeProgress, setFakeProgress] = useState(0);
   const [rmExpTimer, setRmExpTimer] = useState(true);
+
+  const onDrop = useCallback(acceptedFiles => {
+    onChangeFile({target: {files: acceptedFiles}});
+  }, [])
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
+
   const intervalRef = useRef();
   if (fakeProgress > 3) clearInterval(intervalRef.current);
   const classes = useStyles();
@@ -111,6 +118,7 @@ function DecryptionPanel(props){
   };
 
   const onChangeFile = (e) => {
+    console.log(e);
     let f = e.target.files[0];
     if (!f){setTimeReady(false); return setFile({name: 'none'});}
     setFile({...f});
@@ -208,7 +216,13 @@ function DecryptionPanel(props){
   ];
 
   return (
-    <React.Fragment>
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      <Backdrop open={isDragActive} style={{zIndex: 100000}}>
+        <Box color="white" fontSize={24} textAlign="center" p={5} border={1} borderRadius={16} borderColor="white" width="75%">
+          Drag a KittenSafe file over here to decrypt it!
+        </Box>
+      </Backdrop>
       <Stepper activeStep={activeStep} orientation="vertical">
         <Step key="fileSelect">
           <StepLabel>Select the encrypted file for decryption</StepLabel>
@@ -265,7 +279,7 @@ function DecryptionPanel(props){
           {warn}
         </MuiAlert>
       </Snackbar>
-    </React.Fragment>
+    </div>
   );
 }
 

@@ -73,7 +73,9 @@ function InfoDialog(props){
           <b>KittenSafe v0.3</b>
           <ul>
             <li>basic Timmer support</li>
+            <li>file drag and drop support</li>
             <li>performance optimization (avoid unnecessary rerendering, unified timers ...)</li>
+            <li>and other minor improvements and fixes</li>
           </ul>
           <b>KittenSafe v0.2</b>
           <ul>

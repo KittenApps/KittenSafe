@@ -1,11 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useCallback } from 'react';
 import { Button, Checkbox, Container, FormControlLabel, Grid, List, ListItem, ListItemIcon, ListItemText,
-        Stepper, Step, StepLabel, StepContent, Tooltip } from '@material-ui/core';
+        Stepper, Step, StepLabel, StepContent, Tooltip, Backdrop, Box } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
 import { CheckBoxOutlineBlank, CheckBoxTwoTone, FolderOpenTwoTone, LockTwoTone,
          VisibilityTwoTone, VisibilityOffTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
+import { useDropzone } from 'react-dropzone'
 import { readFileAsBuffer } from './util';
 import { FileIcon } from './Timers';
 
@@ -50,6 +51,12 @@ function EncryptionPanel(props){
   const [activeStep, setActiveStep] = useState(0);
   const [fakeProgress, setFakeProgress] = useState(0);
   const [disabledReset, setDisabledReset] = useState(true);
+
+  const onDrop = useCallback(acceptedFiles => {
+    setFile(acceptedFiles[0]);
+  }, [])
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
+
   const intervalRef = useRef();
   if (fakeProgress > 5) clearInterval(intervalRef.current);
 
@@ -122,72 +129,80 @@ function EncryptionPanel(props){
   ];
 
   return (
-    <Stepper activeStep={activeStep} orientation="vertical">
-      <Step key="fileSelect">
-        <StepLabel>Select the file to encrypt</StepLabel>
-        <StepContent>
-          <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
-          <label htmlFor="encFileButton">
-            <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone />}>
-              Choose file ...
-            </Button>
-          </label>
-          <FilenamePanel file={file} />
-          <Button disabled={true}>Back</Button>
-          <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size}>Select Timestamp</Button>
-        </StepContent>
-      </Step>
-      <Step key="timestampSelect">
-        <StepLabel>Select the timestamp until the file should be encrypted</StepLabel>
-        <StepContent>
-          <DateTimePicker
-            variant="outlined"
-            label="file encrypted until:"
-            className={classes.timePicker}
-            value={timestamp}
-            onChange={setTimestamp}
-            showTodayButton
-            todayLabel="NOW"
-            disablePast
-            title="SELECT TIMESTAMP"
-            format="yyyy/MM/dd HH:mm:ss.SSS"
-          />
-          <p><FormControlLabel control={<Checkbox checked={addTimers} onChange={handleAddTimers}/>} label="add to local Timers"/></p>
-          <p>
-            <Button onClick={handleBack}>Back</Button>
-            <Button variant="contained" color="primary" startIcon={<LockTwoTone />} onClick={onEncryptFile}>Encrypt file ...</Button>
-          </p>
-        </StepContent>
-      </Step>
-      <Step key="downloadEncrypted">
-        <StepLabel>Encrypting and Saving the file</StepLabel>
-        <StepContent>
-          <Container maxWidth="sm">
-            <Grid container spacing={3}>
-              {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{catimation[fakeProgress][i]}</Grid>)}
-            </Grid>
-          </Container>
-          <List dense>
-            {['reading file',
-              'generating random key',
-              'encrypting file',
-              'request encryped key',
-              'creating output file',
-              'throwing key far away'
-            ].map((v, i) => (
-              <ListItem key={i} dense>
-                <ListItemIcon>
-                  {i < fakeProgress ? <CheckBoxTwoTone style={{ color: green[800] }} /> : <CheckBoxOutlineBlank /> }
-                </ListItemIcon>
-                <ListItemText primary={v} />
-              </ListItem>
-            ))}
-          </List>
-          <Button variant="contained" color="primary" onClick={handleSave} disabled={!encBlob}>Save Encrypted File...</Button>
-          <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>
-        </StepContent>
-      </Step>
-    </Stepper>
+    <div {...getRootProps()}>
+      <input {...getInputProps()} />
+      <Backdrop open={isDragActive} style={{zIndex: 100000}}>
+        <Box color="white" fontSize={24} textAlign="center" p={5} border={1} borderRadius={16} borderColor="white" width="75%">
+          Drag a file over here to encrypt it with KittenSafe!
+        </Box>
+      </Backdrop>
+      <Stepper activeStep={activeStep} orientation="vertical">
+        <Step key="fileSelect">
+          <StepLabel>Select the file to encrypt</StepLabel>
+          <StepContent>
+            <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
+            <label htmlFor="encFileButton">
+              <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone />}>
+                Choose file ...
+              </Button>
+            </label>
+            <FilenamePanel file={file} />
+            <Button disabled={true}>Back</Button>
+            <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size}>Select Timestamp</Button>
+          </StepContent>
+        </Step>
+        <Step key="timestampSelect">
+          <StepLabel>Select the timestamp until the file should be encrypted</StepLabel>
+          <StepContent>
+            <DateTimePicker
+              variant="outlined"
+              label="file encrypted until:"
+              className={classes.timePicker}
+              value={timestamp}
+              onChange={setTimestamp}
+              showTodayButton
+              todayLabel="NOW"
+              disablePast
+              title="SELECT TIMESTAMP"
+              format="yyyy/MM/dd HH:mm:ss.SSS"
+            />
+            <p><FormControlLabel control={<Checkbox checked={addTimers} onChange={handleAddTimers}/>} label="add to local Timers"/></p>
+            <p>
+              <Button onClick={handleBack}>Back</Button>
+              <Button variant="contained" color="primary" startIcon={<LockTwoTone />} onClick={onEncryptFile}>Encrypt file ...</Button>
+            </p>
+          </StepContent>
+        </Step>
+        <Step key="downloadEncrypted">
+          <StepLabel>Encrypting and Saving the file</StepLabel>
+          <StepContent>
+            <Container maxWidth="sm">
+              <Grid container spacing={3}>
+                {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{catimation[fakeProgress][i]}</Grid>)}
+              </Grid>
+            </Container>
+            <List dense>
+              {['reading file',
+                'generating random key',
+                'encrypting file',
+                'request encryped key',
+                'creating output file',
+                'throwing key far away'
+              ].map((v, i) => (
+                <ListItem key={i} dense>
+                  <ListItemIcon>
+                    {i < fakeProgress ? <CheckBoxTwoTone style={{ color: green[800] }} /> : <CheckBoxOutlineBlank /> }
+                  </ListItemIcon>
+                  <ListItemText primary={v} />
+                </ListItem>
+              ))}
+            </List>
+            <Button variant="contained" color="primary" onClick={handleSave} disabled={!encBlob}>Save Encrypted File...</Button>
+            <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>
+          </StepContent>
+        </Step>
+      </Stepper>
+    </div>
   );
 }
 
