@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { Avatar, Badge, Chip, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemText,
-         ListItemSecondaryAction, SwipeableDrawer, Radio, Tab, useMediaQuery } from '@material-ui/core';
+         ListItemSecondaryAction, ListSubheader, SwipeableDrawer, Radio, Tab, useMediaQuery } from '@material-ui/core';
 import { ImageTwoTone as ImageIcon, DescriptionTwoTone as TextIcon, OndemandVideoTwoTone as VideoIcon,
          AudiotrackTwoTone as AudioIcon, BlockTwoTone as NoneIcon, InsertDriveFileTwoTone as BinaryIcon,
          TimerTwoTone, CloseTwoTone, DeleteTwoTone } from '@material-ui/icons';
@@ -18,7 +18,6 @@ const useStyles = makeStyles(theme => ({
   },
   drawerHeader: {
     display: 'flex',
-    alignItems: 'center',
     padding: theme.spacing(0, 1),
     marginTop: 72,
     justifyContent: 'flex-start',
@@ -28,7 +27,6 @@ const useStyles = makeStyles(theme => ({
   },
   drawerMobileHeader: {
     display: 'flex',
-    alignItems: 'center',
     padding: theme.spacing(0, 1),
     justifyContent: 'flex-start',
   },
@@ -83,7 +81,7 @@ const TimerList = React.memo((props) => {
   const classes = useStyles();
 
   return (
-    <List>
+    <React.Fragment>
       {Object.entries(props.timers).sort((a, b) => new Date(a[1].timestamp) - new Date(b[1].timestamp)).map(([id, t]) => (
         <React.Fragment key={id}>
           <ListItem>
@@ -99,7 +97,7 @@ const TimerList = React.memo((props) => {
           <Divider variant="middle" component="li"/>
         </React.Fragment>
       ))}
-    </List>
+    </React.Fragment>
   );
 });
 
@@ -113,17 +111,27 @@ function TimerDrawer(props){
   if (isDesktop){
     return (
       <Drawer variant="persistent" anchor="right" open={props.open} className={classes.drawer} classes={{paper: classes.drawerPaper}} >
-        <div className={classes.drawerHeader}><IconButton onClick={handleClose}><CloseTwoTone/></IconButton></div>
-        <Divider/>
-        <TimerList timers={props.timers} pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer} deleteTimer={props.deleteTimer} />
+        <List>
+          <div className={classes.drawerHeader}>
+            <IconButton onClick={handleClose}><CloseTwoTone/></IconButton>
+            <ListSubheader disableSticky>KittenSafe Timers</ListSubheader>
+          </div>
+          <Divider/>
+          <TimerList timers={props.timers} pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer} deleteTimer={props.deleteTimer} />
+        </List>
       </Drawer>
     );
   }
   return (
     <SwipeableDrawer anchor="right" open={props.open} onClose={handleClose} onOpen={handleOpen} className={classes.drawerMobile} classes={{paper: classes.drawerMobile}} >
-      <div className={classes.drawerMobileHeader}><IconButton edge="end" onClick={handleClose}><CloseTwoTone/></IconButton></div>
-      <Divider/>
-      <TimerList timers={props.timers} pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer} deleteTimer={props.deleteTimer} />
+      <List>
+        <div className={classes.drawerMobileHeader}>
+          <IconButton onClick={handleClose}><CloseTwoTone/></IconButton>
+          <ListSubheader disableSticky>KittenSafe Timers</ListSubheader>
+        </div>
+        <Divider/>
+        <TimerList timers={props.timers} pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer} deleteTimer={props.deleteTimer} />
+      </List>
     </SwipeableDrawer>
   );
 }

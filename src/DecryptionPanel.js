@@ -50,7 +50,7 @@ const FilePanel = React.memo((props) => {
     }
   }
 
-  const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename, mimeType: props.file.meta.mimeType});
+  const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename, mimeType: props.file.meta.mimeType}, false);
   const handleRmExpTimer = e => props.setRmExpTimer(e.target.checked);
 
   let content;
@@ -235,7 +235,7 @@ function DecryptionPanel(props){
             </label>
             <FilePanel file={file} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer} />
             <Button disabled={true}>Back</Button>
-            <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoTone />} disabled={!timeReady}>Decrypt file ...</Button>
+            <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoTone />} disabled={!timeReady || !navigator.onLine}>Decrypt file ...</Button>
           </StepContent>
         </Step>
         <Step key="Decryption">

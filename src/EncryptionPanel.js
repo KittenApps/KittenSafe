@@ -117,9 +117,8 @@ function EncryptionPanel(props){
       // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
       const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
       setEncBlob(new Blob([meta, data]));
-      if (addTimers){
-        props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type});
-        props.setPinnedTimer(auth); // ToDo: make this conditional
+      if (addTimers){ // ToDo: Make set to pinned Timer conditionally
+        props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type}, true);
       }
     }).catch(err => console.error(err));
   };
@@ -163,7 +162,7 @@ function EncryptionPanel(props){
             </label>
             <FilenamePanel file={file} />
             <Button disabled={true}>Back</Button>
-            <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size}>Select Timestamp</Button>
+            <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size || !navigator.onLine}>Select Timestamp</Button>
           </StepContent>
         </Step>
         <Step key="timestampSelect">

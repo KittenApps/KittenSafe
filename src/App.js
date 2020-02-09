@@ -75,7 +75,7 @@ function App(props){
   const isDesktop = useMediaQuery(useTheme().breakpoints.up('md'), {noSsr: true});
   const [timerDrawerOpen, setTimerDrawerOpen] = useState(() => {
     if (Object.keys(timers).length === 0) return false;
-    return isDesktop;
+    return isDesktop || !navigator.onLine;
   });
 
   const isMobile = useMediaQuery(useTheme().breakpoints.down('xs'), {noSsr: true});
@@ -85,10 +85,10 @@ function App(props){
   const [customThemeOpen, setCustomThemeOpen] = useState(false);
   const classes = useStyles();
 
-  const addTimer = useCallback((id, t) => {
+  const addTimer = useCallback((id, t, pin) => {
     const ts = {[id]: t, ...timers};
     setTimers(ts);
-    if (!pinnedTimer && new Date(t.timestamp) > new Date()){
+    if ((pin || !pinnedTimer) && new Date(t.timestamp) > new Date()){
       setPinnedTimer(id);
     }
     localStorage.setItem('timers', JSON.stringify(ts));
@@ -184,7 +184,7 @@ function App(props){
         <div className={clsx(classes.content, {[classes.contentShift]: timerDrawerOpen})} >
           <Typography component="div" role="tabpanel" hidden={tab !== 0}>
             <Box p={isMobile ? 0 : 3}>
-              <EncryptionPanel addTimers={addTimer} setPinnedTimer={setPinnedTimer} />
+              <EncryptionPanel addTimers={addTimer} />
             </Box>
           </Typography>
           <Typography component="div" role="tabpanel" hidden={tab !== 1}>
