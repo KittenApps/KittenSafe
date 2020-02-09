@@ -1,6 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import clsx from 'clsx';
-import { AppBar, Badge, Box, CssBaseline, IconButton, Tabs, Tab, Toolbar, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
+import { AppBar, Badge, Box, Button, CssBaseline, IconButton, Snackbar, Tabs, Tab, Toolbar, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
+import { Alert, AlertTitle } from '@material-ui/lab';
 import { LockOpenTwoTone, LockTwoTone, InfoTwoTone, InvertColorsTwoTone } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import EncryptionPanel from './EncryptionPanel';
@@ -8,8 +9,9 @@ import DecryptionPanel from './DecryptionPanel';
 import InfoDialog from './InfoDialog';
 import CustomThemeDialog from './CustomThemeDialog';
 import TimerDrawer, { TimerTab } from './Timers';
+import { register } from './serviceWorker';
 
-const KSversion = 'v0.3';
+const KSversion = 'v0.3.1';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -121,8 +123,23 @@ function App(props){
     setTab(newTab);
   };
   const handleInfoDialogOpen = () => setInfoDialogOpen(true);
-
   const handleCustomThemeOpen = () => setCustomThemeOpen(true);
+
+  const [waitingServiceWorker, setWaitingServiceWorker] = React.useState(null);
+  const [assetsUpdateReady, setAssetsUpdateReady] = React.useState(false);
+  const [assetsCached, setAssetsCached] = React.useState(false);
+  React.useEffect(() => register({
+    onUpdate: reg => {setWaitingServiceWorker(reg.waiting);setAssetsUpdateReady(true);},
+    onSuccess: () => setAssetsCached(true)
+  }), []);
+  const updateAssets = () => {
+    waitingServiceWorker.addEventListener("statechange", e => {
+      if (e.target.state === "activated") window.location.reload();
+    });
+    waitingServiceWorker.postMessage({type: "SKIP_WAITING"});
+  };
+  const handleAssetsCachedClose = () => setAssetsCached(false);
+  const handleAssetsUpdateReadyClose = () => setAssetsUpdateReady(false);
 
   return (
     <React.Fragment>
@@ -180,6 +197,18 @@ function App(props){
       </main>
       <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={props.setTheme} />
       <InfoDialog open={infoDialogOpen} setOpen={setInfoDialogOpen} version={KSversion} />
+      <Snackbar open={assetsCached} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert variant="filled" onClose={handleAssetsCachedClose} severity="success">
+          <AlertTitle>ServiceWorker successfully registered!</AlertTitle>
+          This page is now available offline! You can check out your timers without internet access. However encrypting and decrypting still requires network access.
+        </Alert>
+      </Snackbar>
+      <Snackbar open={assetsUpdateReady} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+        <Alert variant="filled" action={<div><Button variant="outlined" color="inherit" onClick={updateAssets} size="small">Reload and Update now</Button><Button variant="outlined" color="inherit" onClick={handleAssetsUpdateReadyClose} size="small">Close and update later</Button></div>}  severity="warning">
+        <AlertTitle>A new KittenSafe update is available!</AlertTitle>
+        A new update is available for KittenSafe. To update to the latest version you have to reload the page.
+        </Alert>
+      </Snackbar>
     </React.Fragment>
   );
 }

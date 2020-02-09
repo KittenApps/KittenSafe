@@ -1,7 +1,7 @@
 import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
 import { Button, Card, CardHeader, CardContent, Container, Grid, List, ListItem, ListItemIcon, ListItemText,
          Checkbox, FormControlLabel, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box  } from '@material-ui/core';
-import MuiAlert from '@material-ui/lab/Alert';
+import { Alert } from '@material-ui/lab';
 import { CheckBoxOutlineBlank, CheckBoxTwoTone, LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { green } from '@material-ui/core/colors';
@@ -124,7 +124,6 @@ function DecryptionPanel(props){
   };
 
   const onChangeFile = (e) => {
-    console.log(e);
     let f = e.target.files[0];
     if (!f){setTimeReady(false); return setFile({name: 'none'});}
     setFile({...f});
@@ -276,9 +275,9 @@ function DecryptionPanel(props){
         </Step>
       </Stepper>
       <Snackbar open={warn !== ''} onClose={handleWarnClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <MuiAlert elevation={6} variant="filled" onClose={handleWarnClose} severity="error">
+        <Alert variant="filled" onClose={handleWarnClose} severity="error">
           {warn}
-        </MuiAlert>
+        </Alert>
       </Snackbar>
     </div>
   );

@@ -17,7 +17,7 @@ const TabPanel = React.memo((props) => {
 
 function InfoDialog(props){
   // console.log("render InfoDialog");
-  const [infoTab, setInfoTab] = useState(0);
+  const [infoTab, setInfoTab] = useState(() => localStorage.getItem('lastVersion') ? 2 : 0);
   const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
 
@@ -72,8 +72,9 @@ function InfoDialog(props){
         <TabPanel value={infoTab} index={2}>
           <b>KittenSafe v0.3</b>
           <ul>
-            <li>basic Timmer support</li>
+            <li>basic Timers support</li>
             <li>file drag and drop support</li>
+            <li>Progressive Web App: this site is available offline to check on Timers</li>
             <li>performance optimization (avoid unnecessary rerendering, unified timers ...)</li>
             <li>and other minor improvements and fixes</li>
           </ul>
