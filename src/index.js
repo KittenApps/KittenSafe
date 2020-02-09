@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import ReactDOM from 'react-dom';
+import { render } from "react-dom";
 import App from './App';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@date-io/date-fns';
@@ -29,4 +29,4 @@ function Main(){
   );
 }
 
-ReactDOM.render(<Main />, document.getElementById('root'));
+render(<Main/>, document.getElementById('root'));

@@ -10,7 +10,6 @@ import CustomThemeDialog from './CustomThemeDialog';
 import TimerDrawer, { TimerTab } from './Timers';
 
 const KSversion = 'v0.3';
-const lastVersion = localStorage.getItem('lastVersion');
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -80,7 +79,7 @@ function App(props){
   const isMobile = useMediaQuery(useTheme().breakpoints.down('xs'), {noSsr: true});
 
   const [tab, setTab] = useState(0);
-  const [infoDialogOpen, setInfoDialogOpen] = useState(KSversion !== lastVersion);
+  const [infoDialogOpen, setInfoDialogOpen] = useState(() => localStorage.getItem('lastVersion') !== KSversion);
   const [customThemeOpen, setCustomThemeOpen] = useState(false);
   const classes = useStyles();
 
