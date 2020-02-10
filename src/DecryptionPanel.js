@@ -275,7 +275,7 @@ function DecryptionPanel(props){
         </Step>
       </Stepper>
       <Snackbar open={warn !== ''} onClose={handleWarnClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
-        <Alert variant="filled" onClose={handleWarnClose} severity="error">
+        <Alert variant="filled" elevation={6} onClose={handleWarnClose} severity="error">
           {warn}
         </Alert>
       </Snackbar>

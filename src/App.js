@@ -154,7 +154,7 @@ function App(props){
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar position="sticky" className={classes.appBar}>
+      <AppBar position="fixed" className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6">
             <span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe
@@ -208,13 +208,13 @@ function App(props){
       <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={props.setTheme} />
       <InfoDialog open={infoDialogOpen} setOpen={setInfoDialogOpen} version={KSversion} />
       <Snackbar open={assetsCached} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert variant="filled" onClose={handleAssetsCachedClose} severity="success">
+        <Alert variant="filled" elevation={6} onClose={handleAssetsCachedClose} severity="success">
           <AlertTitle>ServiceWorker successfully registered!</AlertTitle>
           This page is now available offline! You can check out your timers without internet access. However encrypting and decrypting still requires network access.
         </Alert>
       </Snackbar>
       <Snackbar open={assetsUpdateReady} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert variant="filled" action={<div><Button variant="outlined" color="inherit" onClick={updateAssets} size="small">Reload and Update now</Button><Button variant="outlined" color="inherit" onClick={handleAssetsUpdateReadyClose} size="small">Close and update later</Button></div>}  severity="warning">
+        <Alert variant="filled" elevation={6} action={<div><Button variant="outlined" color="inherit" onClick={updateAssets} size="small">Reload and Update now</Button><Button variant="outlined" color="inherit" onClick={handleAssetsUpdateReadyClose} size="small">Close and update later</Button></div>}  severity="warning">
         <AlertTitle>A new KittenSafe update is available!</AlertTitle>
         A new update is available for KittenSafe. To update to the latest version you have to reload the page.
         </Alert>
