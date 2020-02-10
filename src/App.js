@@ -15,8 +15,18 @@ const KSversion = 'v0.3.1';
 
 const useStyles = makeStyles(theme => ({
   root: {
+    overflow: 'scroll',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    top: 136,
+    [theme.breakpoints.down('sm')]: {
+      top: 128
+    },
     [theme.breakpoints.up('md')]: {
-      display: 'flex'
+      display: 'flex',
+      top: 72
     }
   },
   grow: {
