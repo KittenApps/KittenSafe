@@ -29,12 +29,14 @@ function InfoDialog(props){
   return (
     <Dialog open={props.open} onClose={handleClose} fullScreen={fullScreen} maxWidth="xl">
       <Paper square>
-        <Tabs value={infoTab} indicatorColor="primary" textColor="primary" variant="fullWidth" onChange={handleInfoTabChange}>
-          <Tab label="Welcome" value={0} />
-          <Tab label="Info" value={1} />
-          <Tab label="Release Notes" value={2} />
-          <Tab label="Roadmap" value={3} />
-        </Tabs>
+        <Box display="flex" justifyContent="center">
+          <Tabs value={infoTab} indicatorColor="primary" textColor="primary" variant="scrollable" scrollButtons="on" onChange={handleInfoTabChange}>
+            <Tab label="Welcome" value={0} />
+            <Tab label="Info" value={1} />
+            <Tab label="Release Notes" value={2} />
+            <Tab label="Roadmap" value={3} />
+          </Tabs>
+        </Box>
       </Paper>
       <DialogContent>
         <TabPanel value={infoTab} index={0}>

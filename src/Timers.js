@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useMemo } from 'react';
 import { Avatar, Badge, Chip, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemText,
          ListItemSecondaryAction, ListSubheader, SwipeableDrawer, Radio, Tab, useMediaQuery } from '@material-ui/core';
 import { ImageTwoTone as ImageIcon, DescriptionTwoTone as TextIcon, OndemandVideoTwoTone as VideoIcon,
@@ -40,11 +40,9 @@ const TimerChip = React.memo((props) => {
   // console.log("render App TimerTab LabelTimer");
   const now = useContext(TimerContext);
   const size = props.full ? 'medium' : 'small';
+  const td = useMemo(() => new Date(props.timestamp) - now + 500, [props, now]);
 
-  const td = new Date(props.timestamp) - now;
-  if (td <= 0){
-    return <Chip size={size} label="0d 0:00:00" color="secondary" variant="outlined" component="span" />;
-  }
+  if (td <= 0) return <Chip size={size} label="0d 0:00:00" color="secondary" variant="outlined" component="span" />;
   const d = Math.floor(td / (1000 * 60 * 60 * 24));
   const h = Math.floor((td / (1000 * 60 * 60)) % 24);
   const m = Math.floor((td / 1000 / 60) % 60);

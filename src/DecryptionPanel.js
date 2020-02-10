@@ -25,11 +25,13 @@ const useStyles = makeStyles(theme => ({
 const FilePanelTimer = React.memo((props) => {
   // console.log("render DecryptionPanel FilePanel Timer");
   const now = useContext(TimerContext);
-  const td = new Date(props.timestamp) - now;
-  if (td <= 0){
-    props.setReady(r => !r); //ToDo: rewrite this
-    return <p><b>0</b>days <b>0</b>hours <b>00</b>mins <b>00</b>secs left</p>;
-  }
+  const td = useMemo(() => {
+    const td = new Date(props.timestamp) - now;
+    if (td <= 0) props.setReady(true);
+    return td + 500;
+  }, [props, now]);
+
+  if (td <= 0) return <p><b>0</b>days <b>0</b>hours <b>00</b>mins <b>00</b>secs left</p>;
   const d = Math.floor(td / (1000 * 60 * 60 * 24));
   const h = Math.floor((td / (1000 * 60 * 60)) % 24);
   const m = Math.floor((td / 1000 / 60) % 60);
@@ -39,7 +41,6 @@ const FilePanelTimer = React.memo((props) => {
 });
 
 const FilePanel = React.memo((props) => {
-  const [, setReady] = useState(false); //ToDo: rewrite this
   // console.log("render DecryptionPanel FilePanel");
 
   if (!props.file.meta){
@@ -53,31 +54,14 @@ const FilePanel = React.memo((props) => {
   const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename, mimeType: props.file.meta.mimeType}, false);
   const handleRmExpTimer = e => props.setRmExpTimer(e.target.checked);
 
-  let content;
-
-  if (new Date(props.file.meta.secret.timestamp) > new Date()){
-    content = (
-      <React.Fragment>
-        <p>Error: KittenSafe file not ready for decryption:</p>
-        <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={setReady} />
-        {!props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button></p>}
-      </React.Fragment>
-    );
-  } else {
-    props.setTimeReady(true); //ToDo: rewrite this
-    content = (
-      <React.Fragment>
-        <p>Success: KittenSafe file ready for decryption</p>
-        {props.timers.includes(props.file.meta.auth) && <p><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers"/></p>}
-      </React.Fragment>
-    );
-  }
-
   return (
     <Card variant="outlined">
       <CardHeader title={props.file.meta.filename} subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`} />
       <CardContent>
-        {content}
+        <p>{props.timeReady ? 'Success: KittenSafe file ready for decryption' : 'Error: KittenSafe file not ready for decryption:'}</p>
+        {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={props.setTimeReady} />}
+        {!props.timeReady && !props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button></p>}
+        {props.timeReady && props.timers.includes(props.file.meta.auth) && <p><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers"/></p>}
       </CardContent>
     </Card>
   );
@@ -235,7 +219,7 @@ function DecryptionPanel(props){
                 Choose file ...
               </Button>
             </label>
-            <FilePanel file={file} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer} />
+            <FilePanel file={file} timeReady={timeReady} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer} />
             <Button disabled={true}>Back</Button>
             <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoTone />} disabled={!timeReady || !navigator.onLine}>Decrypt file ...</Button>
           </StepContent>
