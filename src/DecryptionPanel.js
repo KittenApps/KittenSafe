@@ -112,6 +112,8 @@ function DecryptionPanel(props){
 
   const timers = useMemo(() => Object.keys(props.timers), [props.timers]);
 
+  if (props.hidden) return null;
+
   const handleReset = () => {
     setFile({name: 'none'});
     setWarn('');

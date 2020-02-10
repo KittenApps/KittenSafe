@@ -20,7 +20,7 @@ function FilePreview(props){
   const classes = useStyles();
 
   if (!props.mimeType){
-    return (null);
+    return null;
   }
 
   let element;
@@ -30,7 +30,7 @@ function FilePreview(props){
       case 'text': element = <textarea value={props.src} className={classes.media} />; break;
       case 'video': element = <video src={props.src} className={classes.media} />; break;
       case 'audio': element = <audio src={props.src} className={classes.media} />; break;
-      default: return (null);
+      default: return null;
   }
 
   return (

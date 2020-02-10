@@ -80,6 +80,8 @@ function EncryptionPanel(props){
     return () => clearTimeout(timeout);
   }, [fakeProgress]);
 
+  if (props.hidden) return null;
+
   const handleNext = () => setActiveStep(1);
   const handleBack = () => setActiveStep(0);
   const handleReset = () => {

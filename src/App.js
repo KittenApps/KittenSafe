@@ -154,7 +154,7 @@ function App(props){
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar position="fixed" className={classes.appBar}>
+      <AppBar position="fixed" elevation={6} className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6">
             <span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe
@@ -194,12 +194,12 @@ function App(props){
         <div className={clsx(classes.content, {[classes.contentShift]: timerDrawerOpen})} >
           <Typography component="div" role="tabpanel" hidden={tab !== 0}>
             <Box p={isMobile ? 0 : 3}>
-              <EncryptionPanel addTimers={addTimer} />
+              <EncryptionPanel addTimers={addTimer} hidden={tab !== 0} />
             </Box>
           </Typography>
           <Typography component="div" role="tabpanel" hidden={tab !== 1}>
             <Box p={isMobile ? 0 : 3}>
-              <DecryptionPanel addTimers={addTimer} timers={timers} deleteTimer={deleteTimer} />
+              <DecryptionPanel addTimers={addTimer} timers={timers} deleteTimer={deleteTimer} hidden={tab !== 1} />
             </Box>
           </Typography>
         </div>
