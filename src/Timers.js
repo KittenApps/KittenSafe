@@ -123,7 +123,7 @@ function TimerDrawer(props){
     );
   }
   return (
-    <SwipeableDrawer anchor="right" open={props.open} onClose={handleClose} onOpen={handleOpen} className={classes.drawerMobile} classes={{paper: classes.drawerMobile}} >
+    <SwipeableDrawer anchor="right" open={props.open} onClose={handleClose} onOpen={handleOpen} className={classes.drawerMobile} classes={{paper: classes.drawerMobile}} disableSwipeToOpen={false}>
       <List>
         <div className={classes.drawerMobileHeader}>
           <IconButton onClick={handleClose}><CloseTwoTone/></IconButton>

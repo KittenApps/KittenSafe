@@ -27,7 +27,7 @@ const FilePanelTimer = React.memo((props) => {
   const now = useContext(TimerContext);
   const td = new Date(props.timestamp) - now;
   if (td <= 0){
-    props.setReady(r => !r);
+    props.setReady(r => !r); //ToDo: rewrite this
     return <p><b>0</b>days <b>0</b>hours <b>00</b>mins <b>00</b>secs left</p>;
   }
   const d = Math.floor(td / (1000 * 60 * 60 * 24));
@@ -39,7 +39,7 @@ const FilePanelTimer = React.memo((props) => {
 });
 
 const FilePanel = React.memo((props) => {
-  const [, setReady] = useState(false);
+  const [, setReady] = useState(false); //ToDo: rewrite this
   // console.log("render DecryptionPanel FilePanel");
 
   if (!props.file.meta){
@@ -64,7 +64,7 @@ const FilePanel = React.memo((props) => {
       </React.Fragment>
     );
   } else {
-    props.setTimeReady(true);
+    props.setTimeReady(true); //ToDo: rewrite this
     content = (
       <React.Fragment>
         <p>Success: KittenSafe file ready for decryption</p>
