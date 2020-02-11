@@ -34,7 +34,7 @@ function FilePreview(props){
   }
 
   return (
-    <Container maxWidth="md" disableGutters>
+    <Container maxWidth="md" style={{marginBottom: 10}} disableGutters>
       <Card variant="outlined" className={classes.card}>
         <CardHeader title={`Preview of ${props.filename}`} subheader={props.mimeType} />
         {element}

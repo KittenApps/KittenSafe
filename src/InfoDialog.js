@@ -20,6 +20,7 @@ function InfoDialog(props){
   const [infoTab, setInfoTab] = useState(() => localStorage.getItem('lastVersion') ? 2 : 0);
   const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
+  if (!props.open) return null;
 
   const handleClose = () => {
     localStorage.setItem('lastVersion', props.version);

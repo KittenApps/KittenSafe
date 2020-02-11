@@ -10,6 +10,7 @@ function CustomThemeDialog(props){
   // console.log("render CustomThemeDialog");
   const [primColor, setPrimColor] = useState(themeColors[0]);
   const [secColor, setSecColor] = useState(themeColors[1]);
+  if (!props.open) return null;
 
   const handleClose = () => props.setOpen(false);
   const handlePrimColorChange = e => setPrimColor(e.target.value);

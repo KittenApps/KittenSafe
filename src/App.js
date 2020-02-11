@@ -11,7 +11,7 @@ import CustomThemeDialog from './CustomThemeDialog';
 import TimerDrawer, { TimerTab } from './Timers';
 import { register } from './serviceWorker';
 
-const KSversion = 'v0.3.2';
+const KSversion = 'v0.3.3';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -87,8 +87,6 @@ function App(props){
     if (Object.keys(timers).length === 0) return false;
     return isDesktop || !navigator.onLine;
   });
-
-  const isMobile = useMediaQuery(useTheme().breakpoints.down('xs'), {noSsr: true});
 
   const [tab, setTab] = useState(0);
   const [infoDialogOpen, setInfoDialogOpen] = useState(() => localStorage.getItem('lastVersion') !== KSversion);
@@ -193,12 +191,12 @@ function App(props){
       <main className={classes.root} >
         <div className={clsx(classes.content, {[classes.contentShift]: timerDrawerOpen})} >
           <Typography component="div" role="tabpanel" hidden={tab !== 0}>
-            <Box p={isMobile ? 0 : 3}>
+            <Box p={{ xs: 0, sm: 3}} >
               <EncryptionPanel addTimers={addTimer} hidden={tab !== 0} />
             </Box>
           </Typography>
           <Typography component="div" role="tabpanel" hidden={tab !== 1}>
-            <Box p={isMobile ? 0 : 3}>
+            <Box p={{xs: 0, sm: 3}} >
               <DecryptionPanel addTimers={addTimer} timers={timers} deleteTimer={deleteTimer} hidden={tab !== 1} />
             </Box>
           </Typography>
@@ -214,7 +212,7 @@ function App(props){
         </Alert>
       </Snackbar>
       <Snackbar open={assetsUpdateReady} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
-        <Alert variant="filled" elevation={6} action={<div><Button variant="outlined" color="inherit" onClick={updateAssets} size="small">Reload and Update now</Button><Button variant="outlined" color="inherit" onClick={handleAssetsUpdateReadyClose} size="small">Close and update later</Button></div>}  severity="warning">
+        <Alert variant="filled" elevation={6} action={<div><Button variant="outlined" color="inherit" onClick={updateAssets} style={{marginBottom: 10}} size="small">Reload and Update now</Button><Button variant="outlined" color="inherit" onClick={handleAssetsUpdateReadyClose} size="small">Close and update later</Button></div>}  severity="warning">
         <AlertTitle>A new KittenSafe update is available!</AlertTitle>
         A new update is available for KittenSafe. To update to the latest version you have to reload the page.
         </Alert>

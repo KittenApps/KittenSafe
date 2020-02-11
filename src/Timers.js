@@ -29,15 +29,18 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     padding: theme.spacing(0, 1),
     justifyContent: 'flex-start',
-  },
+  }
+}));
+
+const useStylesTL = makeStyles(theme => ({
   checked: {
     color: theme.palette.getContrastText(pink[500]),
     backgroundColor: pink[500],
-  },
+  }
 }));
 
 const TimerChip = React.memo((props) => {
-  // console.log("render App TimerTab LabelTimer");
+  // console.log("render TimerChip");
   const now = useContext(TimerContext);
   const size = props.full ? 'medium' : 'small';
   const td = useMemo(() => new Date(props.timestamp) - now + 500, [props, now]);
@@ -64,7 +67,8 @@ export const TimerTab = React.memo((props) => {
 });
 
 export const FileIcon = React.memo((props) => {
-  switch (props.mimeType.split('/')[0]){
+  // console.log("render FileIcon: ", props);
+  switch (props.mimeType){
       case 'image': return <ImageIcon />;
       case 'text': return <TextIcon />;
       case 'video': return <VideoIcon />;
@@ -75,8 +79,9 @@ export const FileIcon = React.memo((props) => {
 });
 
 const TimerList = React.memo((props) => {
+  // console.log("render TimerList");
   const handlePinnedChange = (e) => props.setPinnedTimer(e.target.value);
-  const classes = useStyles();
+  const classes = useStylesTL();
 
   return (
     <React.Fragment>
@@ -84,8 +89,8 @@ const TimerList = React.memo((props) => {
         <React.Fragment key={id}>
           <ListItem>
             <ListItemAvatar>
-              <Radio checked={props.pinnedTimer === id} onChange={handlePinnedChange} value={id} name="pinnedTimer"
-                     icon={<Avatar variant="rounded"><FileIcon mimeType={t.mimeType}/></Avatar>} checkedIcon={<Avatar variant="rounded" className={classes.checked}><FileIcon mimeType={t.mimeType}/></Avatar>} />
+              <Radio checked={props.pinnedTimer === id} onChange={handlePinnedChange} value={id} name="pinnedTimer" color="default"
+                     icon={<Avatar variant="rounded"><FileIcon mimeType={t.mimeType.split('/')[0]}/></Avatar>} checkedIcon={<Avatar variant="rounded" className={classes.checked}><FileIcon mimeType={t.mimeType.split('/')[0]}/></Avatar>} />
             </ListItemAvatar>
             <ListItemText primary={t.filename} secondary={<TimerChip timestamp={t.timestamp} full/>} />
             <ListItemSecondaryAction>
@@ -100,8 +105,10 @@ const TimerList = React.memo((props) => {
 });
 
 function TimerDrawer(props){
-  const isDesktop = useMediaQuery(useTheme().breakpoints.up('md'), {noSsr: true});
+  // console.log("render TimerDrawer");
   const classes = useStyles();
+  const isDesktop = useMediaQuery(useTheme().breakpoints.up('md'), {noSsr: true});
+  if (!props.open) return <div className={classes.drawer} ></div>;
 
   const handleOpen = () => props.setOpen(true);
   const handleClose = () => props.setOpen(false);

@@ -8,6 +8,7 @@ import { TimerProvider } from './util';
 import 'typeface-roboto';
 
 function Main(){
+  // console.log("render Main");
   const [theme, setTheme] = useState(() => {
     const themeColors = (localStorage.getItem('customThemeColors') || '#006302|#00ba23').split('|');
     return createMuiTheme({palette: {primary: {main: themeColors[0]}, secondary: {main: themeColors[1]}}});

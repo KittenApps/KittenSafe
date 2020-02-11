@@ -37,7 +37,7 @@ const FilenamePanel = React.memo((props) => {
 
   const metaInfo = (
     <p>
-      <FileIcon mimeType={props.file.type} /> {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
+      <FileIcon mimeType={props.file.type.split('/')[0]} /> {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
       <Tooltip title="Toggle file preview" arrow>
         <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={showPreview} onChange={handlePreview} disabled={!isSupportedMimeType2(props.file.type)}/>
       </Tooltip>
