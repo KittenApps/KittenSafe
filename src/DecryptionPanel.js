@@ -45,9 +45,9 @@ const FilePanel = React.memo((props) => {
 
   if (!props.file.meta){
     switch (props.file.name){
-      case 'none': return <Card variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!" /></Card>;
-      case 'invalid': return <Card variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!" /></Card>;
-      default: return <Card variant="outlined"><CardHeader title="Unknown File error" /></Card>;
+      case 'none': return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/></Card>;
+      case 'invalid': return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
+      default: return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="Unknown File error"/></Card>;
     }
   }
 
@@ -55,13 +55,13 @@ const FilePanel = React.memo((props) => {
   const handleRmExpTimer = e => props.setRmExpTimer(e.target.checked);
 
   return (
-    <Card variant="outlined">
+    <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined">
       <CardHeader title={props.file.meta.filename} subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`} />
       <CardContent>
-        <p>{props.timeReady ? 'Success: KittenSafe file ready for decryption' : 'Error: KittenSafe file not ready for decryption:'}</p>
+        {props.timeReady ? 'Success: KittenSafe file ready for decryption' : 'Error: KittenSafe file not ready for decryption:'}
         {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={props.setTimeReady} />}
-        {!props.timeReady && !props.timers.includes(props.file.meta.auth) && <p><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button></p>}
-        {props.timeReady && props.timers.includes(props.file.meta.auth) && <p><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers"/></p>}
+        {!props.timeReady && !props.timers.includes(props.file.meta.auth) && <Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button>}
+        {props.timeReady && props.timers.includes(props.file.meta.auth) && <FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers"/>}
       </CardContent>
     </Card>
   );
@@ -79,10 +79,28 @@ function DecryptionPanel(props){
   const [fakeProgress, setFakeProgress] = useState(-1);
   const [rmExpTimer, setRmExpTimer] = useState(true);
 
+  const onChangeFile = (e) => {
+    let f = e.target.files[0];
+    if (!f){setTimeReady(false); return setFile({name: 'none'});}
+    setFile({...f});
+    readFileAsBuffer(f).then((d) => {
+      const data = new Uint8Array(d);
+      const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
+      // console.log('meta: ', meta);
+      f.data = data;
+      f.meta = meta;
+      setTimeReady(new Date(meta.secret.timestamp) < new Date());
+      setFile(f);
+    }).catch(err => {
+      setFile({name: 'invalid'});
+      console.error(err);
+    });
+  };
+
   const onDrop = useCallback(acceptedFiles => {
     onChangeFile({target: {files: acceptedFiles}});
   }, [])
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true});
 
   useEffect(() => {
     if (fakeProgress > 3 || fakeProgress < 0) return;
@@ -107,24 +125,6 @@ function DecryptionPanel(props){
     setDecFile(null);
     setDisabledReset(true);
     setFakeProgress(-1);
-  };
-
-  const onChangeFile = (e) => {
-    let f = e.target.files[0];
-    if (!f){setTimeReady(false); return setFile({name: 'none'});}
-    setFile({...f});
-    readFileAsBuffer(f).then((d) => {
-      const data = new Uint8Array(d);
-      const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
-      // console.log('meta: ', meta);
-      f.data = data;
-      f.meta = meta;
-      setTimeReady(new Date(meta.secret.timestamp) < new Date());
-      setFile(f);
-    }).catch(err => {
-      setFile({name: 'invalid'});
-      console.error(err);
-    });
   };
 
   const handleWarnClose = (event, reason) => {

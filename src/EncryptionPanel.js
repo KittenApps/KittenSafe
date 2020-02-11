@@ -70,7 +70,7 @@ function EncryptionPanel(props){
   const onDrop = useCallback(acceptedFiles => {
     setFile(acceptedFiles[0]);
   }, [])
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true})
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true});
 
   useEffect(() => {
     if (fakeProgress > 5 || fakeProgress < 0) return;
