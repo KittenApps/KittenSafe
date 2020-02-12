@@ -43,7 +43,7 @@ const TimerChip = React.memo((props) => {
   // console.log("render TimerChip");
   const now = useContext(TimerContext);
   const size = props.full ? 'medium' : 'small';
-  const td = useMemo(() => new Date(props.timestamp) - now + 500, [props, now]);
+  const td = useMemo(() => new Date(props.timestamp) - now + 500, [props.timestamp, now]);
 
   if (td <= 0) return <Chip size={size} label="0d 0:00:00" color="secondary" variant="outlined" component="span" />;
   const d = Math.floor(td / (1000 * 60 * 60 * 24));

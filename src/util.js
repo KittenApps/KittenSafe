@@ -14,9 +14,9 @@ TimerContext.displayName = 'TimerContext';
 export const TimerProvider = (props) => {
   const [now, setNow] = useState(new Date());
   useEffect(() => {
-    const timeout = setTimeout(() => setNow(new Date()), 1000);
-    return () => clearTimeout(timeout);
-  }, [now]);
+    const interval = setInterval(() => setNow(new Date()), 1000);
+    return () => clearInterval(interval);
+  }, []);
 
   return <TimerContext.Provider value={now} {...props} />;
 };

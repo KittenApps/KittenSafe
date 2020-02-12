@@ -14,7 +14,7 @@ function FakeProgress(props){
     } else {
       setFakeProgress(-1);
     }
-  }, [props])
+  }, [props.play])
 
   useEffect(() => {
     if (fakeProgress > limit || fakeProgress < 0) return;

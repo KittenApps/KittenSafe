@@ -97,15 +97,17 @@ function DecryptionPanel(props){
 
   const onChangeFile = (e) => {
     let f = e.target.files[0];
-    if (!f){setTimeReady(false); return setFile({name: 'none'});}
-    setFile({...f});
+    if (!f){
+      setTimeReady(false);
+      return setFile({name: 'none'});
+    }
     readFileAsBuffer(f).then((d) => {
       const data = new Uint8Array(d);
       const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
       f.data = data;
       f.meta = meta;
       setTimeReady(new Date(meta.secret.timestamp) < new Date());
-      setFile(f);
+      setFile({...f});
     }).catch(err => {
       setFile({name: 'invalid'});
       console.error(err);
