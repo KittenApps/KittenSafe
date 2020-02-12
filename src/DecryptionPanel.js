@@ -1,13 +1,13 @@
-import React, { useState, useContext, useEffect, useMemo, useCallback } from 'react';
-import { Button, Card, CardHeader, CardContent, Container, Grid, List, ListItem, ListItemIcon, ListItemText,
-         Checkbox, FormControlLabel, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box  } from '@material-ui/core';
+import React, { useState, useContext, useMemo, useCallback } from 'react';
+import { Button, Card, CardHeader, CardContent, CardActions, Checkbox, FormControlLabel, Snackbar,
+         Stepper, Step, StepLabel, StepContent, Backdrop, Box  } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { CheckBoxOutlineBlank, CheckBoxTwoTone, LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone } from '@material-ui/icons';
+import { LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
-import { green } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
 import { readFileAsBuffer, TimerContext } from './util';
 import FilePreview, {isSupportedMimeType} from './FilePreview';
+import FakeProgress from './FakeProgress';
 
 const crypto = window.crypto.subtle;
 
@@ -22,12 +22,27 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const catimation = [
+  ['', '', '🔒', '🔑', '🐈'],
+  ['', '', '🔐', '🐈', ''],
+  ['', '🐈', '🔓', '', ''],
+  ['🐈', '', '🔓', '', ''],
+  ['😺', '', '🔓', '', '😺']
+];
+
+const fakeItems = [
+  'reading encrypted file',
+  'request decryped key',
+  'importing decrypted key',
+  'decrypting KittenSafe file'
+];
+
 const FilePanelTimer = React.memo((props) => {
   // console.log("render DecryptionPanel FilePanel Timer");
   const now = useContext(TimerContext);
   const td = useMemo(() => {
     const td = new Date(props.timestamp) - now;
-    if (td <= 0) props.setReady(true);
+    if (td <= 0) props.setReady();
     return td + 500;
   }, [props, now]);
 
@@ -53,16 +68,17 @@ const FilePanel = React.memo((props) => {
 
   const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename, mimeType: props.file.meta.mimeType}, false);
   const handleRmExpTimer = e => props.setRmExpTimer(e.target.checked);
+  const setReady = () => props.setTimeReady(true);
 
   return (
     <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined">
       <CardHeader title={props.file.meta.filename} subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`} />
       <CardContent>
         {props.timeReady ? 'Success: KittenSafe file ready for decryption' : 'Error: KittenSafe file not ready for decryption:'}
-        {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={props.setTimeReady} />}
+        {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={setReady} />}
         {!props.timeReady && !props.timers.includes(props.file.meta.auth) && <Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button>}
-        {props.timeReady && props.timers.includes(props.file.meta.auth) && <FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers"/>}
       </CardContent>
+      {props.timeReady && props.timers.includes(props.file.meta.auth) && <CardActions><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers"/></CardActions>}
     </Card>
   );
 });
@@ -76,7 +92,7 @@ function DecryptionPanel(props){
   const [timeReady, setTimeReady] = useState(false);
   const [decFile, setDecFile] = useState(null);
   const [disabledReset, setDisabledReset] = useState(true);
-  const [fakeProgress, setFakeProgress] = useState(-1);
+  const [fakeProgressPlaying, setFakeProgress] = useState(false);
   const [rmExpTimer, setRmExpTimer] = useState(true);
 
   const onChangeFile = (e) => {
@@ -86,7 +102,6 @@ function DecryptionPanel(props){
     readFileAsBuffer(f).then((d) => {
       const data = new Uint8Array(d);
       const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
-      // console.log('meta: ', meta);
       f.data = data;
       f.meta = meta;
       setTimeReady(new Date(meta.secret.timestamp) < new Date());
@@ -102,14 +117,6 @@ function DecryptionPanel(props){
   }, [])
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true});
 
-  useEffect(() => {
-    if (fakeProgress > 3 || fakeProgress < 0) return;
-    const timeout = setTimeout(() => {
-      setFakeProgress(fakeProgress + 1);
-    }, 300);
-    return () => clearTimeout(timeout);
-  }, [fakeProgress]);
-
   const classes = useStyles();
 
   const timers = useMemo(() => Object.keys(props.timers), [props.timers]);
@@ -124,7 +131,7 @@ function DecryptionPanel(props){
     setTimeReady(false);
     setDecFile(null);
     setDisabledReset(true);
-    setFakeProgress(-1);
+    setFakeProgress(false);
   };
 
   const handleWarnClose = (event, reason) => {
@@ -143,7 +150,7 @@ function DecryptionPanel(props){
       return console.error(new Error('Time not up!'));
     }
     setActiveStep(1);
-    setTimeout(() => setFakeProgress(0), 500);
+    setTimeout(() => setFakeProgress(true), 500);
     Promise.all([ // query webservice to decrypt key for the used timestamo (if in the past)
       fetch('/.netlify/functions/decryptkey', {method: 'POST', body: JSON.stringify(file.meta.secret)}).then(res => {
         switch (res.status){
@@ -193,14 +200,6 @@ function DecryptionPanel(props){
     setDisabledReset(false);
   };
 
-  const catimation = [
-    ['', '', '🔒', '🔑', '🐈'],
-    ['', '', '🔐', '🐈', ''],
-    ['', '🐈', '🔓', '', ''],
-    ['🐈', '', '🔓', '', ''],
-    ['😺', '', '🔓', '', '😺']
-  ];
-
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
@@ -227,25 +226,7 @@ function DecryptionPanel(props){
         <Step key="Decryption">
           <StepLabel>Decrypting KittenSafe file</StepLabel>
           <StepContent>
-            <Container maxWidth="sm">
-              <Grid container spacing={3}>
-                {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{fakeProgress >= 0 ? catimation[fakeProgress][i] : ''}</Grid>)}
-              </Grid>
-            </Container>
-            <List dense>
-              {['reading encrypted file',
-                'request decryped key',
-                'importing decrypted key',
-                'decrypting KittenSafe file'
-              ].map((v, i) => (
-                <ListItem key={i} dense>
-                  <ListItemIcon>
-                    {i < fakeProgress ? <CheckBoxTwoTone style={{ color: green[800] }} /> : <CheckBoxOutlineBlank /> }
-                  </ListItemIcon>
-                  <ListItemText primary={v} />
-                </ListItem>
-              ))}
-            </List>
+            <FakeProgress catimation={catimation} items={fakeItems} play={fakeProgressPlaying}/>
             <Button variant="contained" color="primary" onClick={handleSave} disabled={!decFile}>Save original file...</Button>
             <Button variant="contained" color="secondary" onClick={handlePrev} disabled={!decFile || !isSupportedMimeType(decFile.mimeType)}>Preview original file...</Button>
             <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>

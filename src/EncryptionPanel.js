@@ -1,15 +1,13 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Button, Checkbox, Container, FormControlLabel, Grid, List, ListItem, ListItemIcon, ListItemText,
-        Stepper, Step, StepLabel, StepContent, Tooltip, Backdrop, Box } from '@material-ui/core';
+import React, { useState, useCallback } from 'react';
+import { Backdrop, Box, Button, Checkbox, FormControlLabel, Stepper, Step, StepLabel, StepContent, Tooltip } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
-import { CheckBoxOutlineBlank, CheckBoxTwoTone, FolderOpenTwoTone, LockTwoTone,
-         VisibilityTwoTone, VisibilityOffTwoTone } from '@material-ui/icons';
+import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
-import { green } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
 import { readFileAsBuffer } from './util';
 import { FileIcon } from './Timers';
 import FilePreview, {isSupportedMimeType2} from './FilePreview';
+import FakeProgress from './FakeProgress';
 
 const crypto = window.crypto.subtle;
 
@@ -29,6 +27,25 @@ const useStyles = makeStyles(theme => ({
     }
   }
 }));
+
+const catimation = [
+  ['', '', '🔓', '', '🔑'],
+  ['', '', '🔓', '🔑', '🐈'],
+  ['', '', '🔐', '🐈', ''],
+  ['', '🔑', '🔒', '🐈', ''],
+  ['🔑', '🐈', '🔒', '', ''],
+  ['🐈', '', '🔒', '', ''],
+  ['😺', '', '🔒', '', '😺']
+];
+
+const fakeItems = [
+  'reading file',
+  'generating random key',
+  'encrypting file',
+  'request encryped key',
+  'creating output file',
+  'throwing key far away'
+];
 
 const FilenamePanel = React.memo((props) => {
   // console.log("render EncryptionPanel FilenamePanel");
@@ -57,28 +74,20 @@ const FilenamePanel = React.memo((props) => {
 });
 
 function EncryptionPanel(props){
-  // console.log("render EncryptionPanel");
+  // console.log("render EncryptionPanel: ", props);
   const classes = useStyles();
   const [file, setFile] = useState({name: 'none', type: 'none/none'});
   const [addTimers, setAddTimers] = useState(true);
   const [timestamp, setTimestamp] = useState(new Date(new Date().getTime() + 60000));
   const [encBlob, setEncBlob] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
-  const [fakeProgress, setFakeProgress] = useState(-1);
+  const [fakeProgressPlaying, setFakeProgress] = useState(false);
   const [disabledReset, setDisabledReset] = useState(true);
 
   const onDrop = useCallback(acceptedFiles => {
     setFile(acceptedFiles[0]);
   }, [])
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true});
-
-  useEffect(() => {
-    if (fakeProgress > 5 || fakeProgress < 0) return;
-    const timeout = setTimeout(() => {
-      setFakeProgress(fakeProgress + 1);
-    }, 300);
-    return () => clearTimeout(timeout);
-  }, [fakeProgress]);
 
   if (props.hidden) return null;
 
@@ -89,7 +98,7 @@ function EncryptionPanel(props){
     setTimestamp(new Date(new Date().getTime() + 60000));
     setEncBlob(null);
     setActiveStep(0);
-    setFakeProgress(-1);
+    setFakeProgress(false);
     setDisabledReset(true);
   };
 
@@ -97,7 +106,7 @@ function EncryptionPanel(props){
   const onChangeFile = e => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
   const onEncryptFile = () => {
     setActiveStep(2);
-    setTimeout(() => setFakeProgress(0), 500);
+    setTimeout(() => setFakeProgress(true), 500);
     Promise.all([
       crypto.generateKey({name: 'AES-GCM', length: 256}, true, ['encrypt']), // generate random encryption key
       readFileAsBuffer(file) // read in file asArrayBuffer
@@ -134,16 +143,6 @@ function EncryptionPanel(props){
     setDisabledReset(false);
   };
 
-  const catimation = [
-    ['', '', '🔓', '', '🔑'],
-    ['', '', '🔓', '🔑', '🐈'],
-    ['', '', '🔐', '🐈', ''],
-    ['', '🔑', '🔒', '🐈', ''],
-    ['🔑', '🐈', '🔒', '', ''],
-    ['🐈', '', '🔒', '', ''],
-    ['😺', '', '🔒', '', '😺']
-  ];
-
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
@@ -174,6 +173,7 @@ function EncryptionPanel(props){
               variant="outlined"
               label="file encrypted until:"
               className={classes.timePicker}
+              views={['year', 'month', 'date', 'hours', 'minutes']}
               value={timestamp}
               onChange={setTimestamp}
               showTodayButton
@@ -192,27 +192,7 @@ function EncryptionPanel(props){
         <Step key="downloadEncrypted">
           <StepLabel>Encrypting and Saving the file</StepLabel>
           <StepContent>
-            <Container maxWidth="sm">
-              <Grid container spacing={3}>
-                {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{fakeProgress >= 0 ? catimation[fakeProgress][i] : ''}</Grid>)}
-              </Grid>
-            </Container>
-            <List dense>
-              {['reading file',
-                'generating random key',
-                'encrypting file',
-                'request encryped key',
-                'creating output file',
-                'throwing key far away'
-              ].map((v, i) => (
-                <ListItem key={i} dense>
-                  <ListItemIcon>
-                    {i < fakeProgress ? <CheckBoxTwoTone style={{ color: green[800] }} /> : <CheckBoxOutlineBlank /> }
-                  </ListItemIcon>
-                  <ListItemText primary={v} />
-                </ListItem>
-              ))}
-            </List>
+            <FakeProgress catimation={catimation} items={fakeItems} play={fakeProgressPlaying}/>
             <Button variant="contained" color="primary" onClick={handleSave} disabled={!encBlob}>Save Encrypted File...</Button>
             <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>
           </StepContent>
