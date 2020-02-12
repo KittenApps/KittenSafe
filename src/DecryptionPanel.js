@@ -252,4 +252,7 @@ function DecryptionPanel(props){
   );
 }
 
-export default React.memo(DecryptionPanel);
+export default React.memo(DecryptionPanel, (prev, next) => {
+  if (next.hidden) return true;
+  return Object.is(prev, next);
+});
