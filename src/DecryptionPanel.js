@@ -111,18 +111,16 @@ function DecryptionPanel(props){
     }
   }, [file])
 
-  const onChangeFile = (e) => setFile(e.target.files[0] || {name: 'none'});
-
-  const onDrop = useCallback(acceptedFiles => {
-    onChangeFile({target: {files: acceptedFiles}});
-  }, [])
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true});
+  const onDrop = useCallback(acceptedFiles => setFile(acceptedFiles[0]), []);
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true, disabled: activeStep !== 0});
 
   const classes = useStyles();
 
   const timers = useMemo(() => Object.keys(props.timers), [props.timers]);
 
   if (props.hidden) return null;
+
+  const onChangeFile = (e) => setFile(e.target.files[0] || {name: 'none'});
 
   const handleReset = () => {
     setFile({name: 'none'});
