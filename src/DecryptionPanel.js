@@ -1,4 +1,4 @@
-import React, { useState, useContext, useMemo, useCallback } from 'react';
+import React, { useState, useContext, useMemo, useCallback, useEffect } from 'react';
 import { Button, Card, CardHeader, CardContent, CardActions, Checkbox, FormControlLabel, Snackbar,
          Stepper, Step, StepLabel, StepContent, Backdrop, Box  } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
@@ -95,24 +95,23 @@ function DecryptionPanel(props){
   const [fakeProgressPlaying, setFakeProgress] = useState(false);
   const [rmExpTimer, setRmExpTimer] = useState(true);
 
-  const onChangeFile = (e) => {
-    let f = e.target.files[0];
-    if (!f){
+  useEffect(() => {
+    if (file.name === 'none' || file.name === 'invalid'){
       setTimeReady(false);
-      return setFile({name: 'none'});
+    } else if (!file.meta){
+      readFileAsBuffer(file).then((d) => {
+        const data = new Uint8Array(d);
+        const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
+        setFile({...file, meta, data});
+        setTimeReady(new Date(meta.secret.timestamp) < new Date());
+      }).catch(err => {
+        setFile({name: 'invalid'});
+        console.error(err);
+      });
     }
-    readFileAsBuffer(f).then((d) => {
-      const data = new Uint8Array(d);
-      const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
-      f.data = data;
-      f.meta = meta;
-      setTimeReady(new Date(meta.secret.timestamp) < new Date());
-      setFile({...f});
-    }).catch(err => {
-      setFile({name: 'invalid'});
-      console.error(err);
-    });
-  };
+  }, [file])
+
+  const onChangeFile = (e) => setFile(e.target.files[0] || {name: 'none'});
 
   const onDrop = useCallback(acceptedFiles => {
     onChangeFile({target: {files: acceptedFiles}});
