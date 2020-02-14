@@ -56,7 +56,7 @@ const FilePanelTimer = React.memo((props) => {
 });
 
 const FilePanel = React.memo((props) => {
-  // console.log("render DecryptionPanel FilePanel");
+  // console.log("render DecryptionPanel FilePanel", props);
 
   if (!props.file.meta){
     switch (props.file.name){
@@ -102,7 +102,7 @@ function DecryptionPanel(props){
       readFileAsBuffer(file).then((d) => {
         const data = new Uint8Array(d);
         const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
-        setFile({...file, meta, data});
+        setFile({size: file.size, meta, data});
         setTimeReady(new Date(meta.secret.timestamp) < new Date());
       }).catch(err => {
         setFile({name: 'invalid'});
