@@ -84,9 +84,7 @@ function EncryptionPanel(props){
   const [fakeProgressPlaying, setFakeProgress] = useState(false);
   const [disabledReset, setDisabledReset] = useState(true);
 
-  const onDrop = useCallback(acceptedFiles => {
-    setFile(acceptedFiles[0]);
-  }, [])
+  const onDrop = useCallback(acceptedFiles => setFile(acceptedFiles[0]), []);
   const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true, disabled: activeStep !== 0});
 
   if (props.hidden) return null;
