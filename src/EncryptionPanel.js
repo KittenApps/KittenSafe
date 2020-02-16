@@ -82,7 +82,7 @@ const TimerPreview = React.memo((props) => {
         }
         action={!isMobile && <TimerChip timestamp={props.timestamp} full/>}
         classes={{action: classes.action}}
-        style={{paddingBottom: 8}}
+        style={{paddingBottom: 8, paddingTop: 8}}
       />
       <CardActions>
         <FormControlLabel control={<Checkbox checked={props.addTimers} onChange={handleAddTimers}/>} label="add to local Timers"/>

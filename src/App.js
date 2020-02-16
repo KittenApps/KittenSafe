@@ -197,7 +197,7 @@ function App(props){
           </Typography>
           <Typography component="div" role="tabpanel" hidden={tab !== 1}>
             <Box p={{xs: 0, sm: 3}} >
-              <DecryptionPanel addTimers={addTimer} timers={timers} deleteTimer={deleteTimer} hidden={tab !== 1} />
+              <DecryptionPanel addTimers={addTimer} timers={timers} deleteTimer={deleteTimer} pinnedTimer={pinnedTimer} setPinnedTimer={setPinnedTimer} hidden={tab !== 1} />
             </Box>
           </Typography>
         </div>

@@ -1,11 +1,13 @@
-import React, { useState, useContext, useMemo, useCallback, useEffect } from 'react';
-import { Button, Card, CardHeader, CardContent, CardActions, Checkbox, FormControlLabel, Snackbar,
-         Stepper, Step, StepLabel, StepContent, Backdrop, Box  } from '@material-ui/core';
+import React, { useState, useContext, useMemo, useCallback, useEffect, useRef } from 'react';
+import { Avatar, Button, Card, CardHeader, CardContent, CardActions, Checkbox, FormControlLabel,
+         Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box, Hidden } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
+import { pink } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
 import { readFileAsBuffer, TimerContext } from './util';
+import { FileIcon, TimerChip } from './Timers'
 import FilePreview, {isSupportedMimeType} from './FilePreview';
 import FakeProgress from './FakeProgress';
 
@@ -19,6 +21,16 @@ const useStyles = makeStyles(theme => ({
   },
   input: {
     display: 'none'
+  }
+}));
+
+const useStylesFP = makeStyles(theme => ({
+  checked: {
+    color: theme.palette.getContrastText(pink[500]),
+    backgroundColor: pink[500],
+  },
+  action: {
+    marginTop: 8
   }
 }));
 
@@ -46,45 +58,71 @@ const FilePanelTimer = React.memo((props) => {
     return td + 500;
   }, [props, now]);
 
-  if (td <= 0) return <p><b>0</b>days <b>0</b>hours <b>00</b>mins <b>00</b>secs left</p>;
+  if (td <= 0) return <p style={{marginTop: 8, marginBottom: 0}}><b>0</b>days <b>0</b>hours <b>00</b>mins <b>00</b>secs left</p>;
   const d = Math.floor(td / (1000 * 60 * 60 * 24));
   const h = Math.floor((td / (1000 * 60 * 60)) % 24);
   const m = Math.floor((td / 1000 / 60) % 60);
   const s = Math.floor((td / 1000) % 60);
 
-  return <p><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>;
+  return <p style={{marginTop: 8, marginBottom: 0}}><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>;
 });
 
 const FilePanel = React.memo((props) => {
   // console.log("render DecryptionPanel FilePanel", props);
-
-  if (!props.file.meta){
-    switch (props.file.name){
-      case 'none': return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/></Card>;
-      case 'invalid': return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
-      default: return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="Unknown File error"/></Card>;
-    }
-  }
+  const classes = useStylesFP();
+  const oldPinnedTimer = useRef();
+  useEffect(() => {
+    if (props.pinnedTimer !== props.file.meta.auth) oldPinnedTimer.current = props.pinnedTimer;
+  }, [props.pinnedTimer, props.file]);
 
   const handleAddTimer = () => props.addTimers(props.file.meta.auth, {timestamp: props.file.meta.secret.timestamp, filename: props.file.meta.filename, mimeType: props.file.meta.mimeType}, false);
   const handleRmExpTimer = e => props.setRmExpTimer(e.target.checked);
+  const handlePinnedChange = e => {
+    if (e.target.checked){
+      props.setPinnedTimer(props.file.meta.auth);
+    } else if (oldPinnedTimer.current){
+      props.setPinnedTimer(oldPinnedTimer.current);
+    }
+  };
   const setReady = () => props.setTimeReady(true);
 
   return (
     <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined">
-      <CardHeader title={props.file.meta.filename} subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`} />
-      <CardContent>
-        {props.timeReady ? 'Success: KittenSafe file ready for decryption' : 'Error: KittenSafe file not ready for decryption:'}
+      <CardHeader
+        title={props.file.meta.filename}
+        subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`}
+        avatar={
+          <Checkbox
+            icon={<Avatar variant="rounded"><FileIcon mimeType={props.file.meta.mimeType.split('/')[0]}/></Avatar>}
+            checkedIcon={<Avatar variant="rounded" className={classes.checked}><FileIcon mimeType={props.file.meta.mimeType.split('/')[0]}/></Avatar>}
+            color="default" checked={props.pinnedTimer === props.file.meta.auth} onChange={(handlePinnedChange)}
+            disabled={!props.timers.includes(props.file.meta.auth)}
+          />
+        }
+        action={<Hidden xsDown><TimerChip timestamp={props.file.meta.secret.timestamp} full/></Hidden>}
+        classes={{action: classes.action}}
+        style={{paddingBottom: 8, paddingTop: 8}}
+      />
+      <CardContent style={{paddingTop: 0, paddingBottom: 8}}>
+        {props.timeReady ? 'Success: KittenSafe file ready for decryption 🔓' : 'Error: KittenSafe file not ready for decryption 🔒:'}
         {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={setReady} />}
-        {!props.timeReady && !props.timers.includes(props.file.meta.auth) && <Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button>}
       </CardContent>
-      {props.timeReady && props.timers.includes(props.file.meta.auth) && <CardActions><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers"/></CardActions>}
+      {!props.timeReady && !props.timers.includes(props.file.meta.auth) && <CardActions><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button></CardActions>}
+      {props.timeReady && props.timers.includes(props.file.meta.auth) && <CardActions><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers list"/></CardActions>}
     </Card>
   );
 });
 
+const FilePanelError = React.memo((props) => {
+  switch (props.file.name){
+    case 'none': return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/></Card>;
+    case 'invalid': return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
+    default: return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader/><CardContent/></Card>;
+  }
+});
+
 function DecryptionPanel(props){
-  // console.log("render DecryptionPanel");
+  // console.log("render DecryptionPanel: ", props);
   const [file, setFile] = useState({name: 'none'});
   const [warn, setWarn] = useState('');
   const [activeStep, setActiveStep] = useState(0);
@@ -217,7 +255,13 @@ function DecryptionPanel(props){
                 Choose file ...
               </Button>
             </label>
-            <FilePanel file={file} timeReady={timeReady} setTimeReady={setTimeReady} addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer} />
+            {!file.meta ? <FilePanelError file={file} /> :
+              <FilePanel
+                file={file} timeReady={timeReady} setTimeReady={setTimeReady}
+                addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer}
+                pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer}
+              />
+            }
             <Button disabled={true}>Back</Button>
             <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoTone />} disabled={!timeReady || !navigator.onLine}>Decrypt file ...</Button>
           </StepContent>
