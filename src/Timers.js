@@ -39,7 +39,7 @@ const useStylesTL = makeStyles(theme => ({
   }
 }));
 
-const TimerChip = React.memo((props) => {
+export const TimerChip = React.memo((props) => {
   // console.log("render TimerChip");
   const now = useContext(TimerContext);
   const size = props.full ? 'medium' : 'small';

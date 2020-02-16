@@ -73,6 +73,11 @@ function InfoDialog(props){
           </ul>
         </TabPanel>
         <TabPanel value={infoTab} index={2}>
+          <b>KittenSafe v0.4</b>
+          <ul>
+            <li>better Timers integration in Encryption / Decryption setup panel</li>
+            <li>Dark Mode (see custome theme dialog)</li>
+          </ul>
           <b>KittenSafe v0.3</b>
           <ul>
             <li>basic Timers support</li>

@@ -1,11 +1,13 @@
-import React, { useState, useCallback } from 'react';
-import { Backdrop, Box, Button, Checkbox, FormControlLabel, Stepper, Step, StepLabel, StepContent, Tooltip } from '@material-ui/core';
+import React, { useState, useCallback, useMemo } from 'react';
+import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox,
+         FormControlLabel, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
 import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone } from '@material-ui/icons';
-import { makeStyles } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { pink } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
 import { readFileAsBuffer } from './util';
-import { FileIcon } from './Timers';
+import { FileIcon, TimerChip } from './Timers';
 import FilePreview, {isSupportedMimeType2} from './FilePreview';
 import FakeProgress from './FakeProgress';
 
@@ -28,6 +30,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const useStylesTP = makeStyles(theme => ({
+  checked: {
+    color: theme.palette.getContrastText(pink[500]),
+    backgroundColor: pink[500],
+  },
+  action: {
+    marginTop: 8
+  }
+}));
+
 const catimation = [
   ['', '', '🔓', '', '🔑'],
   ['', '', '🔓', '🔑', '🐈'],
@@ -46,6 +58,38 @@ const fakeItems = [
   'creating output file',
   'throwing key far away'
 ];
+
+const TimerPreview = React.memo((props) => {
+  console.log("render EncryptionPanel TimerPreview: ", props);
+  const mimeType = useMemo(() => props.file.type.split('/')[0], [props.file]);
+  const isMobile = useMediaQuery(useTheme().breakpoints.down('xs'));
+  const classes = useStylesTP();
+
+  const handleAddTimers = e => props.setAddTimers(e.target.checked);
+  const handleAddPinnedTimer = e => props.setAddPinnedTimers(e.target.checked);
+
+  return (
+    <Card style={{marginTop: 5}} variant="outlined">
+      <CardHeader
+        title={props.file.name}
+        subheader={isMobile ? <TimerChip timestamp={props.timestamp} full/> : `${props.file.type} (${Math.round(props.file.size/1000)/1000}MB)`}
+        avatar={
+          <Checkbox
+            icon={<Avatar variant="rounded"><FileIcon mimeType={mimeType}/></Avatar>}
+            checkedIcon={<Avatar variant="rounded" className={classes.checked}><FileIcon mimeType={mimeType}/></Avatar>}
+            color="default" checked={props.addPinnedTimer} onChange={handleAddPinnedTimer}
+          />
+        }
+        action={!isMobile && <TimerChip timestamp={props.timestamp} full/>}
+        classes={{action: classes.action}}
+        style={{paddingBottom: 8}}
+      />
+      <CardActions>
+        <FormControlLabel control={<Checkbox checked={props.addTimers} onChange={handleAddTimers}/>} label="add to local Timers"/>
+      </CardActions>
+    </Card>
+  );
+});
 
 const FilenamePanel = React.memo((props) => {
   // console.log("render EncryptionPanel FilenamePanel");
@@ -78,6 +122,7 @@ function EncryptionPanel(props){
   const classes = useStyles();
   const [file, setFile] = useState({name: 'none', type: 'none/none'});
   const [addTimers, setAddTimers] = useState(true);
+  const [addPinnedTimer, setAddPinnedTimers] = useState(true);
   const [timestamp, setTimestamp] = useState(new Date(new Date().getTime() + 60000));
   const [encBlob, setEncBlob] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
@@ -100,7 +145,6 @@ function EncryptionPanel(props){
     setDisabledReset(true);
   };
 
-  const handleAddTimers = e => setAddTimers(e.target.checked);
   const onChangeFile = e => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
   const onEncryptFile = () => {
     setActiveStep(2);
@@ -127,7 +171,7 @@ function EncryptionPanel(props){
       const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
       setEncBlob(new Blob([meta, data]));
       if (addTimers){ // ToDo: Make set to pinned Timer conditionally
-        props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type}, true);
+        props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type}, addPinnedTimer);
       }
     }).catch(err => console.error(err));
   };
@@ -161,7 +205,7 @@ function EncryptionPanel(props){
             </label>
             <FilenamePanel file={file} />
             <Button disabled={true}>Back</Button>
-            <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size || !navigator.onLine}>Select Timestamp</Button>
+            <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size || (!navigator.onLine && false)}>Select Timestamp</Button>
           </StepContent>
         </Step>
         <Step key="timestampSelect">
@@ -179,8 +223,9 @@ function EncryptionPanel(props){
               disablePast
               title="SELECT TIMESTAMP"
               format="yyyy/MM/dd HH:mm:ss.SSS"
+              mask="____/__/__ __:__:__.___"
             />
-            <p><FormControlLabel control={<Checkbox checked={addTimers} onChange={handleAddTimers}/>} label="add to local Timers"/></p>
+            <TimerPreview addTimers={addTimers} setAddTimers={setAddTimers} addPinnedTimer={addPinnedTimer} setAddPinnedTimers={setAddPinnedTimers} file={file} timestamp={timestamp} />
             <p>
               <Button onClick={handleBack}>Back</Button>
               <Button variant="contained" color="primary" startIcon={<LockTwoTone />} onClick={onEncryptFile}>Encrypt file ...</Button>

@@ -41,7 +41,7 @@ function CustomThemeDialog(props){
           <Grid item xs={6} key="primaryColor"><TextField variant="outlined" size="small" label="primary color" type="color" value={primColor} onChange={handlePrimColorChange} fullWidth/></Grid>
           <Grid item xs={6} key="secondaryColor"><TextField variant="outlined" size="small" label="secondary color" type="color" value={secColor} onChange={handleSecColorChange} fullWidth/></Grid>
         </Grid>
-        <FormControlLabel control={<Checkbox checked={darkMode} onChange={handleDarkModeChange}/>} label="enable Dark Mode color palette"/>
+        <FormControlLabel control={<Checkbox checked={darkMode} onChange={handleDarkModeChange}/>} label="enable dark mode colors"/>
       </DialogContent>
       <DialogActions>
         <Button onClick={handleReset} color="secondary">
