@@ -1,6 +1,7 @@
 import React from 'react';
-import { Card, CardHeader, Container } from '@material-ui/core';
+import { Card, CardHeader, Container, TextField } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
+import { MarkdownPreview } from './MarkdownEditor';
 
 const useStyles = makeStyles({
   card: {
@@ -27,7 +28,8 @@ function FilePreview(props){
 
   switch (props.mimeType.split('/')[0]){
       case 'image': element = <img src={props.src} className={classes.media} alt=""/>; break;
-      case 'text': element = <textarea value={props.src} className={classes.media} />; break;
+      case 'text': element = props.mimeType === 'text/markdown' ? <MarkdownPreview src={props.src} /> : <TextField value={props.src}
+        variant="outlined" label="Preview of text file:" InputProps={{readOnly: true}} style={{padding: 10}} fullWidth multiline/>; break;
       case 'video': element = <video src={props.src} className={classes.media} />; break;
       case 'audio': element = <audio src={props.src} className={classes.media} />; break;
       default: return null;

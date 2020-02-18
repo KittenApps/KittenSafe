@@ -10,6 +10,7 @@ import { readFileAsBuffer } from './util';
 import { FileIcon, TimerChip } from './Timers';
 import FilePreview, {isSupportedMimeType2} from './FilePreview';
 import FakeProgress from './FakeProgress';
+//import MarkdownEditor from './MarkdownEditor';
 
 const crypto = window.crypto.subtle;
 
