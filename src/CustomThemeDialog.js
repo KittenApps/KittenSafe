@@ -44,12 +44,8 @@ function CustomThemeDialog(props){
         <FormControlLabel control={<Checkbox checked={darkMode} onChange={handleDarkModeChange}/>} label="enable dark mode colors"/>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleReset} color="secondary">
-          Reset to default theme
-        </Button>
-        <Button onClick={handleApply} color="primary">
-          Apply theme colors
-        </Button>
+        <Button onClick={handleReset} color="secondary">Reset to default theme</Button>
+        <Button onClick={handleApply} color="primary">Apply theme colors</Button>
       </DialogActions>
     </Dialog>
   );

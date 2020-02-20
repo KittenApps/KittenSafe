@@ -137,8 +137,7 @@ function DecryptionPanel(props){
     if (file.name === 'none' || file.name === 'invalid'){
       setTimeReady(false);
     } else if (!file.meta){
-      readFileAsBuffer(file).then((d) => {
-        const data = new Uint8Array(d);
+      readFileAsBuffer(file).then((data) => {
         const meta = JSON.parse(new TextDecoder('utf-8').decode(data.slice(0,data.indexOf(10)))); // parse content until \n (10) as metadata
         setFile({size: file.size, meta, data});
         setTimeReady(new Date(meta.secret.timestamp) < new Date());

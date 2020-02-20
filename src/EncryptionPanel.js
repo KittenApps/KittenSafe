@@ -2,7 +2,7 @@ import React, { useState, useCallback, useMemo } from 'react';
 import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox,
          FormControlLabel, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
-import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone } from '@material-ui/icons';
+import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone, FormatColorText } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
@@ -10,7 +10,7 @@ import { readFileAsBuffer } from './util';
 import { FileIcon, TimerChip } from './Timers';
 import FilePreview, {isSupportedMimeType2} from './FilePreview';
 import FakeProgress from './FakeProgress';
-//import MarkdownEditor from './MarkdownEditor';
+import MarkdownEditor from './MarkdownEditor';
 
 const crypto = window.crypto.subtle;
 
@@ -61,7 +61,7 @@ const fakeItems = [
 ];
 
 const TimerPreview = React.memo((props) => {
-  console.log("render EncryptionPanel TimerPreview: ", props);
+  // console.log("render EncryptionPanel TimerPreview: ", props);
   const mimeType = useMemo(() => props.file.type.split('/')[0], [props.file]);
   const isMobile = useMediaQuery(useTheme().breakpoints.down('xs'));
   const classes = useStylesTP();
@@ -129,9 +129,10 @@ function EncryptionPanel(props){
   const [activeStep, setActiveStep] = useState(0);
   const [fakeProgressPlaying, setFakeProgress] = useState(false);
   const [disabledReset, setDisabledReset] = useState(true);
+  const [createMarkdownOpen, setCreateMarkdownOpen] = useState(false);
 
   const onDrop = useCallback(acceptedFiles => setFile(acceptedFiles[0]), []);
-  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true, disabled: activeStep !== 0});
+  const {getRootProps, getInputProps, isDragActive} = useDropzone({onDrop, noClick: true, noKeyboard: true, disabled: activeStep !== 0 || createMarkdownOpen});
 
   if (props.hidden) return null;
 
@@ -186,6 +187,8 @@ function EncryptionPanel(props){
     setDisabledReset(false);
   };
 
+  const handleCreateMarkdownOpen = () => setCreateMarkdownOpen(true);
+
   return (
     <div {...getRootProps()}>
       <input {...getInputProps()} />
@@ -200,10 +203,9 @@ function EncryptionPanel(props){
           <StepContent>
             <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
             <label htmlFor="encFileButton">
-              <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone />}>
-                Choose file ...
-              </Button>
+              <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>}>Choose file ...</Button>
             </label>
+            <Button variant="contained" color="secondary" onClick={handleCreateMarkdownOpen} startIcon={<FormatColorText/>}>Create Markdown text ...</Button>
             <FilenamePanel file={file} />
             <Button disabled={true}>Back</Button>
             <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size || (!navigator.onLine && false)}>Select Timestamp</Button>
@@ -242,6 +244,7 @@ function EncryptionPanel(props){
           </StepContent>
         </Step>
       </Stepper>
+      <MarkdownEditor open={createMarkdownOpen} setOpen={setCreateMarkdownOpen} setFile={setFile} />
     </div>
   );
 }

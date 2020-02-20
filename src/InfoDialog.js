@@ -75,6 +75,7 @@ function InfoDialog(props){
         <TabPanel value={infoTab} index={2}>
           <b>KittenSafe v0.4</b>
           <ul>
+            <li>Markdown Test Editor: create an (markdown) test for encryption within KittenSafe and also preview it after decryption</li>
             <li>better Timers integration in Encryption / Decryption setup panel</li>
             <li>Dark Mode (see custome theme dialog)</li>
           </ul>
@@ -95,7 +96,7 @@ function InfoDialog(props){
           <b>Roadmap:</b>
           <ul>
             <li>code cleanup and polishing (iterate and improve nearly every component)</li>
-            <li>better file-previews and input editing / text input (markdown support)</li>
+            <li>better file-previews (click for fullscreen)</li>
             <li>more Timestamp options (randomly select date based on a given interval, only allow decryption until a given maxDate)</li>
             <li>Timers 2.0</li>
           </ul>

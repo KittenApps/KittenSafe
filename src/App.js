@@ -172,7 +172,7 @@ function App(props){
               <TimerTab timers={timers} pinnedTimer={pinnedTimer} toggleDrawer={toggleTimerDrawer} />
             </Tabs>
           }
-          <Box display={{ xs: 'block', md: 'none' }} className={classes.grow} />
+          <Box display={{xs: 'block', md: 'none'}} className={classes.grow} />
           <Tooltip title="Customize theme colors" arrow>
             <IconButton color="inherit" onClick={handleCustomThemeOpen}>
               <InvertColorsTwoTone />
@@ -199,7 +199,7 @@ function App(props){
       <main className={classes.root} >
         <div className={clsx(classes.content, {[classes.contentShift]: timerDrawerOpen})} >
           <Typography component="div" role="tabpanel" hidden={tab !== 0}>
-            <Box p={{ xs: 0, sm: 3}} >
+            <Box p={{xs: 0, sm: 3}} >
               <EncryptionPanel addTimers={addTimer} hidden={tab !== 0} />
             </Box>
           </Typography>
