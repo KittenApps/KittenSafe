@@ -96,6 +96,7 @@ function InfoDialog(props){
           <ul>
             <li>code cleanup and polishing (iterate and improve nearly every component)</li>
             <li>better file-previews and input editing / text input (markdown support)</li>
+            <li>more Timestamp options (randomly select date based on a given interval, only allow decryption until a given maxDate)</li>
             <li>Timers 2.0</li>
           </ul>
           <i>You could also check out the more up to date and maybe slightly less stable <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta version of KittenSafe here</a>.</i>

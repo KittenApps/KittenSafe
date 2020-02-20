@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import clsx from 'clsx';
 import { AppBar, Badge, Box, Button, CssBaseline, IconButton, Snackbar, Tabs, Tab, Toolbar, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
-import { LockOpenTwoTone, LockTwoTone, InfoTwoTone, InvertColorsTwoTone } from '@material-ui/icons';
+import { LockOpenTwoTone, LockTwoTone, InfoTwoTone, InvertColorsTwoTone, Close } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import EncryptionPanel from './EncryptionPanel';
 import DecryptionPanel from './DecryptionPanel';
@@ -133,10 +133,10 @@ function App(props){
   const handleInfoDialogOpen = () => setInfoDialogOpen(true);
   const handleCustomThemeOpen = () => setCustomThemeOpen(true);
 
-  const [waitingServiceWorker, setWaitingServiceWorker] = React.useState(null);
-  const [assetsUpdateReady, setAssetsUpdateReady] = React.useState(false);
-  const [assetsCached, setAssetsCached] = React.useState(false);
-  React.useEffect(() => register({
+  const [waitingServiceWorker, setWaitingServiceWorker] = useState(null);
+  const [assetsUpdateReady, setAssetsUpdateReady] = useState(false);
+  const [assetsCached, setAssetsCached] = useState(false);
+  useEffect(() => register({
     onUpdate: reg => {setWaitingServiceWorker(reg.waiting);setAssetsUpdateReady(true);},
     onSuccess: () => setAssetsCached(true)
   }), []);
@@ -148,6 +148,14 @@ function App(props){
   };
   const handleAssetsCachedClose = () => setAssetsCached(false);
   const handleAssetsUpdateReadyClose = () => setAssetsUpdateReady(false);
+  const [installPrompt, setInstallPrompt] = useState(null);
+  useEffect(() => window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    setInstallPrompt(e);
+    return () => setInstallPrompt(null);
+  }), []);
+  const handlePWAClose = () =>  setInstallPrompt(null);
+  const handlePWAInstall = () => installPrompt.prompt();
 
   return (
     <React.Fragment>
@@ -205,18 +213,25 @@ function App(props){
       </main>
       <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={props.setTheme} />
       <InfoDialog open={infoDialogOpen} setOpen={setInfoDialogOpen} version={KSversion} />
-      <Snackbar open={assetsCached} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+      <Snackbar open={assetsCached} >
         <Alert variant="filled" elevation={6} onClose={handleAssetsCachedClose} severity="success">
           <AlertTitle>ServiceWorker successfully registered!</AlertTitle>
           This page is now available offline! You can check out your timers without internet access. However encrypting and decrypting still requires network access.
         </Alert>
       </Snackbar>
-      <Snackbar open={assetsUpdateReady} anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}>
+      <Snackbar open={assetsUpdateReady} >
         <Alert variant="filled" elevation={6} action={<div><Button variant="outlined" color="inherit" onClick={updateAssets} style={{marginBottom: 10}} size="small">Reload and Update now</Button><Button variant="outlined" color="inherit" onClick={handleAssetsUpdateReadyClose} size="small">Close and update later</Button></div>}  severity="warning">
         <AlertTitle>A new KittenSafe update is available!</AlertTitle>
         A new update is available for KittenSafe. To update to the latest version you have to reload the page.
         </Alert>
       </Snackbar>
+      <Snackbar open={installPrompt} autoHideDuration={15000} onClose={handlePWAClose} message="Do you want to add KittenSafe to your Home screen?"
+        action={
+          <React.Fragment>
+            <Button color="secondary" size="small" onClick={handlePWAInstall}>Install</Button>
+            <IconButton size="small" aria-label="close" color="inherit" onClick={handlePWAClose}><Close fontSize="small"/></IconButton>
+          </React.Fragment>
+        } />
     </React.Fragment>
   );
 }
