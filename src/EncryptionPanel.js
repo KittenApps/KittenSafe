@@ -101,7 +101,7 @@ const FilenamePanel = React.memo((props) => {
     <p>
       <FileIcon mimeType={props.file.type.split('/')[0]} /> {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
       <Tooltip title="Toggle file preview" arrow>
-        <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={showPreview} onChange={handlePreview} disabled={!isSupportedMimeType2(props.file.type)}/>
+        <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={showPreview} onChange={handlePreview} disabled={!isSupportedMimeType2(props.file.type) && !props.file.markdown}/>
       </Tooltip>
     </p>
   );
@@ -110,7 +110,7 @@ const FilenamePanel = React.memo((props) => {
     return (
       <React.Fragment>
         {metaInfo}
-        <FilePreview src={URL.createObjectURL(props.file)} mimeType={props.file.type} filename={props.file.name} />
+        <FilePreview src={props.file.markdown || URL.createObjectURL(props.file)} mimeType={props.file.type} filename={props.file.name} />
       </React.Fragment>
     );
   }
