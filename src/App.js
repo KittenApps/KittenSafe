@@ -15,7 +15,7 @@ const KSversion = 'v0.3.9';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    overflow: 'scroll',
+    overflow: 'auto',
     position: 'absolute',
     bottom: 0,
     left: 0,

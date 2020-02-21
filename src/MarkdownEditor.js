@@ -51,7 +51,7 @@ function MarkdownEditor(props){
           <Fab size="small" color="secondary" style={{position: 'fixed', right: 4, top: 52, zIndex: 100000}} onClick={handleFab} >{showPreview ? <EditTwoTone/> : <Subject/>}</Fab>
           <DialogContent>
             <Box hidden={showPreview} style={{marginBottom: 4}}><TextField value={markdown} onChange={onChangeText} label="Enter Markdown file content" placeholder="**Enter your text here**" variant="outlined" multiline fullWidth/></Box>
-            <Paper elevation={3} style={{padding: 5, height: '100%', overflow: 'scroll'}} hidden={!showPreview} ><Typography variant="overline" gutterBottom>Markdown preview:</Typography>{content}</Paper>
+            <Paper elevation={3} style={{padding: 5, height: '100%', overflow: 'auto'}} hidden={!showPreview} ><Typography variant="overline" gutterBottom>Markdown preview:</Typography>{content}</Paper>
           </DialogContent>
           <Container><TextField value={filename} onChange={onChangeFilename} label="Title (filename)" placeholder="text" InputProps={{endAdornment: <InputAdornment position="end">.md</InputAdornment>}} fullWidth/></Container>
         </React.Fragment>
