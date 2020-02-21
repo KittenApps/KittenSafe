@@ -5,7 +5,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@material-ui/pickers/adapter/date-fns';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { TimerProvider } from './util';
-import 'typeface-roboto';
+import './fonts.css';
 
 function Main(){
   // console.log("render Main");
