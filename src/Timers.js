@@ -108,7 +108,7 @@ function TimerDrawer(props){
   // console.log("render TimerDrawer");
   const classes = useStyles();
   const isDesktop = useMediaQuery(useTheme().breakpoints.up('md'), {noSsr: true});
-  if (!props.open) return <div className={classes.drawer} ></div>;
+  if (!props.open && isDesktop) return <div className={classes.drawer} ></div>;
 
   const handleOpen = () => props.setOpen(true);
   const handleClose = () => props.setOpen(false);
