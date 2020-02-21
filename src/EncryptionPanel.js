@@ -244,7 +244,7 @@ function EncryptionPanel(props){
           </StepContent>
         </Step>
       </Stepper>
-      <MarkdownEditor open={createMarkdownOpen} setOpen={setCreateMarkdownOpen} setFile={setFile} />
+      {createMarkdownOpen && <MarkdownEditor open={createMarkdownOpen} setOpen={setCreateMarkdownOpen} setFile={setFile} />}
     </div>
   );
 }

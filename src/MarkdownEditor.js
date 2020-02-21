@@ -1,42 +1,37 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Box, Button, Container, Dialog, DialogTitle, DialogActions, DialogContent, Fab, Grid,
          InputAdornment, Paper, TextField, Typography, useMediaQuery } from '@material-ui/core';
 import { EditTwoTone, Subject } from '@material-ui/icons';
 import { useTheme } from '@material-ui/core/styles';
 import throttle from 'lodash.throttle';
 
-import unified from 'unified'
-import parseMarkdown from 'remark-parse'
-import remarkEmoji from 'remark-emoji';
-import remarkLinks from 'remark-external-links';
-import remark2rehype from 'remark-rehype'
-import rehypeRawHTML from 'rehype-raw';
-import rehypeSanitize from 'rehype-sanitize';
-import rehype2react from 'rehype-react';
-
-const mdProcessor = unified()
-  .use(parseMarkdown).use(remarkEmoji).use(remarkLinks)
-  .use(remark2rehype, {allowDangerousHTML: true}).use(rehypeRawHTML).use(rehypeSanitize)
-  .use(rehype2react, {createElement: React.createElement, Fragment: React.Fragment});
-
 export const MarkdownPreview = React.memo((props) => {
+  console.log("render MarkdownPreview: ", props);
   const [content, setContent] = useState(null);
-  useEffect(() => {mdProcessor.process(props.src).then(c => setContent(c.contents));}, [props.src]);
+  const mdProcessor = useMemo(() => import(/* webpackChunkName: 'markdown' */ './markdownUtil')
+    .then(mu => mu.unified().use(mu.parseMarkdown).use(mu.remarkEmoji).use(mu.remarkLinks)
+      .use(mu.remark2rehype, {allowDangerousHTML: true}).use(mu.rehypeRawHTML).use(mu.rehypeSanitize)
+      .use(mu.rehype2react, {createElement: React.createElement, Fragment: React.Fragment})),[]);
+  useEffect(() => {mdProcessor.then(mp => mp.process(props.src).then(c => setContent(c.contents)));}, [props.src, mdProcessor]);
 
   return <div>{content}</div>
 });
 
-const throttledMd = throttle((markdown, setContent) => mdProcessor.process(markdown).then(c => setContent(c.contents)), 250);
-
 function MarkdownEditor(props){
+  console.log("render MarkdownEditor: ", props);
   const [markdown, setMarkdown] = useState('');
   const [content, setContent] = useState(' ');
   const [filename, setFilename] = useState('');
   const [showPreview, setShowPreview] = useState(false);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
   const isMobile = useMediaQuery(useTheme().breakpoints.down('sm'));
+  const throttledMd = useMemo(() => throttle((markdown) => import(/* webpackChunkName: 'markdown' */ './markdownUtil')
+    .then(mu => mu.unified().use(mu.parseMarkdown).use(mu.remarkEmoji).use(mu.remarkLinks)
+      .use(mu.remark2rehype, {allowDangerousHTML: true}).use(mu.rehypeRawHTML).use(mu.rehypeSanitize)
+      .use(mu.rehype2react, {createElement: React.createElement, Fragment: React.Fragment}))
+    .then(mp => mp.process(markdown).then(c => setContent(c.contents))), 250), []);
   useEffect(() => setShowPreview(!isMobile), [isMobile]);
-  useEffect(() => {showPreview && throttledMd(markdown, setContent);}, [markdown, showPreview]);
+  useEffect(() => {showPreview && throttledMd(markdown);}, [markdown, showPreview, throttledMd]);
   if (!props.open) return null;
 
   const handleClose = () => props.setOpen(false);
@@ -62,9 +57,9 @@ function MarkdownEditor(props){
         </React.Fragment>
         :
         <DialogContent>
-          <Grid container spacing={3} style={{height: '100%'}}>
-            <Grid item xs={6} key="text"><TextField value={markdown} onChange={onChangeText} label="Enter Markdown file content" placeholder="**Enter your text here**" variant="outlined" multiline fullWidth/></Grid>
-            <Grid item xs={6} key="rendered"><Paper elevation={3} style={{padding: 10}}><Typography variant="overline" gutterBottom>Markdown preview:</Typography>{content}</Paper></Grid>
+          <Grid spacing={3} container>
+            <Grid item xs={6} key="text"><Box p={0} m={0}><TextField value={markdown} onChange={onChangeText} label="Enter Markdown file content" placeholder="**Enter your text here**" variant="outlined" multiline fullWidth/></Box></Grid>
+            <Grid item xs={6} key="rendered"><Box p={0} m={0}><Paper elevation={3} style={{padding: 10}}><Typography variant="overline" gutterBottom>Markdown preview:</Typography>{content}</Paper></Box></Grid>
           </Grid>
           <TextField value={filename} onChange={onChangeFilename} label="Title (filename)" placeholder="text" InputProps={{endAdornment: <InputAdornment position="end">.md</InputAdornment>}} fullWidth/>
         </DialogContent>

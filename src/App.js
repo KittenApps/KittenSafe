@@ -155,7 +155,7 @@ function App(props){
     return () => setInstallPrompt(null);
   }), []);
   const handlePWAClose = () =>  setInstallPrompt(null);
-  const handlePWAInstall = () => installPrompt.prompt();
+  const handlePWAInstall = () => {installPrompt.prompt();setInstallPrompt(null);}
 
   return (
     <React.Fragment>
@@ -211,27 +211,33 @@ function App(props){
         </div>
         <TimerDrawer open={timerDrawerOpen} setOpen={setTimerDrawerOpen} timers={timers} pinnedTimer={pinnedTimer} setPinnedTimer={setPinnedTimer} deleteTimer={deleteTimer}/>
       </main>
-      <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={props.setTheme} />
-      <InfoDialog open={infoDialogOpen} setOpen={setInfoDialogOpen} version={KSversion} />
-      <Snackbar open={assetsCached} >
-        <Alert variant="filled" elevation={6} onClose={handleAssetsCachedClose} severity="success">
-          <AlertTitle>ServiceWorker successfully registered!</AlertTitle>
-          This page is now available offline! You can check out your timers without internet access. However encrypting and decrypting still requires network access.
-        </Alert>
-      </Snackbar>
-      <Snackbar open={assetsUpdateReady} >
-        <Alert variant="filled" elevation={6} action={<div><Button variant="outlined" color="inherit" onClick={updateAssets} style={{marginBottom: 10}} size="small">Reload and Update now</Button><Button variant="outlined" color="inherit" onClick={handleAssetsUpdateReadyClose} size="small">Close and update later</Button></div>}  severity="warning">
-        <AlertTitle>A new KittenSafe update is available!</AlertTitle>
-        A new update is available for KittenSafe. To update to the latest version you have to reload the page.
-        </Alert>
-      </Snackbar>
-      <Snackbar open={installPrompt} autoHideDuration={15000} onClose={handlePWAClose} message="Do you want to add KittenSafe to your Home screen?"
-        action={
-          <React.Fragment>
-            <Button color="secondary" size="small" onClick={handlePWAInstall}>Install</Button>
-            <IconButton size="small" aria-label="close" color="inherit" onClick={handlePWAClose}><Close fontSize="small"/></IconButton>
-          </React.Fragment>
-        } />
+      {customThemeOpen && <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={props.setTheme} />}
+      {infoDialogOpen && <InfoDialog open={infoDialogOpen} setOpen={setInfoDialogOpen} version={KSversion} />}
+      {assetsCached &&
+        <Snackbar open={assetsCached} >
+          <Alert variant="filled" elevation={6} onClose={handleAssetsCachedClose} severity="success">
+            <AlertTitle>ServiceWorker successfully registered!</AlertTitle>
+            This page is now available offline! You can check out your timers without internet access. However encrypting and decrypting still requires network access.
+          </Alert>
+        </Snackbar>
+      }
+      {assetsUpdateReady &&
+        <Snackbar open={assetsUpdateReady} >
+          <Alert variant="filled" elevation={6} action={<div><Button variant="outlined" color="inherit" onClick={updateAssets} style={{marginBottom: 10}} size="small">Reload and Update now</Button><Button variant="outlined" color="inherit" onClick={handleAssetsUpdateReadyClose} size="small">Close and update later</Button></div>}  severity="warning">
+          <AlertTitle>A new KittenSafe update is available!</AlertTitle>
+          A new update is available for KittenSafe. To update to the latest version you have to reload the page.
+          </Alert>
+        </Snackbar>
+      }
+      {installPrompt &&
+        <Snackbar open={installPrompt} autoHideDuration={15000} onClose={handlePWAClose} message="Do you want to add KittenSafe to your Home screen?"
+          action={
+            <React.Fragment>
+              <Button color="secondary" size="small" onClick={handlePWAInstall}>Install</Button>
+              <IconButton size="small" aria-label="close" color="inherit" onClick={handlePWAClose}><Close fontSize="small"/></IconButton>
+            </React.Fragment>
+          } />
+      }
     </React.Fragment>
   );
 }
