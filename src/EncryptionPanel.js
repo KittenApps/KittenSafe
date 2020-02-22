@@ -216,6 +216,7 @@ function EncryptionPanel(props){
                 </Grid>
               </Grid>
             </Container>
+            {createMarkdownOpen && <MarkdownEditor open={createMarkdownOpen} setOpen={setCreateMarkdownOpen} setFile={setFile} />}
             <FilenamePanel file={file} />
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
               <Grid container spacing={1}>
@@ -242,6 +243,7 @@ function EncryptionPanel(props){
                 title="SELECT TIMESTAMP"
                 format="yyyy/MM/dd HH:mm:ss.SSS"
                 mask="____/__/__ __:__:__.___"
+                ampm={false}
                 fullWidth
               />
               <TimerPreview addTimers={addTimers} setAddTimers={setAddTimers} addPinnedTimer={addPinnedTimer} setAddPinnedTimers={setAddPinnedTimers} file={file} timestamp={timestamp} />
@@ -267,7 +269,6 @@ function EncryptionPanel(props){
           </StepContent>
         </Step>
       </Stepper>
-      {createMarkdownOpen && <MarkdownEditor open={createMarkdownOpen} setOpen={setCreateMarkdownOpen} setFile={setFile} />}
     </div>
   );
 }

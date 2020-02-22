@@ -12,6 +12,7 @@ import TimerDrawer, { TimerTab } from './Timers';
 import { register } from './serviceWorker';
 
 const KSversion = 'v0.3.9';
+const isBeta = true;
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -34,21 +35,23 @@ const useStyles = makeStyles(theme => ({
   },
   content: {
     [theme.breakpoints.up('md')]: {
+      overflowX: 'hidden',
       flexGrow: 1,
+      marginRight: -320,
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
-      }),
-      marginRight: -320
+      })
     }
   },
   contentShift: {
     [theme.breakpoints.up('md')]: {
+      overflowX: 'hidden',
+      marginRight: 0,
       transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
-      }),
-      marginRight: 0
+      })
     }
   },
   appBar: {
@@ -163,34 +166,30 @@ function App(props){
       <AppBar position="fixed" elevation={6} className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6">
-            <span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe
+            <Badge badgeContent={isBeta ? 'beta' : 0} color="secondary"><span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe</Badge>
           </Typography>
           {isDesktop &&
             <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered>
-              <Tab label="Encryption" icon={<LockTwoTone />} value={0} />
-              <Tab label="Decryption" icon={<LockOpenTwoTone />} value={1} />
+              <Tab label="Encryption" icon={<LockTwoTone/>} value={0} />
+              <Tab label="Decryption" icon={<LockOpenTwoTone/>} value={1} />
               <TimerTab timers={timers} pinnedTimer={pinnedTimer} toggleDrawer={toggleTimerDrawer} />
             </Tabs>
           }
           <Box display={{xs: 'block', md: 'none'}} className={classes.grow} />
           <Tooltip title="Customize theme colors" arrow>
-            <IconButton color="inherit" onClick={handleCustomThemeOpen}>
-              <InvertColorsTwoTone />
-            </IconButton>
+            <IconButton color="inherit" onClick={handleCustomThemeOpen}><InvertColorsTwoTone/></IconButton>
           </Tooltip>
           <Tooltip title="Info / Help / Release Notes" arrow>
             <IconButton color="inherit" onClick={handleInfoDialogOpen}>
-              <Badge badgeContent={KSversion} color="secondary">
-                <InfoTwoTone />
-              </Badge>
+              <Badge badgeContent={KSversion} color="secondary"><InfoTwoTone/></Badge>
             </IconButton>
           </Tooltip>
         </Toolbar>
         {!isDesktop &&
           <Toolbar>
             <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} variant="fullWidth" centered>
-              <Tab label="Encryption" icon={<LockTwoTone />} value={0} />
-              <Tab label="Decryption" icon={<LockOpenTwoTone />} value={1} />
+              <Tab label="Encryption" icon={<LockTwoTone/>} value={0} />
+              <Tab label="Decryption" icon={<LockOpenTwoTone/>} value={1} />
               <TimerTab timers={timers} pinnedTimer={pinnedTimer} toggleDrawer={toggleTimerDrawer} />
             </Tabs>
           </Toolbar>

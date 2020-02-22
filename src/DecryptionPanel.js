@@ -278,8 +278,8 @@ function DecryptionPanel(props){
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
               <Grid container spacing={1}>
                 <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file …</Button></Grid>
-                <Grid item xs><Button variant="contained" color="secondary" startIcon={<ImageTwoTone/>} onClick={handlePrev} disabled={!decFile || !isSupportedMimeType(decFile.mimeType)} fullWidth>Preview original file</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file</Button></Grid>
+                <Grid item xs={12} sm><Button variant="contained" color="secondary" startIcon={<ImageTwoTone/>} onClick={handlePrev} disabled={!decFile || !isSupportedMimeType(decFile.mimeType)} fullWidth>Preview original file</Button></Grid>
               </Grid>
             </Container>
           </StepContent>
@@ -291,7 +291,7 @@ function DecryptionPanel(props){
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
               <Grid container spacing={1}>
                 <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file …</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file</Button></Grid>
               </Grid>
             </Container>
           </StepContent>
