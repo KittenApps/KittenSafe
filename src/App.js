@@ -12,7 +12,7 @@ import TimerDrawer, { TimerTab } from './Timers';
 import { register } from './serviceWorker';
 
 const KSversion = 'v0.3.9';
-const isBeta = true;
+const isBeta = process.env.REACT_APP_BRANCH === 'beta';
 
 const useStyles = makeStyles(theme => ({
   root: {
