@@ -59,7 +59,7 @@ function MarkdownEditor(props){
         <DialogContent>
           <Grid spacing={3} container>
             <Grid item xs={6} key="text"><Box p={0} m={0}><TextField value={markdown} onChange={onChangeText} label="Enter Markdown file content" placeholder="**Enter your text here**" variant="outlined" multiline fullWidth/></Box></Grid>
-            <Grid item xs={6} key="rendered"><Box p={0} m={0}><Paper elevation={3} style={{padding: 10}}><Typography variant="overline" gutterBottom>Markdown preview:</Typography>{content}</Paper></Box></Grid>
+            <Grid item xs={6} key="rendered"><Box p={0} m={0}><Paper elevation={3} style={{padding: 10, overflow: 'auto'}}><Typography variant="overline" gutterBottom>Markdown preview:</Typography>{content}</Paper></Box></Grid>
           </Grid>
           <TextField value={filename} onChange={onChangeFilename} label="Title (filename)" placeholder="text" InputProps={{endAdornment: <InputAdornment position="end">.md</InputAdornment>}} fullWidth/>
         </DialogContent>

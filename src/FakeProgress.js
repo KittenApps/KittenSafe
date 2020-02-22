@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from 'react';
-import { Container, Grid, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
+import { Box, Container, Grid, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { CheckBoxOutlineBlank, CheckBoxTwoTone } from '@material-ui/icons';
 import { green } from '@material-ui/core/colors';
 
@@ -23,23 +23,23 @@ function FakeProgress(props){
   }, [fakeProgress, limit]);
 
   return (
-    <React.Fragment>
-      <Container maxWidth="sm">
-        <Grid container spacing={3}>
-          {[0, 1, 2, 3, 4].map(i => <Grid item xs={2} key={i} style={{fontSize: 32}}>{props.catimation[fakeProgress > 0 ? fakeProgress : 0][i]}</Grid>)}
-        </Grid>
-      </Container>
-      <List dense>
-        {props.items.map((v, i) => (
-          <ListItem key={i} dense>
-            <ListItemIcon>
-              {i < fakeProgress ? <CheckBoxTwoTone style={{ color: green[800] }} /> : <CheckBoxOutlineBlank /> }
-            </ListItemIcon>
-            <ListItemText primary={v} />
-          </ListItem>
-        ))}
-      </List>
-    </React.Fragment>
+    <Container maxWidth="sm">
+      <Grid container justify="space-around">
+        {[0, 1, 2, 3, 4].map(i => <Grid item xs={1} key={i} style={{fontSize: 32}}>{props.catimation[fakeProgress > 0 ? fakeProgress : 0][i]}</Grid>)}
+      </Grid>
+      <Box display="flex" justifyContent="center">
+        <List dense>
+          {props.items.map((v, i) => (
+            <ListItem key={i} dense>
+              <ListItemIcon>
+                {i < fakeProgress ? <CheckBoxTwoTone style={{ color: green[800] }} /> : <CheckBoxOutlineBlank /> }
+              </ListItemIcon>
+              <ListItemText primary={v} />
+            </ListItem>
+          ))}
+        </List>
+      </Box>
+    </Container>
   );
 }
 

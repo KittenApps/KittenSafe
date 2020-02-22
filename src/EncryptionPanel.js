@@ -1,6 +1,6 @@
 import React, { useState, useCallback, useMemo } from 'react';
-import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox,
-         FormControlLabel, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
+import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox, Container,
+         FormControlLabel, Grid, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
 import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone, FormatColorText } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
@@ -25,7 +25,7 @@ const useStyles = makeStyles(theme => ({
   },
   timePicker: {
     width: '100%',
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up('md')]: {
       width: 270
     }
   }
@@ -98,12 +98,15 @@ const FilenamePanel = React.memo((props) => {
   const handlePreview = (e) => setPreview(e.target.checked);
 
   const metaInfo = (
-    <p>
-      <FileIcon mimeType={props.file.type.split('/')[0]} /> {props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}
-      <Tooltip title="Toggle file preview" arrow>
-        <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={showPreview} onChange={handlePreview} disabled={!isSupportedMimeType2(props.file.type) && !props.file.markdown}/>
-      </Tooltip>
-    </p>
+    <Grid container spacing={1} justify="center" alignItems="center">
+      <Grid item><FileIcon mimeType={props.file.type.split('/')[0]} /></Grid>
+      <Grid item>{props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}</Grid>
+      <Grid item>
+        <Tooltip title="Toggle file preview" arrow>
+          <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={showPreview} onChange={handlePreview} disabled={!isSupportedMimeType2(props.file.type) && !props.file.markdown}/>
+        </Tooltip>
+      </Grid>
+    </Grid>
   );
 
   if (showPreview){
@@ -201,12 +204,20 @@ function EncryptionPanel(props){
         <Step key="fileSelect">
           <StepLabel>Select the file to encrypt</StepLabel>
           <StepContent>
-            <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
-            <label htmlFor="encFileButton">
-              <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>}>Choose file ...</Button>
-            </label>
-            <Button variant="contained" color="secondary" onClick={handleCreateMarkdownOpen} startIcon={<FormatColorText/>}>Create Markdown text ...</Button>
-            <FilenamePanel file={file} />
+            <Container maxWidth="md" disableGutters>
+              <Grid container spacing={1}>
+                <Grid item xs={12} md={6}>
+                  <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
+                  <label htmlFor="encFileButton">
+                    <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Choose file ...</Button>
+                  </label>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <Button variant="contained" color="secondary" onClick={handleCreateMarkdownOpen} startIcon={<FormatColorText/>} fullWidth>Create Markdown text</Button>
+                </Grid>
+              </Grid>
+              <FilenamePanel file={file} />
+            </Container>
             <Button disabled={true}>Back</Button>
             <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size || (!navigator.onLine && false)}>Select Timestamp</Button>
           </StepContent>

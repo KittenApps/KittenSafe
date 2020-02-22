@@ -4,9 +4,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import { MarkdownPreview } from './MarkdownEditor';
 
 const useStyles = makeStyles({
-  card: {
-    width: '98%'
-  },
   media: {
     width: '100%',
     minHeight: 200
@@ -28,7 +25,7 @@ function FilePreview(props){
 
   switch (props.mimeType.split('/')[0]){
       case 'image': element = <img src={props.src} className={classes.media} alt=""/>; break;
-      case 'text': element = props.mimeType === 'text/markdown' ? <Paper elevation={3} style={{marginLeft: 10, marginRight: 10, marginBottom: 10, padding: 10}}><MarkdownPreview src={props.src} /></Paper> : <TextField value={props.src}
+      case 'text': element = props.mimeType === 'text/markdown' ? <Paper elevation={3} style={{marginLeft: 10, marginRight: 10, marginBottom: 10, padding: 10, overflow: 'auto'}}><MarkdownPreview src={props.src} /></Paper> : <TextField value={props.src}
         variant="outlined" label="Preview of text file:" InputProps={{readOnly: true}} style={{padding: 10}} fullWidth multiline/>; break;
       case 'video': element = <video src={props.src} className={classes.media} />; break;
       case 'audio': element = <audio src={props.src} className={classes.media} />; break;
@@ -37,7 +34,7 @@ function FilePreview(props){
 
   return (
     <Container maxWidth="md" style={{marginBottom: 10}} disableGutters>
-      <Card variant="outlined" className={classes.card}>
+      <Card variant="outlined">
         <CardHeader title={`Preview of ${props.filename}`} subheader={props.mimeType} />
         {element}
       </Card>
