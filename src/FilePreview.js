@@ -22,18 +22,19 @@ function FilePreview(props){
   }
 
   let element;
+  let mw;
 
   switch (props.mimeType.split('/')[0]){
-      case 'image': element = <img src={props.src} className={classes.media} alt=""/>; break;
+      case 'image': element = <img src={props.src} className={classes.media} alt=""/>; mw="sm"; break;
       case 'text': element = props.mimeType === 'text/markdown' ? <Paper elevation={3} style={{marginLeft: 10, marginRight: 10, marginBottom: 10, padding: 10, overflow: 'auto'}}><MarkdownPreview src={props.src} /></Paper> : <TextField value={props.src}
-        variant="outlined" label="Preview of text file:" InputProps={{readOnly: true}} style={{padding: 10}} fullWidth multiline/>; break;
-      case 'video': element = <video src={props.src} className={classes.media} />; break;
-      case 'audio': element = <audio src={props.src} className={classes.media} />; break;
+        variant="outlined" label="Preview of text file:" InputProps={{readOnly: true}} style={{padding: 10}} fullWidth multiline/>; mw="xl"; break;
+      case 'video': element = <video src={props.src} className={classes.media} autoPlay controls/>; mw="lg"; break;
+      case 'audio': element = <audio src={props.src} className={classes.media} autoPlay controls/>; mw="sm"; break;
       default: return null;
   }
 
   return (
-    <Container maxWidth="md" style={{marginBottom: 10}} disableGutters>
+    <Container maxWidth={mw} disableGutters>
       <Card variant="outlined">
         <CardHeader title={`Preview of ${props.filename}`} subheader={props.mimeType} />
         {element}

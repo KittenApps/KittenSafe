@@ -1,8 +1,8 @@
 import React, { useState, useContext, useMemo, useCallback, useEffect, useRef } from 'react';
-import { Avatar, Button, Card, CardHeader, CardContent, CardActions, Checkbox, FormControlLabel,
-         Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box, Hidden } from '@material-ui/core';
+import { Avatar, Button, Card, CardHeader, CardContent, CardActions, Checkbox, Container, FormControlLabel,
+         Grid, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box, Hidden } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
-import { LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone } from '@material-ui/icons';
+import { LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone, SaveTwoTone, ImageTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
@@ -87,7 +87,7 @@ const FilePanel = React.memo((props) => {
   const setReady = () => props.setTimeReady(true);
 
   return (
-    <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined">
+    <Card variant="outlined">
       <CardHeader
         title={props.file.meta.filename}
         subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`}
@@ -115,9 +115,9 @@ const FilePanel = React.memo((props) => {
 
 const FilePanelError = React.memo((props) => {
   switch (props.file.name){
-    case 'none': return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/></Card>;
-    case 'invalid': return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
-    default: return <Card style={{marginTop: 10, marginBottom: 5}} variant="outlined"><CardHeader/><CardContent/></Card>;
+    case 'none': return <Card variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/></Card>;
+    case 'invalid': return <Card variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
+    default: return <Card variant="outlined"><CardHeader/><CardContent/></Card>;
   }
 });
 
@@ -246,40 +246,54 @@ function DecryptionPanel(props){
       </Backdrop>
       <Stepper activeStep={activeStep} orientation="vertical">
         <Step key="fileSelect">
-          <StepLabel>Select the encrypted file for decryption</StepLabel>
+          <StepLabel>Choose the KittenSafe file for decryption</StepLabel>
           <StepContent>
-            <input className={classes.input} id="decFileButton" type="file" onChange={onChangeFile} />
-            <label htmlFor="decFileButton">
-              <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone />}>
-                Choose file ...
-              </Button>
-            </label>
-            {!file.meta ? <FilePanelError file={file} /> :
-              <FilePanel
-                file={file} timeReady={timeReady} setTimeReady={setTimeReady}
-                addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer}
-                pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer}
-              />
-            }
-            <Button disabled={true}>Back</Button>
-            <Button variant="contained" color="primary" onClick={onDecryptFile} startIcon={<LockOpenTwoTone />} disabled={!timeReady || !navigator.onLine}>Decrypt file ...</Button>
+            <Container maxWidth="sm" disableGutters>
+              <input className={classes.input} id="decFileButton" type="file" onChange={onChangeFile} />
+              <label htmlFor="decFileButton">
+                <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
+              </label>
+            </Container>
+            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+              {!file.meta ? <FilePanelError file={file} /> :
+                <FilePanel
+                  file={file} timeReady={timeReady} setTimeReady={setTimeReady}
+                  addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer}
+                  pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer}
+                />
+              }
+            </Container>
+            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+              <Grid container spacing={1}>
+                <Grid item><Button variant="outlined" disabled={true}>Back</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<LockOpenTwoTone/>} onClick={onDecryptFile} disabled={!timeReady || !navigator.onLine} fullWidth>Decrypt file …</Button></Grid>
+              </Grid>
+            </Container>
           </StepContent>
         </Step>
         <Step key="Decryption">
-          <StepLabel>Decrypting KittenSafe file</StepLabel>
+          <StepLabel>Decrypting the KittenSafe file and saving the restored original file</StepLabel>
           <StepContent>
             <FakeProgress catimation={catimation} items={fakeItems} play={fakeProgressPlaying}/>
-            <Button variant="contained" color="primary" onClick={handleSave} disabled={!decFile}>Save original file...</Button>
-            <Button variant="contained" color="secondary" onClick={handlePrev} disabled={!decFile || !isSupportedMimeType(decFile.mimeType)}>Preview original file...</Button>
-            <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>
+            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+              <Grid container spacing={1}>
+                <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file …</Button></Grid>
+                <Grid item xs><Button variant="contained" color="secondary" startIcon={<ImageTwoTone/>} onClick={handlePrev} disabled={!decFile || !isSupportedMimeType(decFile.mimeType)} fullWidth>Preview original file</Button></Grid>
+              </Grid>
+            </Container>
           </StepContent>
         </Step>
         <Step key="Preview">
-          <StepLabel>Previewing decrypted media file</StepLabel>
+          <StepLabel>Optionally previewing the decrypted media file</StepLabel>
           <StepContent>
             <FilePreview src={preview.src} mimeType={preview.mimeType} filename={preview.filename} />
-            <Button variant="contained" color="primary" onClick={handleSave} disabled={!decFile}>Save original file...</Button>
-            <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>
+            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+              <Grid container spacing={1}>
+                <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file …</Button></Grid>
+              </Grid>
+            </Container>
           </StepContent>
         </Step>
       </Stepper>

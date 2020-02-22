@@ -1,8 +1,9 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox, Container,
          FormControlLabel, Grid, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
-import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone, FormatColorText } from '@material-ui/icons';
+import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone,
+         FormatColorText, TimerTwoTone, SaveTwoTone } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone'
@@ -22,12 +23,6 @@ const useStyles = makeStyles(theme => ({
   },
   input: {
     display: 'none'
-  },
-  timePicker: {
-    width: '100%',
-    [theme.breakpoints.up('md')]: {
-      width: 270
-    }
   }
 }));
 
@@ -93,9 +88,11 @@ const TimerPreview = React.memo((props) => {
 });
 
 const FilenamePanel = React.memo((props) => {
-  // console.log("render EncryptionPanel FilenamePanel");
+  // console.log("render EncryptionPanel FilenamePanel: ", props);
   const [showPreview, setPreview] = useState(false);
+  useEffect(() => setPreview(() => false), [props.file]);
   const handlePreview = (e) => setPreview(e.target.checked);
+  const isSupported = useMemo(() => isSupportedMimeType2(props.file.type) || !!props.file.markdown, [props.file]);
 
   const metaInfo = (
     <Grid container spacing={1} justify="center" alignItems="center">
@@ -103,7 +100,7 @@ const FilenamePanel = React.memo((props) => {
       <Grid item>{props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}</Grid>
       <Grid item>
         <Tooltip title="Toggle file preview" arrow>
-          <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} value={showPreview} onChange={handlePreview} disabled={!isSupportedMimeType2(props.file.type) && !props.file.markdown}/>
+          <Checkbox icon={<VisibilityOffTwoTone />} checkedIcon={<VisibilityTwoTone />} checked={showPreview} onChange={handlePreview} disabled={!isSupported}/>
         </Tooltip>
       </Grid>
     </Grid>
@@ -112,8 +109,10 @@ const FilenamePanel = React.memo((props) => {
   if (showPreview){
     return (
       <React.Fragment>
-        {metaInfo}
-        <FilePreview src={props.file.markdown || URL.createObjectURL(props.file)} mimeType={props.file.type} filename={props.file.name} />
+        <Container maxWidth="md" disableGutters>{metaInfo}</Container>
+        {isSupported &&
+          <FilePreview src={props.file.markdown || URL.createObjectURL(props.file)} mimeType={props.file.type} filename={props.file.name} />
+        }
       </React.Fragment>
     );
   }
@@ -202,56 +201,69 @@ function EncryptionPanel(props){
       </Backdrop>
       <Stepper activeStep={activeStep} orientation="vertical">
         <Step key="fileSelect">
-          <StepLabel>Select the file to encrypt</StepLabel>
+          <StepLabel>Choose or create the file to encrypt</StepLabel>
           <StepContent>
-            <Container maxWidth="md" disableGutters>
+            <Container maxWidth="sm" disableGutters>
               <Grid container spacing={1}>
                 <Grid item xs={12} md={6}>
                   <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
                   <label htmlFor="encFileButton">
-                    <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Choose file ...</Button>
+                    <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
                   </label>
                 </Grid>
                 <Grid item xs={12} md={6}>
                   <Button variant="contained" color="secondary" onClick={handleCreateMarkdownOpen} startIcon={<FormatColorText/>} fullWidth>Create Markdown text</Button>
                 </Grid>
               </Grid>
-              <FilenamePanel file={file} />
             </Container>
-            <Button disabled={true}>Back</Button>
-            <Button variant="contained" color="primary" onClick={handleNext} disabled={!file.size || (!navigator.onLine && false)}>Select Timestamp</Button>
+            <FilenamePanel file={file} />
+            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+              <Grid container spacing={1}>
+                <Grid item><Button variant="outlined" disabled={true}>Back</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<TimerTwoTone/>} onClick={handleNext} disabled={!file.size || !navigator.onLine} fullWidth>Select Timestamp</Button></Grid>
+              </Grid>
+            </Container>
           </StepContent>
         </Step>
         <Step key="timestampSelect">
           <StepLabel>Select the timestamp until the file should be encrypted</StepLabel>
           <StepContent>
-            <DateTimePicker
-              variant="outlined"
-              label="file encrypted until:"
-              className={classes.timePicker}
-              views={['year', 'month', 'date', 'hours', 'minutes']}
-              value={timestamp}
-              onChange={setTimestamp}
-              showTodayButton
-              todayLabel="NOW"
-              disablePast
-              title="SELECT TIMESTAMP"
-              format="yyyy/MM/dd HH:mm:ss.SSS"
-              mask="____/__/__ __:__:__.___"
-            />
-            <TimerPreview addTimers={addTimers} setAddTimers={setAddTimers} addPinnedTimer={addPinnedTimer} setAddPinnedTimers={setAddPinnedTimers} file={file} timestamp={timestamp} />
-            <p>
-              <Button onClick={handleBack}>Back</Button>
-              <Button variant="contained" color="primary" startIcon={<LockTwoTone />} onClick={onEncryptFile}>Encrypt file ...</Button>
-            </p>
+            <Container maxWidth="sm" disableGutters>
+              <DateTimePicker
+                variant="outlined"
+                label="file encrypted until:"
+                className={classes.timePicker}
+                views={['year', 'month', 'date', 'hours', 'minutes']}
+                value={timestamp}
+                onChange={setTimestamp}
+                showTodayButton
+                todayLabel="NOW"
+                disablePast
+                title="SELECT TIMESTAMP"
+                format="yyyy/MM/dd HH:mm:ss.SSS"
+                mask="____/__/__ __:__:__.___"
+                fullWidth
+              />
+              <TimerPreview addTimers={addTimers} setAddTimers={setAddTimers} addPinnedTimer={addPinnedTimer} setAddPinnedTimers={setAddPinnedTimers} file={file} timestamp={timestamp} />
+            </Container>
+            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+              <Grid container spacing={1}>
+                <Grid item><Button variant="outlined" onClick={handleBack}>Back</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<LockTwoTone/>} onClick={onEncryptFile} fullWidth>Encrypt file …</Button></Grid>
+              </Grid>
+            </Container>
           </StepContent>
         </Step>
         <Step key="downloadEncrypted">
-          <StepLabel>Encrypting and Saving the file</StepLabel>
+          <StepLabel>Encrypting and saving your file as a KittenSafe file</StepLabel>
           <StepContent>
             <FakeProgress catimation={catimation} items={fakeItems} play={fakeProgressPlaying}/>
-            <Button variant="contained" color="primary" onClick={handleSave} disabled={!encBlob}>Save Encrypted File...</Button>
-            <Button onClick={handleReset} disabled={disabledReset}>Reset</Button>
+            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+              <Grid container spacing={1}>
+                <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!encBlob} fullWidth>Save Encrypted File …</Button></Grid>
+              </Grid>
+            </Container>
           </StepContent>
         </Step>
       </Stepper>

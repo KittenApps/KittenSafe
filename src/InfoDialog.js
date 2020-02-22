@@ -84,7 +84,7 @@ function InfoDialog(props){
             <li>basic Timers support</li>
             <li>file drag and drop support</li>
             <li>Progressive Web App: this site is available offline to check on Timers</li>
-            <li>performance optimization (avoid unnecessary rerendering, unified timers ...)</li>
+            <li>performance optimization (avoid unnecessary rerendering, unified timers …)</li>
             <li>and other minor improvements and fixes</li>
           </ul>
           <b>KittenSafe v0.2</b>
