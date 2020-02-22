@@ -89,6 +89,6 @@ function checkValidServiceWorker(swUrl, config) {
 
 export function unregister() {
   if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.ready.then(reg => reg.unregister()).catch(e => console.error(e.message));
+    return navigator.serviceWorker.ready.then(reg => reg.unregister()).catch(e => console.error(e.message));
   }
 }

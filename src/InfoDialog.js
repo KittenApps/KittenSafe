@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import { Box, Button, Dialog, DialogActions, DialogContent, Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
+import { Box, Button, Container, Dialog, DialogActions, DialogContent,
+         Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
+import { unregister } from './serviceWorker';
 import logo from './logo256.png';
 
 const TabPanel = React.memo((props) => {
@@ -19,6 +21,7 @@ const TabPanel = React.memo((props) => {
 function InfoDialog(props){
   // console.log("render InfoDialog");
   const [infoTab, setInfoTab] = useState(() => localStorage.getItem('lastVersion') !== props.version && localStorage.getItem('lastVersion') ? 3 : 0);
+  const [brachSwitched, setBrachSwitched] = useState(false);
   const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
   if (!props.open) return null;
@@ -27,6 +30,12 @@ function InfoDialog(props){
     localStorage.setItem('lastVersion', props.version);
     props.setOpen(false);
   };
+  const handleBranchSwitch = () => {
+    setBrachSwitched(true);
+    unregister().then(() => {
+      document.cookie = `nf_ab=${document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'}; expires=${new Date(new Date().getTime() + 1000 * 3600 * 24 * 365)}`;
+    }).then(() => window.location.reload());
+  }
 
   return (
     <Dialog open={props.open} onClose={handleClose} fullScreen={fullScreen} maxWidth="xl">
@@ -45,6 +54,7 @@ function InfoDialog(props){
         <TabPanel value={infoTab} index={0}>
           <Box textAlign="center" component="h2">Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Box>
           <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
+          {window.location.hostname === "kittensafe.netlify.com" && <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10}} disableGutters><Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched} fullWidth>Switch to {document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'} branch …</Button></Container>}
           <Box textAlign="center" fontStyle="italic">A secure WebApp to encrypt your files for delayed access until a preselected timestamp.</Box>
           <Box textAlign="center" fontStyle="italic">It is 100% privacy friendly too, because your files never leave your device (as encrypting them is done locally using the WebCrypto API).</Box>
           <Box textAlign="center" fontStyle="italic">Also no personal data is stored on our stateless servers (no database used), because it uses some fancy crypto methods to derive the encryption key based on the given timestamp.</Box>
