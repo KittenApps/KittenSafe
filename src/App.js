@@ -58,6 +58,13 @@ const useStyles = makeStyles(theme => ({
     [theme.breakpoints.up('md')]: {
       zIndex: theme.zIndex.drawer + 50
     }
+  },
+  betaBadge: {
+    marginRight: -10
+  },
+  versionBadge: {
+    marginTop: -3,
+    marginRight: -9
   }
 }));
 
@@ -166,7 +173,7 @@ function App(props){
       <AppBar position="fixed" elevation={6} className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6">
-            <Badge badgeContent={isBeta ? 'beta' : 0} color="secondary"><span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe</Badge>
+            <Badge badgeContent={isBeta ? 'beta' : 0} classes={{badge: classes.betaBadge}} color="secondary"><span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe</Badge>
           </Typography>
           {isDesktop &&
             <Tabs value={tab} onChange={handleChangeTab} className={classes.grow} centered>
@@ -181,7 +188,7 @@ function App(props){
           </Tooltip>
           <Tooltip title="Info / Help / Release Notes" arrow>
             <IconButton color="inherit" onClick={handleInfoDialogOpen}>
-              <Badge badgeContent={KSversion} color="secondary"><InfoTwoTone/></Badge>
+              <Badge badgeContent={KSversion} classes={{badge: classes.versionBadge}} color="secondary"><InfoTwoTone/></Badge>
             </IconButton>
           </Tooltip>
         </Toolbar>

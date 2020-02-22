@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Button, Dialog, DialogActions, DialogContent, Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
+import logo from './logo256.png';
 
 const TabPanel = React.memo((props) => {
   const { children, value, index } = props;
@@ -17,7 +18,7 @@ const TabPanel = React.memo((props) => {
 
 function InfoDialog(props){
   // console.log("render InfoDialog");
-  const [infoTab, setInfoTab] = useState(() => localStorage.getItem('lastVersion') ? 2 : 0);
+  const [infoTab, setInfoTab] = useState(() => localStorage.getItem('lastVersion') !== props.version && localStorage.getItem('lastVersion') ? 3 : 0);
   const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
   if (!props.open) return null;
@@ -34,18 +35,21 @@ function InfoDialog(props){
           <Tabs value={infoTab} indicatorColor="primary" textColor="primary" variant="scrollable" scrollButtons="on" onChange={handleInfoTabChange}>
             <Tab label="Welcome" value={0} />
             <Tab label="Info" value={1} />
-            <Tab label="Release Notes" value={2} />
-            <Tab label="Roadmap" value={3} />
+            <Tab label="Community" value={2} disabled={!navigator.onLine}/>
+            <Tab label="Release Notes" value={3} />
+            <Tab label="Roadmap" value={4} />
           </Tabs>
         </Box>
       </Paper>
       <DialogContent>
         <TabPanel value={infoTab} index={0}>
           <Box textAlign="center" component="h2">Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Box>
+          <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
           <Box textAlign="center" fontStyle="italic">A secure WebApp to encrypt your files for delayed access until a preselected timestamp.</Box>
           <Box textAlign="center" fontStyle="italic">It is 100% privacy friendly too, because your files never leave your device (as encrypting them is done locally using the WebCrypto API).</Box>
           <Box textAlign="center" fontStyle="italic">Also no personal data is stored on our stateless servers (no database used), because it uses some fancy crypto methods to derive the encryption key based on the given timestamp.</Box>
           <Box textAlign="center" fontStyle="italic">For more background information on how KittenSafe works, check out the Info tab at the top of this dialog box.</Box>
+          <Box textAlign="center" fontStyle="italic">KittenSafe is build with ❤ by Silizias using the Web Crypto API, Netlify functions, React, Material UI and Remark. The logo is from iconka.com.</Box>
           <Box textAlign="center" fontStyle="italic">Note: You can reopen this dialog whenever you want by clicking the question mark in the top right corner (of the appbar).</Box>
         </TabPanel>
         <TabPanel value={infoTab} index={1}>
@@ -73,6 +77,9 @@ function InfoDialog(props){
           </ul>
         </TabPanel>
         <TabPanel value={infoTab} index={2}>
+          <iframe src="https://discordapp.com/widget?id=676574654919344128&theme=dark" title="Discord" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
+        </TabPanel>
+        <TabPanel value={infoTab} index={3}>
           <b>KittenSafe v0.4</b>
           <ul>
             <li>Markdown Test Editor: create an (markdown) test for encryption within KittenSafe and also preview it after decryption</li>
@@ -92,7 +99,7 @@ function InfoDialog(props){
             <li>new fancy React Material UI</li>
           </ul>
         </TabPanel>
-        <TabPanel value={infoTab} index={3}>
+        <TabPanel value={infoTab} index={4}>
           <b>Roadmap:</b>
           <ul>
             <li>code cleanup and polishing (iterate and improve nearly every component)</li>
