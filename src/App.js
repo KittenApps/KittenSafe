@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
     left: 0,
     right: 0,
     top: 136,
+    overflow: 'auto',
     [theme.breakpoints.down('sm')]: {
       top: 128
     },
