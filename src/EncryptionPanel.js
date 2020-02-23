@@ -199,7 +199,7 @@ function EncryptionPanel(props){
           Drag a file over here to encrypt it with KittenSafe!
         </Box>
       </Backdrop>
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper activeStep={activeStep} elevation={1} orientation="vertical">
         <Step key="fileSelect">
           <StepLabel>Choose or create the file to encrypt</StepLabel>
           <StepContent>

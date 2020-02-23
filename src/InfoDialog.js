@@ -11,7 +11,7 @@ const TabPanel = React.memo((props) => {
 
   return (
     <Typography component="div" role="tabpanel" hidden={value !== index}>
-      {value === index && <Box p={3}>{children}</Box>}
+      {value === index && <Box p={1}>{children}</Box>}
     </Typography>
   );
 }, (prev, next) => {

@@ -114,14 +114,13 @@ function TimerDrawer(props){
   // console.log("render TimerDrawer");
   const classes = useStyles();
   const isDesktop = useMediaQuery(useTheme().breakpoints.up('md'), {noSsr: true});
-  if (!props.open && isDesktop) return <div className={classes.drawer} ></div>;
 
   const handleOpen = () => props.setOpen(true);
   const handleClose = () => props.setOpen(false);
 
   if (isDesktop){
     return (
-      <Drawer variant="persistent" anchor="right" open={props.open} className={classes.drawer} classes={{paper: classes.drawerPaper}} >
+      <Drawer variant="persistent" anchor="right" open={props.open} className={classes.drawer} PaperProps={{elevation: 3}} classes={{paper: classes.drawerPaper}} >
         <List>
           <div className={classes.drawerHeader}>
             <IconButton onClick={handleClose}><CloseTwoTone/></IconButton>

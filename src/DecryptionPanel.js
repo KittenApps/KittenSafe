@@ -244,7 +244,7 @@ function DecryptionPanel(props){
           Drag a KittenSafe file over here to decrypt it!
         </Box>
       </Backdrop>
-      <Stepper activeStep={activeStep} orientation="vertical">
+      <Stepper activeStep={activeStep} elevation={1} orientation="vertical">
         <Step key="fileSelect">
           <StepLabel>Choose the KittenSafe file for decryption</StepLabel>
           <StepContent>
