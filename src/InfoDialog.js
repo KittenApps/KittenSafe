@@ -3,7 +3,7 @@ import { Box, Button, Container, Dialog, DialogActions, DialogContent,
          Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 import { unregister } from './serviceWorker';
-import logo from './logo256.png';
+import logo from './media/logo256.png';
 
 const TabPanel = React.memo((props) => {
   const { children, value, index } = props;

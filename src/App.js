@@ -16,7 +16,6 @@ const isBeta = process.env.REACT_APP_BRANCH === 'beta';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    overflow: 'auto',
     position: 'absolute',
     bottom: 0,
     left: 0,

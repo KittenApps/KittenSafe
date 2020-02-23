@@ -4,10 +4,10 @@ import { createMuiTheme } from '@material-ui/core/styles';
 
 const defaultPrim = '#006302';
 const defaultSec = '#00ba23';
-const themeColors = (localStorage.getItem('customThemeColors') || `${defaultPrim}|${defaultSec}|light`).split('|');
 
 function CustomThemeDialog(props){
   // console.log("render CustomThemeDialog");
+  const themeColors = (localStorage.getItem('customThemeColors') || `${defaultPrim}|${defaultSec}|light`).split('|');
   const [primColor, setPrimColor] = useState(themeColors[0]);
   const [secColor, setSecColor] = useState(themeColors[1]);
   const [darkMode, setDarkMode] = useState(themeColors[2] === 'dark')

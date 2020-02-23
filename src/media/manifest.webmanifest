@@ -1,19 +1,24 @@
 {
-  "short_name": "Kittensafe",
-  "name": "Kittensafe",
+  "short_name": "KittenSafe",
+  "name": "KittenSafe",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "favicon.2f8cf738.ico",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     },
     {
-      "src": "logo192.png",
+      "src": "logo192.aa14036e.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "logo256.bcc357ce.png",
+      "type": "image/png",
+      "sizes": "256x256"
+    },
+    {
+      "src": "logo512.e21e93c2.png",
       "type": "image/png",
       "sizes": "512x512"
     }

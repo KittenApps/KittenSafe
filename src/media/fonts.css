@@ -7,7 +7,7 @@
   src:
     local('Roboto Light '),
     local('Roboto-Light'),
-    url('../node_modules/typeface-roboto/files/roboto-latin-300.woff2') format('woff2');
+    url('../../node_modules/typeface-roboto/files/roboto-latin-300.woff2') format('woff2');
 }
 
 /* roboto-300italic - latin */
@@ -19,7 +19,7 @@
   src:
     local('Roboto Light italic'),
     local('Roboto-Lightitalic'),
-    url('../node_modules/typeface-roboto/files/roboto-latin-300italic.woff2') format('woff2');
+    url('../../node_modules/typeface-roboto/files/roboto-latin-300italic.woff2') format('woff2');
 }
 
 /* roboto-400normal - latin */
@@ -31,7 +31,7 @@
   src:
     local('Roboto Regular '),
     local('Roboto-Regular'),
-    url('../node_modules/typeface-roboto/files/roboto-latin-400.woff2') format('woff2');
+    url('../../node_modules/typeface-roboto/files/roboto-latin-400.woff2') format('woff2');
 }
 
 /* roboto-400italic - latin */
@@ -43,7 +43,7 @@
   src:
     local('Roboto Regular italic'),
     local('Roboto-Regularitalic'),
-    url('../node_modules/typeface-roboto/files/roboto-latin-400italic.woff2') format('woff2');
+    url('../../node_modules/typeface-roboto/files/roboto-latin-400italic.woff2') format('woff2');
 }
 
 /* roboto-500normal - latin */
@@ -55,7 +55,7 @@
   src:
     local('Roboto Medium '),
     local('Roboto-Medium'),
-    url('../node_modules/typeface-roboto/files/roboto-latin-500.woff2') format('woff2');
+    url('../../node_modules/typeface-roboto/files/roboto-latin-500.woff2') format('woff2');
 }
 
 /* roboto-500italic - latin */
@@ -67,7 +67,7 @@
   src:
     local('Roboto Medium italic'),
     local('Roboto-Mediumitalic'),
-    url('../node_modules/typeface-roboto/files/roboto-latin-500italic.woff2') format('woff2');
+    url('../../node_modules/typeface-roboto/files/roboto-latin-500italic.woff2') format('woff2');
 }
 
 /* roboto-700normal - latin */
@@ -79,7 +79,7 @@
   src:
     local('Roboto Bold '),
     local('Roboto-Bold'),
-    url('../node_modules/typeface-roboto/files/roboto-latin-700.woff2') format('woff2');
+    url('../../node_modules/typeface-roboto/files/roboto-latin-700.woff2') format('woff2');
 }
 
 /* roboto-700italic - latin */
@@ -91,5 +91,5 @@
   src:
     local('Roboto Bold italic'),
     local('Roboto-Bolditalic'),
-    url('../node_modules/typeface-roboto/files/roboto-latin-700italic.woff2') format('woff2');
+    url('../../node_modules/typeface-roboto/files/roboto-latin-700italic.woff2') format('woff2');
 }
