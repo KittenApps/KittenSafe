@@ -54,7 +54,7 @@ function InfoDialog(props){
         <TabPanel value={infoTab} index={0}>
           <Box textAlign="center" component="h2">Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Box>
           <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
-          {window.location.hostname === "kittensafe.netlify.com" && <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10}} disableGutters><Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched} fullWidth>Switch to {document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'} branch …</Button></Container>}
+          {window.location.hostname === "kittensafe.netlify.com" && <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10}} disableGutters><Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched || !navigator.onLine} fullWidth>Switch to {document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'} branch …</Button></Container>}
           <Box textAlign="center" fontStyle="italic">A secure WebApp to encrypt your files for delayed access until a preselected timestamp.</Box>
           <Box textAlign="center" fontStyle="italic">It is 100% privacy friendly too, because your files never leave your device (as encrypting them is done locally using the WebCrypto API).</Box>
           <Box textAlign="center" fontStyle="italic">Also no personal data is stored on our stateless servers (no database used), because it uses some fancy crypto methods to derive the encryption key based on the given timestamp.</Box>
@@ -120,7 +120,7 @@ function InfoDialog(props){
           {window.location.hostname === "kittensafe.netlify.com" ?
             <React.Fragment>
               <i>You could also check out the more up to date and maybe slightly less stable beta version:</i>
-              <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10}} disableGutters><Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched} fullWidth>Switch to {document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'} branch …</Button></Container>
+              <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10}} disableGutters><Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched || !navigator.onLine} fullWidth>Switch to {document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'} branch …</Button></Container>
               <i>Or use the seperate WebApps for  <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other / this main WebApp).</i>
             </React.Fragment>
             :
