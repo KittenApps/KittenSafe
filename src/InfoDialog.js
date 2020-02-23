@@ -93,8 +93,10 @@ function InfoDialog(props){
           <b>KittenSafe v0.4</b>
           <ul>
             <li>Markdown Test Editor: create an (markdown) test for encryption within KittenSafe and also preview it after decryption</li>
+            <li>advanced File Previews (view your pictures in full beauty with the new full screen mode)</li>
             <li>better Timers integration in Encryption / Decryption setup panel</li>
-            <li>Dark Mode (see custome theme dialog)</li>
+            <li>Dark Mode for your night owls (activate it in the custome theme dialog)</li>
+            <li>Design improvements and bug fixes in nearly every part of the WebApp</li>
           </ul>
           <b>KittenSafe v0.3</b>
           <ul>
@@ -112,12 +114,18 @@ function InfoDialog(props){
         <TabPanel value={infoTab} index={4}>
           <b>Roadmap:</b>
           <ul>
-            <li>code cleanup and polishing (iterate and improve nearly every component)</li>
-            <li>better file-previews (click for fullscreen)</li>
             <li>more Timestamp options (randomly select date based on a given interval, only allow decryption until a given maxDate)</li>
             <li>Timers 2.0</li>
           </ul>
-          <i>You could also check out the more up to date and maybe slightly less stable <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta version of KittenSafe here</a>.</i>
+          {window.location.hostname === "kittensafe.netlify.com" ?
+            <React.Fragment>
+              <i>You could also check out the more up to date and maybe slightly less stable beta version:</i>
+              <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10}} disableGutters><Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched} fullWidth>Switch to {document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'} branch …</Button></Container>
+              <i>Or use the seperate WebApps for  <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other / this main WebApp).</i>
+            </React.Fragment>
+            :
+            <i>Switch <a href="https://kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">back to the main WebApp</a> or continue to use the seperate WebApps for <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other and the main WebApp).</i>
+          }
         </TabPanel>
       </DialogContent>
       <DialogActions>
