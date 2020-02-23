@@ -1,5 +1,5 @@
 import React, { useContext, useMemo } from 'react';
-import { Avatar, Badge, Chip, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemText,
+import { Avatar, Badge, Button, Box, Chip, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemText,
          ListItemSecondaryAction, ListSubheader, SwipeableDrawer, Radio, Tab, useMediaQuery } from '@material-ui/core';
 import { ImageTwoTone as ImageIcon, DescriptionTwoTone as TextIcon, OndemandVideoTwoTone as VideoIcon,
          AudiotrackTwoTone as AudioIcon, BlockTwoTone as NoneIcon, InsertDriveFileTwoTone as BinaryIcon,
@@ -82,10 +82,11 @@ const TimerList = React.memo((props) => {
   // console.log("render TimerList");
   const handlePinnedChange = (e) => props.setPinnedTimer(e.target.value);
   const classes = useStylesTL();
+  const sortTimers = useMemo(() => Object.entries(props.timers).sort((a, b) => new Date(a[1].timestamp) - new Date(b[1].timestamp)), [props.timers]);
 
   return (
     <React.Fragment>
-      {Object.entries(props.timers).sort((a, b) => new Date(a[1].timestamp) - new Date(b[1].timestamp)).map(([id, t]) => (
+      {sortTimers.map(([id, t]) => (
         <React.Fragment key={id}>
           <ListItem>
             <ListItemAvatar>
@@ -100,6 +101,11 @@ const TimerList = React.memo((props) => {
           <Divider variant="middle" component="li"/>
         </React.Fragment>
       ))}
+      {sortTimers.length > 0 && new Date(sortTimers[0][1].timestamp) < new Date() &&
+        <Box m={2} display="flex" justifyContent="center">
+          <Button variant="outlined" color="default" onClick={() => props.deleteTimer('finished')} startIcon={<DeleteTwoTone />} >Clear all finished Timers</Button>
+        </Box>
+      }
     </React.Fragment>
   );
 });

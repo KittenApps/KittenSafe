@@ -113,10 +113,21 @@ function App(props){
   }, [timers, pinnedTimer]);
 
   const deleteTimer = useCallback((id) => {
+    let deletedPinned = false;
     let ts = {...timers};
-    delete ts[id];
-    if (id === pinnedTimer){
-      const now = new Date();
+    const now = new Date();
+    if (id === 'finished'){
+      for (let t in ts){
+        if (new Date(ts[t].timestamp) < now){
+          delete ts[t];
+          if (t === pinnedTimer) deletedPinned = true;
+        }
+      }
+    } else {
+      delete ts[id];
+      if (id === pinnedTimer) deletedPinned = true;
+    }
+    if (deletedPinned){
       let index = null;
       let timediff = Infinity;
       for (let t in ts){
