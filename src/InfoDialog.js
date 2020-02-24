@@ -11,6 +11,11 @@ const useStyles = makeStyles(theme => ({
     height: 'calc(100% - 64px);'
   },
   content: {
+    [theme.breakpoints.down('xs')]: {
+      padding: 8
+    }
+  },
+  contentChat: {
     height: '100%',
     padding: 0
   }
@@ -49,13 +54,13 @@ function InfoDialog(props){
           <Tabs value={infoTab} indicatorColor="primary" textColor="primary" variant="scrollable" scrollButtons="on" onChange={handleInfoTabChange}>
             <Tab label="Welcome" value={0} />
             <Tab label="Info" value={1} />
-            <Tab label="Community" value={2} disabled={!navigator.onLine}/>
+            <Tab label="Discord (Chat)" value={2} disabled={!navigator.onLine}/>
             <Tab label="Release Notes" value={3} />
             <Tab label="Roadmap" value={4} />
           </Tabs>
         </Box>
       </Paper>
-      <DialogContent className={clsx({[classes.content]: infoTab === 2 && fullScreen})} >
+      <DialogContent className={clsx(classes.content, {[classes.contentChat]: infoTab === 2 && fullScreen})} >
         <TabPanel value={infoTab} index={0}>
           <Box textAlign="center" component="h2">Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Box>
           <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
@@ -68,6 +73,7 @@ function InfoDialog(props){
           <Box textAlign="center" fontStyle="italic">Note: You can reopen this dialog whenever you want by clicking the question mark in the top right corner (of the appbar).</Box>
         </TabPanel>
         <TabPanel value={infoTab} index={1}>
+          <b>Technical information:</b>
           <ul>
             <li>After selecting the input file and a timestamp (the date and time when the file should be accessible again) a random <i>256-bit AES</i> key is generated locally. </li>
             <li>This key is then used to encrypt the file locally in the web client using <i>AES-256-GCM</i> (your personal files are never sent to our servers). .</li>
@@ -95,7 +101,7 @@ function InfoDialog(props){
           <iframe src="https://disweb.dashflo.net/channels/676574654919344128/676574655359877151" title="Discord" width="100%" height="100%" allowtransparency="true" frameBorder="0"></iframe>
         </TabPanel>
         <TabPanel value={infoTab} index={3}>
-          <b>KittenSafe v0.4</b>
+          <b>KittenSafe v0.4:</b>
           <ul>
             <li>Markdown Test Editor: create an (markdown) test for encryption within KittenSafe and also preview it after decryption</li>
             <li>advanced File Previews (view your pictures in full beauty with the new full screen mode)</li>
@@ -103,7 +109,7 @@ function InfoDialog(props){
             <li>Dark Mode for your night owls (activate it in the custome theme dialog)</li>
             <li>Design improvements and bug fixes in nearly every part of the WebApp</li>
           </ul>
-          <b>KittenSafe v0.3</b>
+          <b>KittenSafe v0.3:</b>
           <ul>
             <li>basic Timers support</li>
             <li>file drag and drop support</li>
@@ -111,7 +117,7 @@ function InfoDialog(props){
             <li>performance optimization (avoid unnecessary rerendering, unified timers …)</li>
             <li>and other minor improvements and fixes</li>
           </ul>
-          <b>KittenSafe v0.2</b>
+          <b>KittenSafe v0.2:</b>
           <ul>
             <li>new fancy React Material UI</li>
           </ul>
