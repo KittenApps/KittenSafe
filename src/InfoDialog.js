@@ -1,22 +1,26 @@
 import React, { useState } from 'react';
+import clsx from 'clsx';
 import { Box, Button, Container, Dialog, DialogActions, DialogContent,
          Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
-import { useTheme } from '@material-ui/core/styles';
+import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { unregister } from './serviceWorker';
 import logo from './media/logo256.png';
 
-const TabPanel = React.memo((props) => {
-  const { children, value, index } = props;
-  // console.log("render InfoDialog TabPanel: ", value, index);
+const useStyles = makeStyles(theme => ({
+  paper: {
+    height: 'calc(100% - 64px);'
+  },
+  content: {
+    height: '100%',
+    padding: 0
+  }
+}));
 
-  return (
-    <Typography component="div" role="tabpanel" hidden={value !== index}>
-      {value === index && <Box p={1}>{children}</Box>}
+const TabPanel = React.memo(({children, value, index, style}) => (
+    <Typography component="div" role="tabpanel" hidden={value !== index} style={style} >
+      {value === index && <Box p={1} style={style} >{children}</Box>}
     </Typography>
-  );
-}, (prev, next) => {
-  return prev.value !== prev.index && next.value !== next.index;
-});
+  ), (prev, next) => prev.value !== prev.index && next.value !== next.index);
 
 function InfoDialog(props){
   // console.log("render InfoDialog");
@@ -24,6 +28,7 @@ function InfoDialog(props){
   const [brachSwitched, setBrachSwitched] = useState(false);
   const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
+  const classes = useStyles();
   if (!props.open) return null;
 
   const handleClose = () => {
@@ -38,7 +43,7 @@ function InfoDialog(props){
   }
 
   return (
-    <Dialog open={props.open} onClose={handleClose} fullScreen={fullScreen} maxWidth="xl">
+    <Dialog open={props.open} onClose={handleClose} fullScreen={fullScreen} fullWidth={infoTab === 2} classes={{paper: clsx({[classes.paper]: infoTab === 2 && !fullScreen})}} maxWidth="xl">
       <Paper square>
         <Box display="flex" justifyContent="center">
           <Tabs value={infoTab} indicatorColor="primary" textColor="primary" variant="scrollable" scrollButtons="on" onChange={handleInfoTabChange}>
@@ -50,7 +55,7 @@ function InfoDialog(props){
           </Tabs>
         </Box>
       </Paper>
-      <DialogContent>
+      <DialogContent className={clsx({[classes.content]: infoTab === 2 && fullScreen})} >
         <TabPanel value={infoTab} index={0}>
           <Box textAlign="center" component="h2">Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Box>
           <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
@@ -86,8 +91,8 @@ function InfoDialog(props){
             <li>After getting the decrypted client key back from the server, we can use it (together with other data stored with the file) to finally decrypt the file locally and restore its original state.</li>
           </ul>
         </TabPanel>
-        <TabPanel value={infoTab} index={2}>
-          <iframe src="https://discordapp.com/widget?id=676574654919344128&theme=dark" title="Discord" width="350" height="500" allowtransparency="true" frameborder="0"></iframe>
+        <TabPanel value={infoTab} index={2} style={{height: '100%'}}>
+          <iframe src="https://disweb.dashflo.net/channels/676574654919344128/676574655359877151" title="Discord" width="100%" height="100%" allowtransparency="true" frameBorder="0"></iframe>
         </TabPanel>
         <TabPanel value={infoTab} index={3}>
           <b>KittenSafe v0.4</b>
