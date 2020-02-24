@@ -78,7 +78,7 @@ const TimerPreview = React.memo((props) => {
         }
         action={!isMobile && <TimerChip timestamp={props.timestamp} full/>}
         classes={{action: classes.action}}
-        style={{paddingBottom: 8, paddingTop: 8}}
+        style={{paddingBottom: 8, paddingTop: 8, userSelect: 'text', '-webkitUserSelect': 'text', '-mozUserSelect': 'text'}}
       />
       <CardActions>
         <FormControlLabel control={<Checkbox checked={props.addTimers} onChange={handleAddTimers}/>} label="add to local Timers"/>
@@ -95,7 +95,7 @@ const FilenamePanel = React.memo((props) => {
   const isSupported = useMemo(() => isSupportedMimeType2(props.file.type) || !!props.file.markdown, [props.file]);
 
   const metaInfo = (
-    <Grid container spacing={1} justify="center" alignItems="center">
+    <Grid container spacing={1} style={{userSelect: 'text', '-webkitUserSelect': 'text', '-mozUserSelect': 'text'}} justify="center" alignItems="center">
       <Grid item><FileIcon mimeType={props.file.type.split('/')[0]} /></Grid>
       <Grid item>{props.file.name} {props.file.size && `(${Math.round(props.file.size/1000)/1000}MB)`}</Grid>
       <Grid item>

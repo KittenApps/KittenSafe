@@ -87,7 +87,7 @@ const FilePanel = React.memo((props) => {
   const setReady = () => props.setTimeReady(true);
 
   return (
-    <Card variant="outlined">
+    <Card style={{userSelect: 'text', '-webkitUserSelect': 'text', '-mozUserSelect': 'text'}} variant="outlined">
       <CardHeader
         title={props.file.meta.filename}
         subheader={`${props.file.meta.mimeType} (${Math.round(props.file.size/1000)/1000}MB)`}
@@ -115,8 +115,8 @@ const FilePanel = React.memo((props) => {
 
 const FilePanelError = React.memo((props) => {
   switch (props.file.name){
-    case 'none': return <Card variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/></Card>;
-    case 'invalid': return <Card variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
+    case 'none': return <Card style={{userSelect: 'text', '-webkitUserSelect': 'text', '-mozUserSelect': 'text'}} variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/></Card>;
+    case 'invalid': return <Card style={{userSelect: 'text', '-webkitUserSelect': 'text', '-mozUserSelect': 'text'}} variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
     default: return <Card variant="outlined"><CardHeader/><CardContent/></Card>;
   }
 });

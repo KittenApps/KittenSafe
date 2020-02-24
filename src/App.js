@@ -181,7 +181,7 @@ function App(props){
   return (
     <React.Fragment>
       <CssBaseline />
-      <AppBar position="fixed" elevation={16} className={classes.appBar}>
+      <AppBar position="fixed" elevation={12} className={classes.appBar}>
         <Toolbar>
           <Typography variant="h6">
             <Badge badgeContent={isBeta ? 'beta' : 0} classes={{badge: classes.betaBadge}} color="secondary"><span role="img" aria-label="KittenSafe emoji">😺🔒</span> KittenSafe</Badge>

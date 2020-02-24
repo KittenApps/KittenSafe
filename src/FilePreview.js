@@ -48,15 +48,14 @@ function FilePreview(props){
 
   return (
     <Container maxWidth={mw} disableGutters>
-      <Card variant="outlined">
+      <Card style={{userSelect: 'text', '-webkitUserSelect': 'text', '-mozUserSelect': 'text'}} variant="outlined">
         <CardHeader title={`Preview of ${props.filename}`} subheader={props.mimeType} action={action}/>
         {element}
       </Card>
       {fullScreenOpen &&
         <Dialog open={fullScreenOpen} onClose={handleClose} fullScreen={fullScreen} maxWidth="xl" fullWidth={props.mimeType !== 'text/markdown'}>
           <DialogTitle style={{paddingRight: 60}}>{`Preview of ${props.filename} (${props.mimeType})`}<IconButton className={classes.close} onClick={handleClose}><Close/></IconButton></DialogTitle>
-          {element}
-          {fullScreen && <DialogContent style={{padding: 0}}/>}
+          <DialogContent style={{padding: 0}}>{element}</DialogContent>
           <DialogActions>
             <Button onClick={handleClose} color="secondary">Close full screen preview</Button>
           </DialogActions>
