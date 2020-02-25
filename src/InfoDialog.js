@@ -121,12 +121,12 @@ function InfoDialog(props){
           </ul>
         </TabPanel>
         <TabPanel value={infoTab} index={2} style={{height: '100%'}}>
-          <iframe src="https://disweb.dashflo.net/channels/676574654919344128/676574655359877151" title="Discord" width="100%" height="100%" allowtransparency="true" frameBorder="0"></iframe>
+          <iframe src="https://e.widgetbot.io/channels/676574654919344128/676574655359877151" title="Discord" width="100%" height="100%" allowtransparency="true" frameBorder="0"></iframe>
         </TabPanel>
         <TabPanel value={infoTab} index={3}>
           <b>KittenSafe v0.4:</b>
           <ul>
-            <li>Markdown Test Editor: create an (markdown) test for encryption within KittenSafe and also preview it after decryption</li>
+            <li>Markdown Text Editor: create an (markdown) test for encryption within KittenSafe and also preview it after decryption</li>
             <li>advanced File Previews: view your pictures in full beauty with the new full screen mode</li>
             <li>better Timers integration in encryption and decryption setup panel</li>
             <li>Dark Mode: for your night owls (activate it in the custome theme dialog)</li>
