@@ -11,8 +11,8 @@ import CustomThemeDialog from './CustomThemeDialog';
 import TimerDrawer, { TimerTab } from './Timers';
 import { register } from './serviceWorker';
 
-const KSversion = 'v0.4.0';
 const isBeta = process.env.REACT_APP_BRANCH === 'beta';
+const KSversion = isBeta ? 'v0.4.0' : 'v0.4';
 
 const useStyles = makeStyles(theme => ({
   root: {

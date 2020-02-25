@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Box, Button, Container, Dialog, DialogActions, DialogContent,
          LinearProgress, Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
+import { InfoTwoTone } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
+import { addYears } from 'date-fns';
 import { unregister } from './serviceWorker';
 import logo from './media/logo256.png';
 
@@ -51,7 +53,7 @@ function InfoDialog(props){
   const handleBranchSwitch = () => {
     setBrachSwitched(true);
     unregister().then(() => {
-      document.cookie = `nf_ab=${isBeta ? 'stable' : 'beta'}; expires=${new Date(new Date().getTime() + 1000 * 3600 * 24 * 365)}`;
+      document.cookie = `nf_ab=${isBeta ? 'stable' : 'beta'}; expires=${addYears(new Date(), 1)}`;
     }).then(() => window.location.reload());
   }
 
@@ -70,7 +72,7 @@ function InfoDialog(props){
       </Paper>
       <DialogContent className={clsx(classes.content, {[classes.contentChat]: infoTab === 2 && fullScreen})} >
         <TabPanel value={infoTab} index={0}>
-          <Box textAlign="center" component="h2">Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Box>
+          <Typography variant="h4" align="center" gutterBottom>Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Typography>
           <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
           {window.location.hostname === "kittensafe.netlify.com" &&
             <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10, position: 'relative'}} disableGutters>
@@ -78,12 +80,20 @@ function InfoDialog(props){
               {brachSwitched && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
             </Container>
           }
-          <Box textAlign="center" fontStyle="italic">A secure WebApp to encrypt your files for delayed access until a preselected timestamp.</Box>
-          <Box textAlign="center" fontStyle="italic">It is 100% privacy friendly too, because your files never leave your device (as encrypting them is done locally using the WebCrypto API).</Box>
-          <Box textAlign="center" fontStyle="italic">Also no personal data is stored on our stateless servers (no database used), because it uses some fancy crypto methods to derive the encryption key based on the given timestamp.</Box>
-          <Box textAlign="center" fontStyle="italic">For more background information on how KittenSafe works, check out the Info tab at the top of this dialog box.</Box>
-          <Box textAlign="center" fontStyle="italic">KittenSafe is build with ❤ by Silizias using the Web Crypto API, Netlify functions, React, Material UI and Remark. The logo is from iconka.com.</Box>
-          <Box textAlign="center" fontStyle="italic">Note: You can reopen this dialog whenever you want by clicking the question mark in the top right corner (of the appbar).</Box>
+          <Paper elevation={3} style={{marginTop: 20, marginBottom: 30, padding: 5}} >
+            <Typography variant="subtitle1" align="center">KittenSafe is a secure WebCrypto-based WebApp that lets you encrypt your files for delayed access until a preselected timestamp.</Typography>
+            <Typography variant="body2" align="center">It is 100% privacy friendly too, because your files never leave your device as encrypting them is done locally using the WebCrypto API.</Typography>
+            <Typography variant="body2" align="center">Also no personal data is stored on our stateless servers (we don't even use any database). It uses some fancy crypto methods to derive the encryption key based on the given timestamp on demand instead.</Typography>
+            <Typography variant="body2" align="center">For more background information on how KittenSafe works, check out the Info tab on this welcoming dialog box.</Typography>
+            <Typography variant="body2" align="center" gutterBottom><i>Note: You can reopen this dialog whenever you want by clicking on the <InfoTwoTone fontSize="small"/> in the top right corner of the appbar.</i></Typography>
+          </Paper>
+          <Typography variant="body2" align="center">
+            KittenSafe is <a href="https://bitbucket.org/silizias/kittensafe/src/master/" target="_blank" rel="noopener noreferrer">build with ❤ by Silizias</a> using the <a
+            href="https://developer.mozilla.org/docs/Web/API/Web_Crypto_API" target="_blank" rel="noopener noreferrer">Web Crypto API</a>, <a
+            href="https://www.netlify.com/products/functions/" target="_blank" rel="noopener noreferrer">Netlify functions</a>, <a
+            href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">React</a>, <a href="https://material-ui.com/" target="_blank" rel="noopener noreferrer">Material UI</a>, <a
+            href="https://remark.js.org/" target="_blank" rel="noopener noreferrer">Remark</a> and a logo from <a href="https://iconka.com/" target="_blank" rel="noopener noreferrer">iconka</a>.
+          </Typography>
         </TabPanel>
         <TabPanel value={infoTab} index={1}>
           <b>Technical information:</b>
@@ -140,7 +150,8 @@ function InfoDialog(props){
           <b>Roadmap:</b>
           <ul>
             <li>more Timestamp options (randomly select date based on a given interval, only allow decryption until a given maxDate)</li>
-            <li>Timers 2.0</li>
+            <li>extend the duration on an already encrypted file (you no longer need to encrypt an already encrypted file again)</li>
+            <li>Timers 2.0 (better Timer management, add notes to timers)</li>
           </ul>
           {window.location.hostname === "kittensafe.netlify.com" ?
             <React.Fragment>

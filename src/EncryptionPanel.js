@@ -6,7 +6,8 @@ import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone
          FormatColorText, TimerTwoTone, SaveTwoTone } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
-import { useDropzone } from 'react-dropzone'
+import { useDropzone } from 'react-dropzone';
+import { addDays } from 'date-fns';
 import { readFileAsBuffer } from './util';
 import { FileIcon, TimerChip } from './Timers';
 import FilePreview, {isSupportedMimeType2} from './FilePreview';
@@ -126,7 +127,7 @@ function EncryptionPanel(props){
   const [file, setFile] = useState({name: 'none', type: 'none/none'});
   const [addTimers, setAddTimers] = useState(true);
   const [addPinnedTimer, setAddPinnedTimers] = useState(true);
-  const [timestamp, setTimestamp] = useState(new Date(new Date().getTime() + 60000));
+  const [timestamp, setTimestamp] = useState(() => addDays(new Date(), 1));
   const [encBlob, setEncBlob] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [fakeProgressPlaying, setFakeProgress] = useState(false);
