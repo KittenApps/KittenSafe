@@ -93,7 +93,7 @@ const TimerList = React.memo((props) => {
               <Radio checked={props.pinnedTimer === id} onChange={handlePinnedChange} value={id} name="pinnedTimer" color="default"
                      icon={<Avatar variant="rounded"><FileIcon mimeType={t.mimeType.split('/')[0]}/></Avatar>} checkedIcon={<Avatar variant="rounded" className={classes.checked}><FileIcon mimeType={t.mimeType.split('/')[0]}/></Avatar>} />
             </ListItemAvatar>
-            <ListItemText style={{userSelect: 'text', '-webkitUserSelect': 'text', '-mozUserSelect': 'text'}} primary={t.filename} secondary={<TimerChip timestamp={t.timestamp} full/>} />
+            <ListItemText style={{userSelect: 'text', WebkitUserSelect: 'text', MozUserSelect: 'text'}} primary={t.filename} secondary={<TimerChip timestamp={t.timestamp} full/>} />
             <ListItemSecondaryAction>
               <IconButton edge="end" onClick={() => props.deleteTimer(id)}><DeleteTwoTone/></IconButton>
             </ListItemSecondaryAction>

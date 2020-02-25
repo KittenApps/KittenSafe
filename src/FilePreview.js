@@ -48,7 +48,7 @@ function FilePreview(props){
 
   return (
     <Container maxWidth={mw} disableGutters>
-      <Card style={{userSelect: 'text', '-webkitUserSelect': 'text', '-mozUserSelect': 'text'}} variant="outlined">
+      <Card style={{userSelect: 'text', WebkitUserSelect: 'text', MozUserSelect: 'text'}} variant="outlined">
         <CardHeader title={`Preview of ${props.filename}`} subheader={props.mimeType} action={action}/>
         {element}
       </Card>
