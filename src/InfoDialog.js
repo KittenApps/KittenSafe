@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import clsx from 'clsx';
 import { Box, Button, Container, Dialog, DialogActions, DialogContent,
-         Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
+         LinearProgress, Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { unregister } from './serviceWorker';
 import logo from './media/logo256.png';
+
+const isBeta = process.env.REACT_APP_BRANCH === 'beta';
 
 const useStyles = makeStyles(theme => ({
   paper: {
@@ -18,6 +20,11 @@ const useStyles = makeStyles(theme => ({
   contentChat: {
     height: '100%',
     padding: 0
+  },
+  buttonProgress: {
+    position: 'absolute',
+    marginTop: -4,
+    width: '100%'
   }
 }));
 
@@ -31,19 +38,20 @@ function InfoDialog(props){
   // console.log("render InfoDialog");
   const [infoTab, setInfoTab] = useState(() => localStorage.getItem('lastVersion') !== props.version && localStorage.getItem('lastVersion') ? 3 : 0);
   const [brachSwitched, setBrachSwitched] = useState(false);
-  const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
+  const handleInfoTabChange = (e, newTab) => !brachSwitched && setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
   const classes = useStyles();
   if (!props.open) return null;
 
   const handleClose = () => {
+    if (brachSwitched) return;
     localStorage.setItem('lastVersion', props.version);
     props.setOpen(false);
   };
   const handleBranchSwitch = () => {
     setBrachSwitched(true);
     unregister().then(() => {
-      document.cookie = `nf_ab=${document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'}; expires=${new Date(new Date().getTime() + 1000 * 3600 * 24 * 365)}`;
+      document.cookie = `nf_ab=${isBeta ? 'stable' : 'beta'}; expires=${new Date(new Date().getTime() + 1000 * 3600 * 24 * 365)}`;
     }).then(() => window.location.reload());
   }
 
@@ -64,7 +72,12 @@ function InfoDialog(props){
         <TabPanel value={infoTab} index={0}>
           <Box textAlign="center" component="h2">Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Box>
           <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
-          {window.location.hostname === "kittensafe.netlify.com" && <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10}} disableGutters><Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched || !navigator.onLine} fullWidth>Switch to {document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'} branch …</Button></Container>}
+          {window.location.hostname === "kittensafe.netlify.com" &&
+            <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10, position: 'relative'}} disableGutters>
+              <Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched || !navigator.onLine} fullWidth>Switch to {isBeta ? 'stable' : 'beta'} branch …</Button>
+              {brachSwitched && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
+            </Container>
+          }
           <Box textAlign="center" fontStyle="italic">A secure WebApp to encrypt your files for delayed access until a preselected timestamp.</Box>
           <Box textAlign="center" fontStyle="italic">It is 100% privacy friendly too, because your files never leave your device (as encrypting them is done locally using the WebCrypto API).</Box>
           <Box textAlign="center" fontStyle="italic">Also no personal data is stored on our stateless servers (no database used), because it uses some fancy crypto methods to derive the encryption key based on the given timestamp.</Box>
@@ -104,9 +117,10 @@ function InfoDialog(props){
           <b>KittenSafe v0.4:</b>
           <ul>
             <li>Markdown Test Editor: create an (markdown) test for encryption within KittenSafe and also preview it after decryption</li>
-            <li>advanced File Previews (view your pictures in full beauty with the new full screen mode)</li>
-            <li>better Timers integration in Encryption / Decryption setup panel</li>
-            <li>Dark Mode for your night owls (activate it in the custome theme dialog)</li>
+            <li>advanced File Previews: view your pictures in full beauty with the new full screen mode</li>
+            <li>better Timers integration in encryption and decryption setup panel</li>
+            <li>Dark Mode: for your night owls (activate it in the custome theme dialog)</li>
+            <li>Branch switcher: check out the newest features in the beta branch by switching to it in the Info Dialog (your Timers will be moved over too)</li>
             <li>Design improvements and bug fixes in nearly every part of the WebApp</li>
           </ul>
           <b>KittenSafe v0.3:</b>
@@ -131,7 +145,10 @@ function InfoDialog(props){
           {window.location.hostname === "kittensafe.netlify.com" ?
             <React.Fragment>
               <i>You could also check out the more up to date and maybe slightly less stable beta version:</i>
-              <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10}} disableGutters><Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched || !navigator.onLine} fullWidth>Switch to {document.cookie === 'nf_ab=beta' ? 'stable' : 'beta'} branch …</Button></Container>
+              <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10, position: 'relative'}} disableGutters>
+                <Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched || !navigator.onLine} fullWidth>Switch to {isBeta ? 'stable' : 'beta'} branch …</Button>
+                {brachSwitched && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
+              </Container>
               <i>Or use the seperate WebApps for  <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other / this main WebApp).</i>
             </React.Fragment>
             :

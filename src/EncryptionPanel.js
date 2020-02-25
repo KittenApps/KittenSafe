@@ -177,6 +177,7 @@ function EncryptionPanel(props){
       if (addTimers){ // ToDo: Make set to pinned Timer conditionally
         props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type}, addPinnedTimer);
       }
+      setTimeout(() => setDisabledReset(false), 10000);
     }).catch(err => console.error(err));
   };
 

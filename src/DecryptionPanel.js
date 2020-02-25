@@ -224,6 +224,7 @@ function DecryptionPanel(props){
       if (timers.includes(file.meta.auth) && rmExpTimer){
         props.deleteTimer(file.meta.auth);
       }
+      setTimeout(() => setDisabledReset(false), 10000);
     }).catch(err => console.error(err));
   };
 
