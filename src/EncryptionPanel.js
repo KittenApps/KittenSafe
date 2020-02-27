@@ -175,9 +175,12 @@ function EncryptionPanel(props){
     }).then(([data, secret, iv, auth]) => {
       // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
       const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
-      setEncBlob(new Blob([meta, data]));
+      const blob = new Blob([meta, data], {type: 'application/kittensafefile'});
+      setEncBlob(blob);
       if (addTimers){ // ToDo: Make set to pinned Timer conditionally
-        props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type}, addPinnedTimer);
+        props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type, cached: true}, addPinnedTimer);
+        navigator.storage.persist();
+        caches.open('KittenSafeFiles').then(c => c.put(auth, new Response(blob)));
       }
       setTimeout(() => setDisabledReset(false), 10000);
     }).catch(err => console.error(err));

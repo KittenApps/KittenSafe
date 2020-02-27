@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useContext, useMemo, useCallback, useEffect, useRef } from 'react';
-import { Avatar, Button, Card, CardHeader, CardContent, CardActions, Checkbox, Container, FormControlLabel,
-         Grid, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box, Hidden } from '@material-ui/core';
+import { Avatar, Button, Card, CardHeader, CardContent, CardActions, Checkbox, Container, FormControlLabel, Grid, List, ListItem,
+         ListItemIcon, ListItemText, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box, Hidden } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone, SaveTwoTone, ImageTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
@@ -115,11 +115,37 @@ const FilePanel = React.memo((props) => {
 });
 
 const FilePanelError = React.memo((props) => {
-  switch (props.file.name){
-    case 'none': return <Card style={{userSelect: 'text', WebkitUserSelect: 'text', MozUserSelect: 'text'}} variant="outlined"><CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/></Card>;
-    case 'invalid': return <Card style={{userSelect: 'text', WebkitUserSelect: 'text', MozUserSelect: 'text'}} variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
-    default: return <Card variant="outlined"><CardHeader/><CardContent/></Card>;
+  const userSelect = {userSelect: 'text', WebkitUserSelect: 'text', MozUserSelect: 'text'};
+
+  if (props.file.name === 'none'){
+    const now = new Date();
+    const readyCached = Object.entries(props.timers).filter(t => t[1].cached && new Date(t[1].timestamp) < now);
+
+    const openFromCache = id => caches.open('KittenSafeFiles').then(c => c.match(id)).then(r => {
+      if (r && r.arrayBuffer){
+        props.setFile({name: props.timers[id].filename, size: 43, type: props.timers[id].mimeType, arrayBuffer: () => r.arrayBuffer()});
+      }
+    });
+
+    return (
+      <Card style={userSelect} variant="outlined">
+        <CardHeader title="No file selected" subheader="Please choose a valid KittenSafe file for decryption!"/>
+        {readyCached.length > 0 &&
+          <CardContent><List dense>
+            {readyCached.map(([id, t]) => (
+              <ListItem key={id} button onClick={openFromCache.bind(this, id)}>
+                <ListItemIcon><FileIcon mimeType={t.mimeType.split('/')[0]}/></ListItemIcon>
+                <ListItemText primary={t.filename} />
+              </ListItem>
+            ))}
+          </List></CardContent>
+        }
+      </Card>);
   }
+  if (props.file.name === 'invalid'){
+    return <Card style={userSelect} variant="outlined"><CardHeader title="Invalid KittenSafe file" subheader="Please choose a valid and non corrupted KittenSafe file for decryption!"/></Card>;
+  }
+  return <Card variant="outlined"><CardHeader/><CardContent/></Card>;
 });
 
 function DecryptionPanel(props){
@@ -257,7 +283,7 @@ function DecryptionPanel(props){
               </label>
             </Container>
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
-              {!file.meta ? <FilePanelError file={file} /> :
+              {!file.meta ? <FilePanelError file={file} timers={props.timers} setFile={setFile} /> :
                 <FilePanel
                   file={file} timeReady={timeReady} setTimeReady={setTimeReady}
                   addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer}
