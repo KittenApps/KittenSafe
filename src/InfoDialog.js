@@ -5,7 +5,6 @@ import { Box, Button, Container, Dialog, DialogActions, DialogContent,
 import { InfoTwoTone } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { addYears } from 'date-fns';
-import { unregister } from './serviceWorker';
 import logo from './media/logo256.png';
 
 const isBeta = process.env.REACT_APP_BRANCH === 'beta';
@@ -39,22 +38,23 @@ const TabPanel = React.memo(({children, value, index, style}) => (
 function InfoDialog(props){
   // console.log("render InfoDialog");
   const [infoTab, setInfoTab] = useState(() => localStorage.getItem('lastVersion') !== props.version && localStorage.getItem('lastVersion') ? 3 : 0);
-  const [brachSwitched, setBrachSwitched] = useState(false);
-  const handleInfoTabChange = (e, newTab) => !brachSwitched && setInfoTab(newTab);
+  const handleInfoTabChange = (e, newTab) => setInfoTab(newTab);
   const fullScreen = useMediaQuery(useTheme().breakpoints.down('xs'));
   const classes = useStyles();
   if (!props.open) return null;
 
   const handleClose = () => {
-    if (brachSwitched) return;
     localStorage.setItem('lastVersion', props.version);
     props.setOpen(false);
   };
   const handleBranchSwitch = () => {
-    setBrachSwitched(true);
-    unregister().then(() => {
-      document.cookie = `nf_ab=${isBeta ? 'stable' : 'beta'}; expires=${addYears(new Date(), 1)}`;
-    }).then(() => window.location.reload());
+    if (isBeta){
+      document.cookie = 'nf_ab=;expires=Thu, 01 Jan 1970 00:00:01 GMT;'; // delete cookie
+    } else {
+      document.cookie = `nf_ab=beta; expires=${addYears(new Date(), 1)}`;
+    }
+    props.SWRegistration.update();
+    props.setSWRegistration(null);
   }
 
   return (
@@ -76,8 +76,8 @@ function InfoDialog(props){
           <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
           {window.location.hostname === "kittensafe.netlify.com" &&
             <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10, position: 'relative'}} disableGutters>
-              <Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched || !navigator.onLine} fullWidth>Switch to {isBeta ? 'stable' : 'beta'} branch …</Button>
-              {brachSwitched && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
+              <Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={!props.SWRegistration || !navigator.onLine} fullWidth>Switch to {isBeta ? 'stable' : 'beta'} branch …</Button>
+              {!props.SWRegistration && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
             </Container>
           }
           <Paper elevation={3} style={{marginTop: 20, marginBottom: 30, padding: 5}} >
@@ -157,8 +157,8 @@ function InfoDialog(props){
             <React.Fragment>
               <i>You could also check out the more up to date and maybe slightly less stable beta version:</i>
               <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10, position: 'relative'}} disableGutters>
-                <Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={brachSwitched || !navigator.onLine} fullWidth>Switch to {isBeta ? 'stable' : 'beta'} branch …</Button>
-                {brachSwitched && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
+                <Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={!props.SWRegistration || !navigator.onLine} fullWidth>Switch to {isBeta ? 'stable' : 'beta'} branch …</Button>
+                {!props.SWRegistration && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
               </Container>
               <i>Or use the seperate WebApps for  <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other / this main WebApp).</i>
             </React.Fragment>

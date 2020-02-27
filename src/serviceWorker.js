@@ -18,7 +18,7 @@ export function register(config) {
       // Our service worker won't work if PUBLIC_URL is on a different origin
       // from what our page is served on. This might happen if a CDN is used to
       // serve assets; see https://github.com/facebook/create-react-app/issues/2374
-      return;
+      return Promise.resolve(null);;
     }
 
     // We are not waiting for window's load event as it was for the create-react-app template
@@ -28,16 +28,17 @@ export function register(config) {
 
     if (window.location.hostname === 'localhost'){
       // This is running on localhost. Let's check if a service worker still exists or not.
-      checkValidServiceWorker(swUrl, config);
+      return checkValidServiceWorker(swUrl, config);
     } else {
       // Is not localhost. Just register service worker
-      registerValidSW(swUrl, config);
+      return registerValidSW(swUrl, config);
     }
   }
+  return Promise.resolve(null);
 }
 
 function registerValidSW(swUrl, config) {
-  navigator.serviceWorker.register(swUrl).then(registration => {
+  return navigator.serviceWorker.register(swUrl).then(registration => {
     registration.onupdatefound = () => {
       const installingWorker = registration.installing;
       if (installingWorker == null) return;
@@ -65,6 +66,7 @@ function registerValidSW(swUrl, config) {
     }
     // periodically check (every 5 min) for app updates in the background
     setInterval(() => navigator.onLine && registration.update(), 5*60*1000);
+    return registration;
   }).catch(error => {
     console.error('Error during service worker registration:', error);
   });
@@ -80,7 +82,7 @@ function checkValidServiceWorker(swUrl, config) {
       navigator.serviceWorker.ready.then(reg => reg.unregister().then(() => window.location.reload()));
     } else {
       // Service worker found. Proceed as normal.
-      registerValidSW(swUrl, config);
+      return registerValidSW(swUrl, config);
     }
   }).catch(() => {
     console.log('No internet connection found. App is running in offline mode.');

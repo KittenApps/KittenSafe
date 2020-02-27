@@ -157,12 +157,16 @@ function App(props){
   const [waitingServiceWorker, setWaitingServiceWorker] = useState(null);
   const [assetsUpdateReady, setAssetsUpdateReady] = useState(false);
   const [assetsCached, setAssetsCached] = useState(false);
-  useEffect(() => register({
+  const [SWRegistration, setSWRegistration] = useState(null);
+  useEffect(() => {register({
     onUpdate: reg => {setWaitingServiceWorker(reg.waiting);setAssetsUpdateReady(true);},
     onSuccess: () => setAssetsCached(true)
-  }), []);
+  }).then(r => setSWRegistration(r));}, []);
   const updateAssets = () => {
     waitingServiceWorker.addEventListener("statechange", e => {
+      // ToDo: reload all open tabs claimed by serviveWorker
+      // see: https://github.com/GoogleChrome/workbox/issues/1120#issue-281586467
+      // blocked by: https://github.com/facebook/create-react-app/pull/8485
       if (e.target.state === "activated") window.location.reload();
     });
     waitingServiceWorker.postMessage({type: "SKIP_WAITING"});
@@ -229,7 +233,7 @@ function App(props){
         <TimerDrawer open={timerDrawerOpen} setOpen={setTimerDrawerOpen} timers={timers} pinnedTimer={pinnedTimer} setPinnedTimer={setPinnedTimer} deleteTimer={deleteTimer}/>
       </main>
       {customThemeOpen && <CustomThemeDialog open={customThemeOpen} setOpen={setCustomThemeOpen} setTheme={props.setTheme} />}
-      {infoDialogOpen && <InfoDialog open={infoDialogOpen} setOpen={setInfoDialogOpen} version={KSversion} />}
+      {infoDialogOpen && <InfoDialog open={infoDialogOpen} setOpen={setInfoDialogOpen} version={KSversion} SWRegistration={SWRegistration} setSWRegistration={setSWRegistration} />}
       {assetsCached &&
         <Snackbar open={assetsCached} >
           <Alert variant="filled" elevation={6} onClose={handleAssetsCachedClose} severity="success">
