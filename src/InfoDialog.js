@@ -49,7 +49,7 @@ function InfoDialog(props){
   };
   const handleBranchSwitch = () => {
     if (isBeta){
-      document.cookie = 'nf_ab=;expires=Thu, 01 Jan 1970 00:00:01 GMT;'; // delete cookie
+      document.cookie = 'nf_ab=;expires=Thu, 01 Jan 1970 00:00:00 GMT'; // delete cookie
     } else {
       document.cookie = `nf_ab=beta; expires=${addYears(new Date(), 1)}`;
     }
@@ -165,6 +165,7 @@ function InfoDialog(props){
             :
             <i>Switch <a href="https://kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">back to the main WebApp</a> or continue to use the seperate WebApps for <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other and the main WebApp).</i>
           }
+          <Button onClick={() => alert(document.cookie)}>test cookie</Button>
         </TabPanel>
       </DialogContent>
       <DialogActions>
