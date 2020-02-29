@@ -1,4 +1,5 @@
-import React, { useContext, useMemo } from 'react';
+import * as React from 'react';
+import { useContext, useMemo } from 'react';
 import { Avatar, Badge, Button, Box, Chip, Divider, Drawer, IconButton, List, ListItem, ListItemAvatar, ListItemText,
          ListItemSecondaryAction, ListSubheader, SwipeableDrawer, Radio, Tab, useMediaQuery } from '@material-ui/core';
 import { ImageTwoTone as ImageIcon, DescriptionTwoTone as TextIcon, OndemandVideoTwoTone as VideoIcon,

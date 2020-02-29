@@ -1,4 +1,5 @@
-import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import * as React from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
 import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox, Container,
          FormControlLabel, Grid, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';

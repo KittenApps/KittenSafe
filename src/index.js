@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import * as React from 'react';
+import { useState, useEffect } from 'react';
 import { render } from "react-dom";
 import App from './App';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';

@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import { Button, Card, CardHeader, Container, Dialog, DialogTitle, DialogActions, DialogContent,
          IconButton, Paper, TextField, useMediaQuery } from '@material-ui/core';
 import { Fullscreen, Close } from '@material-ui/icons'

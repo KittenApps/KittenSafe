@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import * as React from 'react';
+import { useState } from 'react';
 import clsx from 'clsx';
 import { Box, Button, Container, Dialog, DialogActions, DialogContent,
          LinearProgress, Paper, Tabs, Tab, Typography, useMediaQuery } from '@material-ui/core';

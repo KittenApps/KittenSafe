@@ -1,4 +1,5 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import * as React from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { Box, Container, Grid, List, ListItem, ListItemIcon, ListItemText } from '@material-ui/core';
 import { CheckBoxOutlineBlank, CheckBoxTwoTone } from '@material-ui/icons';
 import { green } from '@material-ui/core/colors';

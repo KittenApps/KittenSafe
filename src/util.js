@@ -1,4 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
+import * as React from 'react';
+import { createContext, useState, useEffect } from 'react';
 
 export function readFileAsBuffer(file){
   if (file.markdown) return Promise.resolve(new TextEncoder('utf-8').encode(file.markdown));

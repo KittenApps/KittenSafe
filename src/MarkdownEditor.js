@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import * as React from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Box, Button, Container, Dialog, DialogTitle, DialogActions, DialogContent, Fab, Grid,
          InputAdornment, Paper, TextField, Typography, useMediaQuery } from '@material-ui/core';
 import { EditTwoTone, Subject } from '@material-ui/icons';

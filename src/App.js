@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import * as React from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import clsx from 'clsx';
 import { AppBar, Badge, Box, Button, CssBaseline, IconButton, Snackbar, Tabs, Tab, Toolbar, Tooltip, Typography, useMediaQuery } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';

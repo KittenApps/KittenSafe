@@ -1,4 +1,5 @@
-import React, { useState, useContext, useMemo, useCallback, useEffect, useRef } from 'react';
+import * as React from 'react';
+import { useState, useContext, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Avatar, Button, Card, CardHeader, CardContent, CardActions, Checkbox, Container, FormControlLabel,
          Grid, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box, Hidden } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
