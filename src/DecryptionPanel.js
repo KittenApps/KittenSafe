@@ -185,6 +185,7 @@ function DecryptionPanel(props){
   if (props.hidden) return null;
 
   const onChangeFile = (e) => setFile(e.target.files[0] || {name: 'none'});
+  const onResetFile = () => setFile({name: 'none'});
 
   const handleReset = () => {
     setFile({name: 'none'});
@@ -293,7 +294,7 @@ function DecryptionPanel(props){
             </Container>
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
               <Grid container spacing={1}>
-                <Grid item><Button variant="outlined" disabled={true}>Back</Button></Grid>
+                <Grid item><Button variant="outlined" disabled={file.name === 'none'} onClick={onResetFile} >Reset</Button></Grid>
                 <Grid item xs><Button variant="contained" color="primary" startIcon={<LockOpenTwoTone/>} onClick={onDecryptFile} disabled={!timeReady || !navigator.onLine} fullWidth>Decrypt file …</Button></Grid>
               </Grid>
             </Container>

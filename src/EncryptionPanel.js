@@ -152,6 +152,11 @@ function EncryptionPanel(props){
   };
 
   const onChangeFile = e => setFile(e.target.files[0] || {name: 'none', type: 'none/none'});
+  const onResetFile = e => {
+    setFile({name: 'none', type: 'none/none'});
+    setTimestamp(new Date(new Date().getTime() + 60000));
+  };
+
   const onEncryptFile = () => {
     setActiveStep(2);
     setTimeout(() => setFakeProgress(true), 500);
@@ -179,7 +184,7 @@ function EncryptionPanel(props){
       setEncBlob(blob);
       if (addTimers){ // ToDo: Make set to pinned Timer conditionally
         props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type, cached: true}, addPinnedTimer);
-        navigator.storage.persist();
+        if (navigator.storage) navigator.storage.persist();
         caches.open('KittenSafeFiles').then(c => c.put(auth, new Response(blob)));
       }
       setTimeout(() => setDisabledReset(false), 10000);
@@ -226,7 +231,7 @@ function EncryptionPanel(props){
             <FilenamePanel file={file} />
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
               <Grid container spacing={1}>
-                <Grid item><Button variant="outlined" disabled={true}>Back</Button></Grid>
+                <Grid item><Button variant="outlined" disabled={file.name === 'none'} onClick={onResetFile} >Reset</Button></Grid>
                 <Grid item xs><Button variant="contained" color="primary" startIcon={<TimerTwoTone/>} onClick={handleNext} disabled={!file.size || !navigator.onLine} fullWidth>Select Timestamp</Button></Grid>
               </Grid>
             </Container>

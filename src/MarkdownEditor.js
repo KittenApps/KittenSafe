@@ -7,7 +7,7 @@ import { useTheme } from '@material-ui/core/styles';
 import throttle from 'lodash.throttle';
 
 export const MarkdownPreview = React.memo((props) => {
-  console.log("render MarkdownPreview: ", props);
+  // console.log("render MarkdownPreview: ", props);
   const [content, setContent] = useState(null);
   const mdProcessor = useMemo(() => import(/* webpackChunkName: 'markdown' */ './markdownUtil')
     .then(mu => mu.unified().use(mu.parseMarkdown).use(mu.remarkEmoji).use(mu.remarkLinks)
@@ -19,7 +19,7 @@ export const MarkdownPreview = React.memo((props) => {
 });
 
 function MarkdownEditor(props){
-  console.log("render MarkdownEditor: ", props);
+  // console.log("render MarkdownEditor: ", props);
   const [markdown, setMarkdown] = useState('');
   const [content, setContent] = useState(' ');
   const [filename, setFilename] = useState('');
