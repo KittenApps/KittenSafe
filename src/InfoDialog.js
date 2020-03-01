@@ -166,7 +166,6 @@ function InfoDialog(props){
             :
             <i>Switch <a href="https://kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">back to the main WebApp</a> or continue to use the seperate WebApps for <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other and the main WebApp).</i>
           }
-          <Button onClick={() => alert(document.cookie)}>test cookie</Button>
         </TabPanel>
       </DialogContent>
       <DialogActions>
