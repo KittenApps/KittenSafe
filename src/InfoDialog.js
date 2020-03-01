@@ -50,9 +50,9 @@ function InfoDialog(props){
   };
   const handleBranchSwitch = () => {
     if (isBeta){
-      document.cookie = 'nf_ab=;expires=Thu, 01 Jan 1970 00:00:00 GMT'; // delete cookie
+      document.cookie = 'nf_ab=;expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/'; // delete cookie
     } else {
-      document.cookie = `nf_ab=beta; expires=${addYears(new Date(), 1)}`;
+      document.cookie = `nf_ab=beta; expires=${addYears(new Date(), 1)}; path=/`;
     }
     props.SWRegistration.update();
     props.setSWRegistration(null);
