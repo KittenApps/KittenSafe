@@ -6,7 +6,7 @@ import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@material-ui/pickers/adapter/date-fns';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { TimerProvider } from './util';
-import { Helmet } from "react-helmet";
+import { Helmet } from 'react-helmet';
 import './media/fonts.css';
 import manifest from './media/manifest.webmanifest';
 import favicon from './media/favicon.ico';
