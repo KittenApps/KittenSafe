@@ -71,15 +71,7 @@ const useStyles = makeStyles(theme => ({
 
 function App(props){
   // console.log("render App");
-  const [timers, setTimers] = useState(() => {
-    let t = JSON.parse(localStorage.getItem('timers')) || {};
-    // ToDo: remove migration code:
-    if (Array.isArray(t)){
-      localStorage.setItem('timers', '{}');
-      return {};
-    }
-    return t;
-  });
+  const [timers, setTimers] = useState(() => JSON.parse(localStorage.getItem('timers')) || {});
   const [pinnedTimer, setPinnedTimer] = useState(() => {
     const now = new Date();
     let index = null;
