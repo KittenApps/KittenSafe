@@ -27,6 +27,7 @@
   "proxy": "http://localhost:34567",
   "scripts": {
     "start": "react-scripts start",
+    "prebuild": "./webhook.js",
     "build": "REACT_APP_BRANCH=$BRANCH react-scripts build"
   },
   "eslintConfig": {
