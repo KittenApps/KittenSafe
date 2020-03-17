@@ -7,7 +7,7 @@
     "@material-ui/lab": "^4.0.0-alpha.45",
     "@material-ui/pickers": "^4.0.0-alpha.3",
     "clsx": "^1.1.0",
-    "date-fns": "^2.10.0",
+    "date-fns": "^2.11.0",
     "lodash.throttle": "^4.1.1",
     "react": "^16.13.0",
     "react-dom": "^16.13.0",
@@ -15,8 +15,8 @@
     "react-helmet": "^6.0.0-beta.2",
     "react-scripts": "3.4.0",
     "rehype-raw": "^4.0.1",
-    "rehype-react": "^4.0.1",
-    "rehype-sanitize": "^3.0.0",
+    "rehype-react": "^5.0.0",
+    "rehype-sanitize": "^3.0.1",
     "remark-emoji": "^2.0.2",
     "remark-external-links": "^5.0.0",
     "remark-parse": "^7.0.2",
@@ -27,8 +27,9 @@
   "proxy": "http://localhost:34567",
   "scripts": {
     "start": "react-scripts start",
-    "prebuild": "./webhook.js",
-    "build": "REACT_APP_BRANCH=$BRANCH react-scripts build"
+    "prebuild": "if [ $NETLIFY ]; then ./webhook.js; fi",
+    "build": "REACT_APP_BRANCH=$BRANCH react-scripts build",
+    "serve": "npx -p netlify-cli ntl dev --dir=build --functions=functions"
   },
   "eslintConfig": {
     "extends": "react-app"
