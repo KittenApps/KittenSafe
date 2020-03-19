@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { render } from "react-dom";
 import App from './App';
-import { MuiPickersUtilsProvider } from '@material-ui/pickers';
+import { LocalizationProvider } from '@material-ui/pickers';
 import DateFnsUtils from '@material-ui/pickers/adapter/date-fns';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import { TimerProvider } from './util';
@@ -55,7 +55,7 @@ function Main(){
     <ErrorBoundary>
       <TimerProvider>
         <ThemeProvider theme={theme}>
-          <MuiPickersUtilsProvider utils={DateFnsUtils}>
+          <LocalizationProvider dateAdapter={DateFnsUtils}>
             <App setTheme={setTheme} />
             <Helmet>
               <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
@@ -66,7 +66,7 @@ function Main(){
               <link rel="apple-touch-icon" sizes="256x256" href={logo256} />
               <link rel="apple-touch-icon" sizes="512x512" href={logo512} />
             </Helmet>
-          </MuiPickersUtilsProvider>
+          </LocalizationProvider>
         </ThemeProvider>
       </TimerProvider>
     </ErrorBoundary>

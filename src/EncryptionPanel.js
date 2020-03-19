@@ -251,10 +251,12 @@ function EncryptionPanel(props){
                 showTodayButton
                 todayLabel="NOW"
                 disablePast
-                title="SELECT TIMESTAMP"
-                format="yyyy/MM/dd HH:mm:ss.SSS"
+                minDateTime={new Date()}
+                toolbarTitle="select timestamp"
+                inputFormat="yyyy/MM/dd HH:mm:ss.SSS"
                 mask="____/__/__ __:__:__.___"
                 ampm={false}
+                showDaysOutsideCurrentMonth
                 fullWidth
               />
               <TimerPreview addTimers={addTimers} setAddTimers={setAddTimers} addPinnedTimer={addPinnedTimer} setAddPinnedTimers={setAddPinnedTimers} file={file} timestamp={timestamp} />

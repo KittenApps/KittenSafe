@@ -12,25 +12,29 @@ const postData = JSON.stringify({
       icon_url: 'https://docs.netlify.com/favicon-32x32.png'
     },
     fields: [{
-      name: 'Repository commit',
+      name: 'Repository HEAD commit',
       inline: true,
-      value: process.env.COMMIT_REF ? `https://bitbucket.org/silizias/kittensafe/commits/${process.env.COMMIT_REF.substr(0,7)}` : 'unknown'
+      value: process.env.COMMIT_REF ? `[silizias/kittensafe@${process.env.COMMIT_REF.substr(0,7)}](https://bitbucket.org/silizias/kittensafe/commits/${process.env.COMMIT_REF})` : 'unknown'
     },{
       name: 'Branch',
       inline: true,
       value: process.env.BRANCH || 'unknown'
     },{
-      name: 'Deploy log',
-      inline: false,
-      value: process.env.BUILD_ID ? `https://app.netlify.com/sites/kittensafe/deploys/${process.env.BUILD_ID}` : 'https://app.netlify.com/sites/kittensafe/deploys'
-    },{
-      name: 'Build URL',
+      name: 'compare with previous build',
       inline: true,
-      value: process.env.DEPLOY_URL || 'unknown'
+      value: process.env.COMMIT_REF ? `[${process.env.COMMIT_REF.substr(0,7)}..${process.env.CACHED_COMMIT_REF.substr(0,7)}](https://bitbucket.org/silizias/kittensafe/branches/compare/${process.env.COMMIT_REF}..${process.env.CACHED_COMMIT_REF})` : 'unknown'
+    },{
+      name: 'Deploy log',
+      inline: true,
+      value: process.env.BUILD_ID ? `[${process.env.BUILD_ID}](https://app.netlify.com/sites/kittensafe/deploys/${process.env.BUILD_ID})` : 'https://app.netlify.com/sites/kittensafe/deploys'
     },{
       name: 'Branch URL',
       inline: true,
       value: process.env.DEPLOY_PRIME_URL || 'unknown'
+    },{
+      name: 'Build URL (permalink for this version)',
+      inline: false,
+      value: process.env.DEPLOY_URL || 'unknown'
     }]
   }]
 });
