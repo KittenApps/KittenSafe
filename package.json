@@ -2,9 +2,9 @@
   "name": "KittenSafe",
   "version": "0.4.0",
   "dependencies": {
-    "@material-ui/core": "^4.9.7",
+    "@material-ui/core": "^4.9.8",
     "@material-ui/icons": "^4.9.1",
-    "@material-ui/lab": "^4.0.0-alpha.46",
+    "@material-ui/lab": "^4.0.0-alpha.47",
     "@material-ui/pickers": "^4.0.0-alpha.4",
     "clsx": "^1.1.0",
     "date-fns": "^2.11.1",
