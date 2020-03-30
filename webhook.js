@@ -39,7 +39,7 @@ const postData = JSON.stringify({
   }]
 });
 
-const url = 'https://discordapp.com/api/webhooks/686963727626403853/A5C1GU0RvIwCs4YdD0Gmecpf11526hwZwSlbuxjwnzI95ZgUOIEw6IJjAtL2JHDPIbRz';
+const url = `https://discordapp.com/api/webhooks/${process.env.DISCORD_WEBHOOK}`;
 const options = {
   method: 'POST',
   headers: {
