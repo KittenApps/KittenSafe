@@ -82,7 +82,7 @@ export const MarkdownPreview = React.memo((props) => {
       .use(mu.remark2rehype, {allowDangerousHTML: true}).use(mu.rehypeRawHTML).use(mu.rehypeSanitize)
       .use(mu.rehype2react, {createElement: React.createElement, Fragment: React.Fragment})),[]);
 
-  useEffect(() => {mdProcessor.then(mp => mp.process(props.src).then(c => setContent(c.contents)));}, [props.src, mdProcessor]);
+  useEffect(() => {mdProcessor.then(mp => mp.process(props.src).then(c => setContent(c.result)));}, [props.src, mdProcessor]);
 
   return <div className={classes.markdown}>{content}</div>
 });
@@ -101,7 +101,7 @@ function MarkdownEditor(props){
     .then(mu => mu.unified().use(mu.parseMarkdown).use(mu.remarkEmoji).use(mu.remarkLinks)
       .use(mu.remark2rehype, {allowDangerousHTML: true}).use(mu.rehypeRawHTML).use(mu.rehypeSanitize)
       .use(mu.rehype2react, {createElement: React.createElement, Fragment: React.Fragment}))
-    .then(mp => mp.process(markdown).then(c => setContent(c.contents))), 250), []);
+    .then(mp => mp.process(markdown).then(c => setContent(c.result))), 250), []);
 
   useEffect(() => setShowPreview(!isMobile), [isMobile]);
   useEffect(() => {showPreview && throttledMd(markdown);}, [markdown, showPreview, throttledMd]);
