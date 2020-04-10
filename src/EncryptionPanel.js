@@ -4,7 +4,7 @@ import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox,
          FormControlLabel, Grid, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
 import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone,
-         FormatColorText, TimerTwoTone, SaveTwoTone } from '@material-ui/icons';
+         FormatColorText, TimerTwoTone, SaveTwoTone, CameraAltTwoTone } from '@material-ui/icons';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { pink } from '@material-ui/core/colors';
 import { useDropzone } from 'react-dropzone';
@@ -23,8 +23,11 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(1)
     }
   },
-  input: {
+  hiddenInput: {
     display: 'none'
+  },
+  iconButton: {
+    margin: 0
   }
 }));
 
@@ -216,12 +219,20 @@ function EncryptionPanel(props){
           <StepContent>
             <Container maxWidth="sm" disableGutters>
               <Grid container spacing={1}>
-                <Grid item xs={12} md={6}>
-                  <input className={classes.input} id="encFileButton" type="file" onChange={onChangeFile} />
+                <Grid item xs>
+                  <input className={classes.hiddenInput} id="encFileButton" type="file" onChange={onChangeFile} />
                   <label htmlFor="encFileButton">
                     <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
                   </label>
                 </Grid>
+                {process.browser && /iPad|iPhone|iPod|android/.test(navigator.userAgent) &&
+                  <Grid item>
+                    <input className={classes.hiddenInput} id="encFileCamara" type="file" capture="environment" accept="image/*, video/*" onChange={onChangeFile} />
+                    <label htmlFor="encFileCamara">
+                      <Button variant="contained" color="primary" component="span" startIcon={<CameraAltTwoTone style={{fontSize: 24}}/>} classes={{startIcon: classes.iconButton}}></Button>
+                    </label>
+                  </Grid>
+                }
                 <Grid item xs={12} md={6}>
                   <Button variant="contained" color="secondary" onClick={handleCreateMarkdownOpen} startIcon={<FormatColorText/>} fullWidth>Create Markdown text</Button>
                 </Grid>

@@ -278,7 +278,7 @@ function DecryptionPanel(props){
           <StepLabel>Choose the KittenSafe file for decryption</StepLabel>
           <StepContent>
             <Container maxWidth="sm" disableGutters>
-              <input className={classes.input} id="decFileButton" type="file" onChange={onChangeFile} />
+              <input className={classes.input} id="decFileButton" type="file" accept=".ksf" onChange={onChangeFile} />
               <label htmlFor="decFileButton">
                 <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
               </label>
