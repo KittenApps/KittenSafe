@@ -4,7 +4,7 @@ const https = require('https');
 const postData = JSON.stringify({
   embeds: [{
     title: `Deploying a new KittenSafe version ${process.env.BRANCH === 'beta' ? ' (beta)' : ''}`,
-    url: process.env.URL || 'http://kittensafe.netlify.com/',
+    url: process.env.URL || 'http://kittensafe.netlify.app/',
     timestamp: new Date().toISOString(),
     color: 0x01ad9f,
     footer: {

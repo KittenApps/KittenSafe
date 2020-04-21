@@ -19,7 +19,7 @@
     "rehype-sanitize": "^3.0.1",
     "remark-emoji": "^2.1.0",
     "remark-external-links": "^6.0.0",
-    "remark-parse": "^8.0.0",
+    "remark-parse": "^8.0.1",
     "remark-rehype": "^6.0.0",
     "typeface-roboto": "^0.0.75",
     "unified": "^9.0.0"
@@ -47,7 +47,7 @@
       "last 1 safari version"
     ]
   },
-  "homepage": "http://kittensafe.netlify.com/",
+  "homepage": "http://kittensafe.netlify.app/",
   "repository": "bitbucket:silizias/kittensafe",
   "license": "GPL-3.0-or-later"
 }

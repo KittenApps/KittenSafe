@@ -75,7 +75,7 @@ function InfoDialog(props){
         <TabPanel value={infoTab} index={0}>
           <Typography variant="h4" align="center" gutterBottom>Welcome to KittenSafe {props.version} <span role="img" aria-label="KittenSafe emoji">😺🔒</span></Typography>
           <Box display="flex" justifyContent="center"><img src={logo} alt="logo"/></Box>
-          {window.location.hostname === "kittensafe.netlify.com" &&
+          {window.location.hostname === "kittensafe.netlify.app" &&
             <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10, position: 'relative'}} disableGutters>
               <Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={!props.SWRegistration || !navigator.onLine} fullWidth>Switch to {isBeta ? 'stable' : 'beta'} branch …</Button>
               {!props.SWRegistration && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
@@ -154,17 +154,17 @@ function InfoDialog(props){
             <li>extend the duration on an already encrypted file (you no longer need to encrypt an already encrypted file again)</li>
             <li>Timers 2.0 (better Timer management, add notes to timers)</li>
           </ul>
-          {window.location.hostname === "kittensafe.netlify.com" ?
+          {window.location.hostname === "kittensafe.netlify.app" ?
             <React.Fragment>
               <i>You could also check out the more up to date and maybe slightly less stable beta version:</i>
               <Container maxWidth="sm" style={{marginTop: 10, marginBottom: 10, position: 'relative'}} disableGutters>
                 <Button variant="contained" color="secondary" onClick={handleBranchSwitch} disabled={!props.SWRegistration || !navigator.onLine} fullWidth>Switch to {isBeta ? 'stable' : 'beta'} branch …</Button>
                 {!props.SWRegistration && <LinearProgress variant="query" size={24} className={classes.buttonProgress} />}
               </Container>
-              <i>Or use the seperate WebApps for  <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other / this main WebApp).</i>
+              <i>Or use the seperate WebApps for  <a href="https://beta--kittensafe.netlify.app" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.app" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other / this main WebApp).</i>
             </React.Fragment>
             :
-            <i>Switch <a href="https://kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">back to the main WebApp</a> or continue to use the seperate WebApps for <a href="https://beta--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.com" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other and the main WebApp).</i>
+            <i>Switch <a href="https://kittensafe.netlify.app" target="_blank" rel="noopener noreferrer">back to the main WebApp</a> or continue to use the seperate WebApps for <a href="https://beta--kittensafe.netlify.app" target="_blank" rel="noopener noreferrer">beta</a> or  <a href="https://master--kittensafe.netlify.app" target="_blank" rel="noopener noreferrer">stable</a> (don't share state like Timer with each other and the main WebApp).</i>
           }
         </TabPanel>
       </DialogContent>
