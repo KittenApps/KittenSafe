@@ -19,7 +19,7 @@
     "rehype-sanitize": "^3.0.1",
     "remark-emoji": "^2.1.0",
     "remark-external-links": "^6.0.0",
-    "remark-parse": "^8.0.1",
+    "remark-parse": "^8.0.2",
     "remark-rehype": "^6.0.0",
     "typeface-roboto": "^0.0.75",
     "unified": "^9.0.0"
