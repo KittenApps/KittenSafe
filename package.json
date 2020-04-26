@@ -11,7 +11,7 @@
     "lodash.throttle": "^4.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
-    "react-dropzone": "^10.2.2",
+    "react-dropzone": "^11.0.1",
     "react-helmet": "^6.0.0",
     "react-scripts": "3.4.1",
     "rehype-raw": "^4.0.2",
