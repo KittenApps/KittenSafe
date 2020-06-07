@@ -14,7 +14,7 @@ const postData = JSON.stringify({
     fields: [{
       name: 'Repository HEAD commit',
       inline: true,
-      value: process.env.COMMIT_REF ? `[silizias/kittensafe@${process.env.COMMIT_REF.substr(0,7)}](https://bitbucket.org/silizias/kittensafe/commits/${process.env.COMMIT_REF})` : 'unknown'
+      value: process.env.COMMIT_REF ? `[silizias/kittensafe@${process.env.COMMIT_REF.substr(0,7)}](https://github.com/KittenApps/KittenSafe/commit/${process.env.COMMIT_REF})` : 'unknown'
     },{
       name: 'Branch',
       inline: true,
@@ -22,7 +22,7 @@ const postData = JSON.stringify({
     },{
       name: 'compare with previous build',
       inline: true,
-      value: process.env.COMMIT_REF ? `[${process.env.COMMIT_REF.substr(0,7)}..${process.env.CACHED_COMMIT_REF.substr(0,7)}](https://bitbucket.org/silizias/kittensafe/branches/compare/${process.env.COMMIT_REF}..${process.env.CACHED_COMMIT_REF})` : 'unknown'
+      value: process.env.COMMIT_REF ? `[${process.env.COMMIT_REF.substr(0,7)}..${process.env.CACHED_COMMIT_REF.substr(0,7)}](https://github.com/KittenApps/KittenSafe/compare/${process.env.COMMIT_REF}..${process.env.CACHED_COMMIT_REF})` : 'unknown'
     },{
       name: 'Deploy log',
       inline: true,

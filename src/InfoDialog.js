@@ -89,7 +89,7 @@ function InfoDialog(props){
             <Typography variant="body2" align="center" gutterBottom><i>Note: You can reopen this dialog whenever you want by clicking on the <InfoTwoTone fontSize="small"/> in the top right corner of the appbar.</i></Typography>
           </Paper>
           <Typography variant="body2" align="center">
-            KittenSafe is <a href="https://bitbucket.org/silizias/kittensafe/src/master/" target="_blank" rel="noopener noreferrer">build with ❤ by Silizias</a> using the <a
+            KittenSafe is <a href="https://github.com/KittenApps/KittenSafe" target="_blank" rel="noopener noreferrer">build with ❤ by Silizias</a> using the <a
             href="https://developer.mozilla.org/docs/Web/API/Web_Crypto_API" target="_blank" rel="noopener noreferrer">Web Crypto API</a>, <a
             href="https://www.netlify.com/products/functions/" target="_blank" rel="noopener noreferrer">Netlify functions</a>, <a
             href="https://reactjs.org/" target="_blank" rel="noopener noreferrer">React</a>, <a href="https://material-ui.com/" target="_blank" rel="noopener noreferrer">Material UI</a>, <a

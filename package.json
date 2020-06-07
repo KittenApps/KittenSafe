@@ -48,6 +48,6 @@
     ]
   },
   "homepage": "http://kittensafe.netlify.app/",
-  "repository": "bitbucket:silizias/kittensafe",
+  "repository": "github:KittenApps/KittenSafe",
   "license": "GPL-3.0-or-later"
 }
