@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox, Container,
+import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox, Container, TextField,
          FormControlLabel, Grid, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
 import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone,
@@ -253,7 +253,7 @@ function EncryptionPanel(props){
           <StepContent>
             <Container maxWidth="sm" disableGutters>
               <DateTimePicker
-                variant="outlined"
+                renderInput={props => <TextField variant="outlined" fullWidth {...props} />}
                 label="file encrypted until:"
                 className={classes.timePicker}
                 views={['year', 'month', 'date', 'hours', 'minutes']}
@@ -268,7 +268,6 @@ function EncryptionPanel(props){
                 mask="____/__/__ __:__:__.___"
                 ampm={false}
                 showDaysOutsideCurrentMonth
-                fullWidth
               />
               <TimerPreview addTimers={addTimers} setAddTimers={setAddTimers} addPinnedTimer={addPinnedTimer} setAddPinnedTimers={setAddPinnedTimers} file={file} timestamp={timestamp} />
             </Container>
