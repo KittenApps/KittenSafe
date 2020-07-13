@@ -255,7 +255,6 @@ function EncryptionPanel(props){
               <DateTimePicker
                 renderInput={props => <TextField variant="outlined" fullWidth {...props} />}
                 label="file encrypted until:"
-                className={classes.timePicker}
                 views={['year', 'month', 'date', 'hours', 'minutes']}
                 value={timestamp}
                 onChange={setTimestamp}
