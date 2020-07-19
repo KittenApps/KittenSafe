@@ -26,7 +26,7 @@ const postData = JSON.stringify({
     },{
       name: 'Deploy log',
       inline: true,
-      value: process.env.BUILD_ID ? `[${process.env.BUILD_ID}](https://app.netlify.com/sites/kittensafe/deploys/${process.env.BUILD_ID})` : 'https://app.netlify.com/sites/kittensafe/deploys'
+      value: process.env.DEPLOY_ID ? `[${process.env.DEPLOY_ID}](https://app.netlify.com/sites/kittensafe/deploys/${process.env.DEPLOY_ID})` : 'https://app.netlify.com/sites/kittensafe/deploys'
     },{
       name: 'Branch URL',
       inline: true,
