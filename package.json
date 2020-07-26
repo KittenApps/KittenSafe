@@ -15,14 +15,14 @@
     "react-helmet": "^6.1.0",
     "react-scripts": "3.4.1",
     "rehype-raw": "^4.0.2",
-    "rehype-react": "^6.0.0",
+    "rehype-react": "^6.1.0",
     "rehype-sanitize": "^3.0.1",
     "remark-emoji": "^2.1.0",
     "remark-external-links": "^6.1.0",
     "remark-parse": "^8.0.3",
     "remark-rehype": "^7.0.0",
     "typeface-roboto": "^0.0.75",
-    "unified": "^9.0.0"
+    "unified": "^9.1.0"
   },
   "proxy": "http://localhost:34567",
   "scripts": {

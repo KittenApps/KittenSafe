@@ -79,7 +79,7 @@ export const MarkdownPreview = React.memo((props) => {
 
   const mdProcessor = useMemo(() => import(/* webpackChunkName: 'markdown' */ './markdownUtil')
     .then(mu => mu.unified().use(mu.parseMarkdown).use(mu.remarkEmoji).use(mu.remarkLinks)
-      .use(mu.remark2rehype, {allowDangerousHTML: true}).use(mu.rehypeRawHTML).use(mu.rehypeSanitize)
+      .use(mu.remark2rehype, {allowDangerousHtml: true}).use(mu.rehypeRawHTML).use(mu.rehypeSanitize)
       .use(mu.rehype2react, {createElement: React.createElement, Fragment: React.Fragment})),[]);
 
   useEffect(() => {mdProcessor.then(mp => mp.process(props.src).then(c => setContent(c.result)));}, [props.src, mdProcessor]);
@@ -99,7 +99,7 @@ function MarkdownEditor(props){
 
   const throttledMd = useMemo(() => throttle((markdown) => import(/* webpackChunkName: 'markdown' */ './markdownUtil')
     .then(mu => mu.unified().use(mu.parseMarkdown).use(mu.remarkEmoji).use(mu.remarkLinks)
-      .use(mu.remark2rehype, {allowDangerousHTML: true}).use(mu.rehypeRawHTML).use(mu.rehypeSanitize)
+      .use(mu.remark2rehype, {allowDangerousHtml: true}).use(mu.rehypeRawHTML).use(mu.rehypeSanitize)
       .use(mu.rehype2react, {createElement: React.createElement, Fragment: React.Fragment}))
     .then(mp => mp.process(markdown).then(c => setContent(c.result))), 250), []);
 
