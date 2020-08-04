@@ -104,7 +104,7 @@ const TimerList = React.memo((props) => {
       ))}
       {sortTimers.length > 0 && new Date(sortTimers[0][1].timestamp) < new Date() &&
         <Box m={2} display="flex" justifyContent="center">
-          <Button variant="outlined" color="default" onClick={() => props.deleteTimer('finished')} startIcon={<DeleteTwoTone />} >Clear all finished Timers</Button>
+          <Button variant="outlined" onClick={() => props.deleteTimer('finished')} startIcon={<DeleteTwoTone />} >Clear all finished Timers</Button>
         </Box>
       }
     </React.Fragment>

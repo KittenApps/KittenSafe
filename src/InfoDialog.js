@@ -169,7 +169,7 @@ function InfoDialog(props){
         </TabPanel>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} color="primary">
+        <Button onClick={handleClose} >
           Close
         </Button>
       </DialogActions>

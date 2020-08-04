@@ -222,14 +222,14 @@ function EncryptionPanel(props){
                 <Grid item xs>
                   <input className={classes.hiddenInput} id="encFileButton" type="file" onChange={onChangeFile} />
                   <label htmlFor="encFileButton">
-                    <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
+                    <Button variant="contained" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
                   </label>
                 </Grid>
                 {process.browser && /iPad|iPhone|iPod|android/.test(navigator.userAgent) &&
                   <Grid item>
                     <input className={classes.hiddenInput} id="encFileCamara" type="file" capture="environment" accept="image/*, video/*" onChange={onChangeFile} />
                     <label htmlFor="encFileCamara">
-                      <Button variant="contained" color="primary" component="span" startIcon={<CameraAltTwoTone style={{fontSize: 24}}/>} classes={{startIcon: classes.iconButton}}></Button>
+                      <Button variant="contained" component="span" startIcon={<CameraAltTwoTone style={{fontSize: 24}}/>} classes={{startIcon: classes.iconButton}}></Button>
                     </label>
                   </Grid>
                 }

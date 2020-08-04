@@ -139,7 +139,7 @@ function MarkdownEditor(props){
       }
       <DialogActions>
         <Button onClick={handleClose} color="secondary">Abort</Button>
-        <Button onClick={handleSubmit} color="primary">Submit Markdown as file</Button>
+        <Button onClick={handleSubmit} >Submit Markdown as file</Button>
       </DialogActions>
     </Dialog>
   );

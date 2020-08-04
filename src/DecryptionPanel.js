@@ -55,7 +55,7 @@ const FilePanelTimer = React.memo((props) => {
   const now = useContext(TimerContext);
   const td = useMemo(() => {
     const td = new Date(props.timestamp) - now;
-    if (td <= 0) props.setReady();
+    if (td <= 0) props.setTimeReady(true);
     return td + 500;
   }, [props, now]);
 
@@ -85,7 +85,6 @@ const FilePanel = React.memo((props) => {
       props.setPinnedTimer(oldPinnedTimer.current);
     }
   };
-  const setReady = () => props.setTimeReady(true);
 
   return (
     <Card style={{userSelect: 'text', WebkitUserSelect: 'text', MozUserSelect: 'text'}} variant="outlined">
@@ -106,7 +105,7 @@ const FilePanel = React.memo((props) => {
       />
       <CardContent style={{paddingTop: 0, paddingBottom: 8}}>
         {props.timeReady ? 'Success: KittenSafe file ready for decryption 🔓' : 'Error: KittenSafe file not ready for decryption 🔒:'}
-        {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={setReady} />}
+        {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setTimeReady={props.setTimeReady} />}
       </CardContent>
       {!props.timeReady && !props.timers.includes(props.file.meta.auth) && <CardActions><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button></CardActions>}
       {props.timeReady && props.timers.includes(props.file.meta.auth) && <CardActions><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers list"/></CardActions>}
@@ -280,7 +279,7 @@ function DecryptionPanel(props){
             <Container maxWidth="sm" disableGutters>
               <input className={classes.input} id="decFileButton" type="file" accept=".ksf" onChange={onChangeFile} />
               <label htmlFor="decFileButton">
-                <Button variant="contained" color="primary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
+                <Button variant="contained" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
               </label>
             </Container>
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>

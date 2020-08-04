@@ -46,7 +46,7 @@ function CustomThemeDialog(props){
       </DialogContent>
       <DialogActions>
         <Button onClick={handleReset} color="secondary">Reset to default theme</Button>
-        <Button onClick={handleApply} color="primary">Apply theme colors</Button>
+        <Button onClick={handleApply} >Apply theme colors</Button>
       </DialogActions>
     </Dialog>
   );
