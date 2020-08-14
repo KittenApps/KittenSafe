@@ -239,7 +239,9 @@ function EncryptionPanel(props){
               </Grid>
             </Container>
             {createMarkdownOpen && <MarkdownEditor open={createMarkdownOpen} setOpen={setCreateMarkdownOpen} setFile={setFile} />}
-            <FilenamePanel file={file} />
+            <Container maxWidth="sm" disableGutters>
+              <FilenamePanel file={file} />
+            </Container>
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
               <Grid container spacing={1}>
                 <Grid item><Button variant="outlined" disabled={file.name === 'none'} onClick={onResetFile} >Reset</Button></Grid>

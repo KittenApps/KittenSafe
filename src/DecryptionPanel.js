@@ -50,13 +50,13 @@ const fakeItems = [
   'decrypting KittenSafe file'
 ];
 
-const FilePanelTimer = React.memo((props) => {
+const FilePanelTimer = (props) => {
   // console.log("render DecryptionPanel FilePanel Timer");
   const now = useContext(TimerContext);
   const td = useMemo(() => {
-    const td = new Date(props.timestamp) - now;
-    if (td <= 0) props.setTimeReady(true);
-    return td + 500;
+    const tdiff = new Date(props.timestamp) - now;
+    if (tdiff <= 0) props.setReady();
+    return tdiff + 500;
   }, [props, now]);
 
   if (td <= 0) return <p style={{marginTop: 8, marginBottom: 0}}><b>0</b>days <b>0</b>hours <b>00</b>mins <b>00</b>secs left</p>;
@@ -66,7 +66,7 @@ const FilePanelTimer = React.memo((props) => {
   const s = Math.floor((td / 1000) % 60);
 
   return <p style={{marginTop: 8, marginBottom: 0}}><b>{d}</b>days <b>{h}</b>hours <b>{m < 10 ? '0' + m : m}</b>mins <b>{s < 10 ? '0' + s : s}</b>secs left</p>;
-});
+};
 
 const FilePanel = React.memo((props) => {
   // console.log("render DecryptionPanel FilePanel", props);
@@ -105,7 +105,7 @@ const FilePanel = React.memo((props) => {
       />
       <CardContent style={{paddingTop: 0, paddingBottom: 8}}>
         {props.timeReady ? 'Success: KittenSafe file ready for decryption 🔓' : 'Error: KittenSafe file not ready for decryption 🔒:'}
-        {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setTimeReady={props.setTimeReady} />}
+        {!props.timeReady && <FilePanelTimer timestamp={props.file.meta.secret.timestamp} setReady={props.setReady} />}
       </CardContent>
       {!props.timeReady && !props.timers.includes(props.file.meta.auth) && <CardActions><Button variant="contained" color="secondary" onClick={handleAddTimer} startIcon={<TimerTwoTone />}>Add to Timers</Button></CardActions>}
       {props.timeReady && props.timers.includes(props.file.meta.auth) && <CardActions><FormControlLabel control={<Checkbox checked={props.rmExpTimer} onChange={handleRmExpTimer}/>} label="remove expired timer from Timers list"/></CardActions>}
@@ -158,6 +158,8 @@ function DecryptionPanel(props){
   const [disabledReset, setDisabledReset] = useState(true);
   const [fakeProgressPlaying, setFakeProgress] = useState(false);
   const [rmExpTimer, setRmExpTimer] = useState(true);
+
+  const setReady = useCallback(() => setTimeReady(true), []);
 
   useEffect(() => {
     if (file.name === 'none' || file.name === 'invalid'){
@@ -285,7 +287,7 @@ function DecryptionPanel(props){
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
               {!file.meta ? <FilePanelError file={file} timers={props.timers} setFile={setFile} /> :
                 <FilePanel
-                  file={file} timeReady={timeReady} setTimeReady={setTimeReady}
+                  file={file} timeReady={timeReady} setReady={setReady}
                   addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer}
                   pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer}
                 />
