@@ -41,7 +41,7 @@ function FilePreview(props){
   switch (props.mimeType.split('/')[0]){
       case 'image': element = <img src={props.src} className={classes.media} alt=""/>; mw="sm"; break;
       case 'text': element = props.mimeType === 'text/markdown' ? <Paper elevation={3} style={{margin: '0 10px 10px', padding: 10, overflow: 'auto'}}><MarkdownPreview src={props.src} /></Paper> :
-                              <TextField value={props.src} variant="outlined" label="Preview of text file:" InputProps={{readOnly: true}} style={{padding: 10}} rowsMax="20" fullWidth multiline/>; mw="xl"; break;
+                              <TextField value={props.src} variant="outlined" label="Preview of text file:" InputProps={{readOnly: true}} maxRows="20" fullWidth multiline/>; mw="xl"; break;
       case 'video': element = <video src={props.src} className={classes.media} autoPlay controls/>; mw="lg"; action=null; break;
       case 'audio': element = <audio src={props.src} className={classes.media} autoPlay controls/>; mw="sm"; action=null; break;
       default: return null;
