@@ -194,6 +194,7 @@ function DecryptionPanel(props){
     setActiveStep(0);
     setPreview({});
     setTimeReady(false);
+    URL.revokeObjectURL(decFile.objURL);
     setDecFile(null);
     setDisabledReset(true);
     setFakeProgress(false);
@@ -247,9 +248,9 @@ function DecryptionPanel(props){
       ]);
     }).then(([data, filename, mimeType]) => {
       // console.log('data: ', data, 'filename: ', filename, 'mimeType: ', mimeType);
-      const b = new Blob([data]);
-      setPreview({src: mimeType.split('/')[0] === 'text' ? new TextDecoder().decode(data) : URL.createObjectURL(b, {type: mimeType}), mimeType, filename});
-      setDecFile({b, mimeType, filename});
+      const objURL = URL.createObjectURL(new Blob([data]), {type: mimeType});
+      setPreview({src: mimeType.split('/')[0] === 'text' ? new TextDecoder().decode(data) : objURL, mimeType, filename});
+      setDecFile({objURL, mimeType, filename});
       if (timers.includes(file.meta.auth) && rmExpTimer){
         props.deleteTimer(file.meta.auth);
       }
@@ -258,10 +259,9 @@ function DecryptionPanel(props){
   };
 
   const handleSave = () => {
-    const href = URL.createObjectURL(decFile.b, {type: decFile.mimeType}); // create File
     const a = document.createElement('a'); // offer file downloading by clicking on the link
     a.setAttribute('download', decFile.filename);
-    a.setAttribute('href', href);
+    a.setAttribute('href', decFile.objURL);
     a.click();
     setDisabledReset(false);
   };

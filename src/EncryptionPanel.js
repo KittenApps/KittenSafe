@@ -132,7 +132,7 @@ function EncryptionPanel(props){
   const [addTimers, setAddTimers] = useState(true);
   const [addPinnedTimer, setAddPinnedTimers] = useState(true);
   const [timestamp, setTimestamp] = useState(() => addDays(new Date(), 1));
-  const [encBlob, setEncBlob] = useState(null);
+  const [objectURL, setObjectURL] = useState(null);
   const [activeStep, setActiveStep] = useState(0);
   const [fakeProgressPlaying, setFakeProgress] = useState(false);
   const [disabledReset, setDisabledReset] = useState(true);
@@ -148,7 +148,8 @@ function EncryptionPanel(props){
   const handleReset = () => {
     setFile({name: 'none', type: 'none/none'});
     setTimestamp(new Date(new Date().getTime() + 60000));
-    setEncBlob(null);
+    URL.revokeObjectURL(objectURL);
+    setObjectURL(null);
     setActiveStep(0);
     setFakeProgress(false);
     setDisabledReset(true);
@@ -182,11 +183,13 @@ function EncryptionPanel(props){
       ]);
     }).then(([data, secret, iv, auth]) => {
       // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
+      alert(42);
       const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
       const blob = new Blob([meta, data], {type: 'application/kittensafefile'});
-      setEncBlob(blob);
+      setObjectURL(URL.createObjectURL(blob, {type: 'application/octet-binary'}));
       if (addTimers){
         props.addTimers(auth, {timestamp: secret.timestamp, filename: file.name, mimeType: file.type, cached: true}, addPinnedTimer);
+        // ToDo: replace with indexedDB
         if (navigator.storage) navigator.storage.persist();
         caches.open('KittenSafeFiles').then(c => c.put(auth, new Response(blob)));
       }
@@ -195,10 +198,9 @@ function EncryptionPanel(props){
   };
 
   const handleSave = () => {
-    const href = URL.createObjectURL(encBlob, {type: 'application/octet-binary'}); // create File
     const a = document.createElement('a');
     a.setAttribute('download', file.name + '-' + timestamp.toISOString() + '.ksf');
-    a.setAttribute('href', href);
+    a.setAttribute('href', objectURL);
     a.click();
     setDisabledReset(false);
   };
@@ -287,7 +289,7 @@ function EncryptionPanel(props){
             <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
               <Grid container spacing={1}>
                 <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!encBlob} fullWidth>Save Encrypted File …</Button></Grid>
+                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!objectURL} fullWidth>Save Encrypted File …</Button></Grid>
               </Grid>
             </Container>
           </StepContent>
