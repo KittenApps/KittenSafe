@@ -53,11 +53,10 @@ const fakeItems = [
 const FilePanelTimer = (props) => {
   // console.log("render DecryptionPanel FilePanel Timer");
   const now = useContext(TimerContext);
-  const td = useMemo(() => {
-    const tdiff = new Date(props.timestamp) - now;
-    if (tdiff <= 0) props.setReady();
-    return tdiff + 500;
-  }, [props, now]);
+  const td = new Date(props.timestamp) - now + 500;
+  useEffect(() => {
+    if (td <= 500) props.setReady();
+  }, [td, props]);
 
   if (td <= 0) return <p style={{marginTop: 8, marginBottom: 0}}><b>0</b>days <b>0</b>hours <b>00</b>mins <b>00</b>secs left</p>;
   const d = Math.floor(td / (1000 * 60 * 60 * 24));

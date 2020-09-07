@@ -183,7 +183,6 @@ function EncryptionPanel(props){
       ]);
     }).then(([data, secret, iv, auth]) => {
       // console.log('data: ', data, 'iv: ', iv, 'auth: ', auth, 'secret: ', secret);
-      alert(42);
       const meta = new TextEncoder('utf-8').encode(JSON.stringify({iv, auth, secret, filename: file.name, mimeType: file.type, verify: btoa(secret.timestamp)}) + '\n'); // encode meta data as ArrayBuffer
       const blob = new Blob([meta, data], {type: 'application/kittensafefile'});
       setObjectURL(URL.createObjectURL(blob, {type: 'application/octet-binary'}));
