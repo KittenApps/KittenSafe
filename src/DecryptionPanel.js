@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useContext, useMemo, useCallback, useEffect, useRef } from 'react';
 import { Avatar, Button, Card, CardHeader, CardContent, CardActions, Checkbox, Container, FormControlLabel, Grid, List, ListItem,
-         ListItemIcon, ListItemText, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box, Hidden } from '@material-ui/core';
+         ListItemIcon, ListItemText, Snackbar, Stepper, Step, StepLabel, StepContent, Backdrop, Box, Hidden, Paper } from '@material-ui/core';
 import { Alert } from '@material-ui/lab';
 import { LockOpenTwoTone, FolderOpenTwoTone, TimerTwoTone, SaveTwoTone, ImageTwoTone } from '@material-ui/icons';
 import { makeStyles } from '@material-ui/core/styles';
@@ -273,59 +273,61 @@ function DecryptionPanel(props){
           Drag a KittenSafe file over here to decrypt it!
         </Box>
       </Backdrop>
-      <Stepper activeStep={activeStep} elevation={1} orientation="vertical">
-        <Step key="fileSelect">
-          <StepLabel>Choose the KittenSafe file for decryption</StepLabel>
-          <StepContent>
-            <Container maxWidth="sm" disableGutters>
-              <input className={classes.input} id="decFileButton" type="file" accept=".ksf" onChange={onChangeFile} />
-              <label htmlFor="decFileButton">
-                <Button variant="contained" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
-              </label>
-            </Container>
-            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
-              {!file.meta ? <FilePanelError file={file} timers={props.timers} setFile={setFile} /> :
-                <FilePanel
-                  file={file} timeReady={timeReady} setReady={setReady}
-                  addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer}
-                  pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer}
-                />
-              }
-            </Container>
-            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
-              <Grid container spacing={1}>
-                <Grid item><Button variant="outlined" disabled={file.name === 'none'} onClick={onResetFile} >Reset</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<LockOpenTwoTone/>} onClick={onDecryptFile} disabled={!timeReady || !navigator.onLine} fullWidth>Decrypt file …</Button></Grid>
-              </Grid>
-            </Container>
-          </StepContent>
-        </Step>
-        <Step key="Decryption">
-          <StepLabel>Decrypting the KittenSafe file and saving the restored original file</StepLabel>
-          <StepContent>
-            <FakeProgress catimation={catimation} items={fakeItems} play={fakeProgressPlaying}/>
-            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
-              <Grid container spacing={1}>
-                <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file</Button></Grid>
-                <Grid item xs={12} sm><Button variant="contained" color="secondary" startIcon={<ImageTwoTone/>} onClick={handlePrev} disabled={!decFile || !isSupportedMimeType(decFile.mimeType)} fullWidth>Preview original file</Button></Grid>
-              </Grid>
-            </Container>
-          </StepContent>
-        </Step>
-        <Step key="Preview">
-          <StepLabel>Optionally previewing the decrypted media file</StepLabel>
-          <StepContent>
-            <FilePreview src={preview.src} mimeType={preview.mimeType} filename={preview.filename} />
-            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
-              <Grid container spacing={1}>
-                <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file</Button></Grid>
-              </Grid>
-            </Container>
-          </StepContent>
-        </Step>
-      </Stepper>
+      <Paper square elevation={2}>
+        <Stepper activeStep={activeStep} style={{ padding: 24 }} orientation="vertical">
+          <Step key="fileSelect">
+            <StepLabel>Choose the KittenSafe file for decryption</StepLabel>
+            <StepContent>
+              <Container maxWidth="sm" disableGutters>
+                <input className={classes.input} id="decFileButton" type="file" accept=".ksf" onChange={onChangeFile} />
+                <label htmlFor="decFileButton">
+                  <Button variant="contained" color="secondary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
+                </label>
+              </Container>
+              <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+                {!file.meta ? <FilePanelError file={file} timers={props.timers} setFile={setFile} /> :
+                  <FilePanel
+                    file={file} timeReady={timeReady} setReady={setReady}
+                    addTimers={props.addTimers} timers={timers} rmExpTimer={rmExpTimer} setRmExpTimer={setRmExpTimer}
+                    pinnedTimer={props.pinnedTimer} setPinnedTimer={props.setPinnedTimer}
+                  />
+                }
+              </Container>
+              <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+                <Grid container spacing={1}>
+                  <Grid item><Button variant="outlined" disabled={file.name === 'none'} onClick={onResetFile} >Reset</Button></Grid>
+                  <Grid item xs><Button variant="contained" color="primary" startIcon={<LockOpenTwoTone/>} onClick={onDecryptFile} disabled={!timeReady || !navigator.onLine} fullWidth>Decrypt file …</Button></Grid>
+                </Grid>
+              </Container>
+            </StepContent>
+          </Step>
+          <Step key="Decryption">
+            <StepLabel>Decrypting the KittenSafe file and saving the restored original file</StepLabel>
+            <StepContent>
+              <FakeProgress catimation={catimation} items={fakeItems} play={fakeProgressPlaying}/>
+              <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+                <Grid container spacing={1}>
+                  <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
+                  <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file</Button></Grid>
+                  <Grid item xs={12} sm><Button variant="contained" color="secondary" startIcon={<ImageTwoTone/>} onClick={handlePrev} disabled={!decFile || !isSupportedMimeType(decFile.mimeType)} fullWidth>Preview original file</Button></Grid>
+                </Grid>
+              </Container>
+            </StepContent>
+          </Step>
+          <Step key="Preview">
+            <StepLabel>Optionally previewing the decrypted media file</StepLabel>
+            <StepContent>
+              <FilePreview src={preview.src} mimeType={preview.mimeType} filename={preview.filename} />
+              <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+                <Grid container spacing={1}>
+                  <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
+                  <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!decFile} fullWidth>Save original file</Button></Grid>
+                </Grid>
+              </Container>
+            </StepContent>
+          </Step>
+        </Stepper>
+      </Paper>
       <Snackbar open={warn !== ''} onClose={handleWarnClose} anchorOrigin={{ vertical: 'top', horizontal: 'center' }}>
         <Alert variant="filled" elevation={6} onClose={handleWarnClose} severity="error">
           {warn}

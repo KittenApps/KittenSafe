@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox, Container, TextField,
+import { Avatar, Backdrop, Box, Button, Card, CardHeader, CardActions, Checkbox, Container, TextField, Paper,
          FormControlLabel, Grid, Stepper, Step, StepLabel, StepContent, Tooltip, useMediaQuery } from '@material-ui/core';
 import { DateTimePicker } from '@material-ui/pickers';
 import { FolderOpenTwoTone, LockTwoTone, VisibilityTwoTone, VisibilityOffTwoTone,
@@ -214,86 +214,88 @@ function EncryptionPanel(props){
           Drag a file over here to encrypt it with KittenSafe!
         </Box>
       </Backdrop>
-      <Stepper activeStep={activeStep} elevation={1} orientation="vertical">
-        <Step key="fileSelect">
-          <StepLabel>Choose or create the file to encrypt</StepLabel>
-          <StepContent>
-            <Container maxWidth="sm" disableGutters>
-              <Grid container spacing={1}>
-                <Grid item xs>
-                  <input className={classes.hiddenInput} id="encFileButton" type="file" onChange={onChangeFile} />
-                  <label htmlFor="encFileButton">
-                    <Button variant="contained" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
-                  </label>
-                </Grid>
-                {process.browser && /iPad|iPhone|iPod|android/.test(navigator.userAgent) &&
-                  <Grid item>
-                    <input className={classes.hiddenInput} id="encFileCamara" type="file" capture="environment" accept="image/*, video/*" onChange={onChangeFile} />
-                    <label htmlFor="encFileCamara">
-                      <Button variant="contained" component="span" startIcon={<CameraAltTwoTone style={{fontSize: 24}}/>} classes={{startIcon: classes.iconButton}}></Button>
+      <Paper square elevation={2}>
+        <Stepper activeStep={activeStep} style={{ padding: 24 }} orientation="vertical">
+          <Step key="fileSelect">
+            <StepLabel>Choose or create the file to encrypt</StepLabel>
+            <StepContent>
+              <Container maxWidth="sm" disableGutters>
+                <Grid container spacing={1}>
+                  <Grid item xs>
+                    <input className={classes.hiddenInput} id="encFileButton" type="file" onChange={onChangeFile} />
+                    <label htmlFor="encFileButton">
+                      <Button variant="contained" color="secondary" component="span" startIcon={<FolderOpenTwoTone/>} fullWidth>Select file …</Button>
                     </label>
                   </Grid>
-                }
-                <Grid item xs={12} md={6}>
-                  <Button variant="contained" color="secondary" onClick={handleCreateMarkdownOpen} startIcon={<FormatColorText/>} fullWidth>Create Markdown text</Button>
+                  {process.browser && /iPad|iPhone|iPod|android/.test(navigator.userAgent) &&
+                    <Grid item>
+                      <input className={classes.hiddenInput} id="encFileCamara" type="file" capture="environment" accept="image/*, video/*" onChange={onChangeFile} />
+                      <label htmlFor="encFileCamara">
+                        <Button variant="contained" color="secondary" component="span" startIcon={<CameraAltTwoTone style={{fontSize: 24}}/>} classes={{startIcon: classes.iconButton}}></Button>
+                      </label>
+                    </Grid>
+                  }
+                  <Grid item xs={12} md={6}>
+                    <Button variant="contained" color="secondary" onClick={handleCreateMarkdownOpen} startIcon={<FormatColorText/>} fullWidth>Create Markdown text</Button>
+                  </Grid>
                 </Grid>
-              </Grid>
-            </Container>
-            {createMarkdownOpen && <MarkdownEditor open={createMarkdownOpen} setOpen={setCreateMarkdownOpen} setFile={setFile} />}
-            <Container maxWidth="sm" disableGutters>
-              <FilenamePanel file={file} />
-            </Container>
-            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
-              <Grid container spacing={1}>
-                <Grid item><Button variant="outlined" disabled={file.name === 'none'} onClick={onResetFile} >Reset</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<TimerTwoTone/>} onClick={handleNext} disabled={!file.size || !navigator.onLine} fullWidth>Select Timestamp</Button></Grid>
-              </Grid>
-            </Container>
-          </StepContent>
-        </Step>
-        <Step key="timestampSelect">
-          <StepLabel>Select the timestamp until the file should be encrypted</StepLabel>
-          <StepContent>
-            <Container maxWidth="sm" disableGutters>
-              <DateTimePicker
-                renderInput={props => <TextField variant="outlined" fullWidth {...props} />}
-                label="file encrypted until:"
-                views={['year', 'month', 'date', 'hours', 'minutes']}
-                value={timestamp}
-                onChange={setTimestamp}
-                showTodayButton
-                todayLabel="NOW"
-                disablePast
-                minDateTime={new Date()}
-                toolbarTitle="select timestamp"
-                inputFormat="yyyy/MM/dd HH:mm:ss.SSS"
-                mask="____/__/__ __:__:__.___"
-                ampm={false}
-                showDaysOutsideCurrentMonth
-              />
-              <TimerPreview addTimers={addTimers} setAddTimers={setAddTimers} addPinnedTimer={addPinnedTimer} setAddPinnedTimers={setAddPinnedTimers} file={file} timestamp={timestamp} />
-            </Container>
-            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
-              <Grid container spacing={1}>
-                <Grid item><Button variant="outlined" onClick={handleBack}>Back</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<LockTwoTone/>} onClick={onEncryptFile} fullWidth>Encrypt file …</Button></Grid>
-              </Grid>
-            </Container>
-          </StepContent>
-        </Step>
-        <Step key="downloadEncrypted">
-          <StepLabel>Encrypting and saving your file as a KittenSafe file</StepLabel>
-          <StepContent>
-            <FakeProgress catimation={catimation} items={fakeItems} play={fakeProgressPlaying}/>
-            <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
-              <Grid container spacing={1}>
-                <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
-                <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!objectURL} fullWidth>Save Encrypted File …</Button></Grid>
-              </Grid>
-            </Container>
-          </StepContent>
-        </Step>
-      </Stepper>
+              </Container>
+              {createMarkdownOpen && <MarkdownEditor open={createMarkdownOpen} setOpen={setCreateMarkdownOpen} setFile={setFile} />}
+              <Container maxWidth="sm" disableGutters>
+                <FilenamePanel file={file} />
+              </Container>
+              <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+                <Grid container spacing={1}>
+                  <Grid item><Button variant="outlined" disabled={file.name === 'none'} onClick={onResetFile} >Reset</Button></Grid>
+                  <Grid item xs><Button variant="contained" color="primary" startIcon={<TimerTwoTone/>} onClick={handleNext} disabled={!file.size || !navigator.onLine} fullWidth>Select Timestamp</Button></Grid>
+                </Grid>
+              </Container>
+            </StepContent>
+          </Step>
+          <Step key="timestampSelect">
+            <StepLabel>Select the timestamp until the file should be encrypted</StepLabel>
+            <StepContent>
+              <Container maxWidth="sm" disableGutters>
+                <DateTimePicker
+                  renderInput={props => <TextField variant="outlined" fullWidth {...props} />}
+                  label="file encrypted until:"
+                  views={['year', 'month', 'date', 'hours', 'minutes']}
+                  value={timestamp}
+                  onChange={setTimestamp}
+                  showTodayButton
+                  todayLabel="NOW"
+                  disablePast
+                  minDateTime={new Date()}
+                  toolbarTitle="select timestamp"
+                  inputFormat="yyyy/MM/dd HH:mm:ss.SSS"
+                  mask="____/__/__ __:__:__.___"
+                  ampm={false}
+                  showDaysOutsideCurrentMonth
+                />
+                <TimerPreview addTimers={addTimers} setAddTimers={setAddTimers} addPinnedTimer={addPinnedTimer} setAddPinnedTimers={setAddPinnedTimers} file={file} timestamp={timestamp} />
+              </Container>
+              <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+                <Grid container spacing={1}>
+                  <Grid item><Button variant="outlined" onClick={handleBack}>Back</Button></Grid>
+                  <Grid item xs><Button variant="contained" color="primary" startIcon={<LockTwoTone/>} onClick={onEncryptFile} fullWidth>Encrypt file …</Button></Grid>
+                </Grid>
+              </Container>
+            </StepContent>
+          </Step>
+          <Step key="downloadEncrypted">
+            <StepLabel>Encrypting and saving your file as a KittenSafe file</StepLabel>
+            <StepContent>
+              <FakeProgress catimation={catimation} items={fakeItems} play={fakeProgressPlaying}/>
+              <Container maxWidth="sm" style={{marginTop: 5}} disableGutters>
+                <Grid container spacing={1}>
+                  <Grid item><Button variant="outlined" onClick={handleReset} disabled={disabledReset}>Reset</Button></Grid>
+                  <Grid item xs><Button variant="contained" color="primary" startIcon={<SaveTwoTone/>} onClick={handleSave} disabled={!objectURL} fullWidth>Save Encrypted File …</Button></Grid>
+                </Grid>
+              </Container>
+            </StepContent>
+          </Step>
+        </Stepper>
+      </Paper>
     </div>
   );
 }
